@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply font-sans bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  @apply font-bold;
+}
+
+h1 { @apply text-4xl; }
+h2 { @apply text-3xl; }
+h3 { @apply text-2xl; }
+
+.btn {
+  @apply inline-flex items-center justify-center px-4 py-2.5 rounded-lg font-medium transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 active:scale-95 shadow-sm hover:shadow-md;
+}
+
+.btn-secondary {
+  @apply bg-slate-200 text-slate-800 hover:bg-slate-300 active:scale-95;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700 active:scale-95;
+}
+
+.btn-success {
+  @apply bg-green-600 text-white hover:bg-green-700 active:scale-95;
+}
+
+.btn-block { @apply w-full; }
+.btn-sm { @apply px-3 py-1.5 text-sm; }
+.btn-lg { @apply px-6 py-3 text-lg; }
+
+.card {
+  @apply bg-white rounded-xl shadow-sm border border-slate-200 p-6;
+}
+
+.card-hover {
+  @apply card hover:shadow-md hover:border-slate-300 transition-all;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+textarea,
+select {
+  @apply w-full px-4 py-2.5 border border-slate-300 rounded-lg bg-white text-slate-900 transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 focus:border-transparent;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  @apply bg-slate-50 text-slate-500 cursor-not-allowed;
+}
+
+.form-group { @apply mb-4; }
+.form-label { @apply block text-sm font-medium text-slate-700 mb-1.5; }
+.form-error { @apply text-red-600 text-sm mt-1; }
+
+.alert {
+  @apply px-4 py-3 rounded-lg flex items-start gap-3 border;
+}
+
+.alert-success { @apply bg-green-50 text-green-800 border-green-200; }
+.alert-error { @apply bg-red-50 text-red-800 border-red-200; }
+.alert-warning { @apply bg-amber-50 text-amber-800 border-amber-200; }
+.alert-info { @apply bg-blue-50 text-blue-800 border-blue-200; }
+
+.spinner { @apply animate-spin; }
+.spinner-sm { @apply w-4 h-4; }
+.spinner-md { @apply w-6 h-6; }
+.spinner-lg { @apply w-8 h-8; }
+
+.table { @apply w-full border-collapse; }
+.table thead { @apply bg-slate-100 border-b border-slate-200; }
+.table th { @apply px-4 py-3 text-left font-semibold text-slate-700; }
+.table td { @apply px-4 py-3 border-b border-slate-200; }
+.table tbody tr:hover { @apply bg-slate-50; }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.text-muted { @apply text-slate-500; }
+.text-small { @apply text-sm text-slate-600; }
+.animation-delay-2000 { animation-delay: 2s; }
