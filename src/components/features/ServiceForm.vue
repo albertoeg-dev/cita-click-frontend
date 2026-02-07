@@ -60,33 +60,28 @@
         />
 
         <!-- Precio -->
-        <Input
-          v-model.number="formData.precio"
-          type="number"
-          label="Precio (MXN)"
-          placeholder="150.00"
-          :error="errors.precio"
-          :required="true"
-          :min="0"
-          :step="0.01"
-          help="Precio del servicio en pesos mexicanos"
-          @blur="validateField('precio')"
-        >
-          <template #icon>
-            <span class="text-gray-500">$</span>
-          </template>
-        </Input>
-      </div>
-    </div>
-
-    <!-- Preview -->
-    <div v-if="showPreview" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-      <h4 class="text-sm font-semibold text-blue-900 mb-2">Vista previa:</h4>
-      <div class="space-y-1 text-sm text-blue-800">
-        <p><strong>Nombre:</strong> {{ formData.nombre || '-' }}</p>
-        <p><strong>Duración:</strong> {{ formatearDuracion(formData.duracion) }}</p>
-        <p><strong>Precio:</strong> {{ formatearPrecio(formData.precio) }}</p>
-        <p><strong>Estado:</strong> {{ formData.activo ? 'Activo' : 'Inactivo' }}</p>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Precio (MXN) <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="text-gray-500">$</span>
+            </div>
+            <input
+              v-model.number="formData.precio"
+              type="number"
+              placeholder="150.00"
+              min="0"
+              step="0.01"
+              @blur="validateField('precio')"
+              class="block w-full pl-10 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              :class="errors.precio ? 'border-red-300' : 'border-gray-300'"
+            />
+          </div>
+          <p v-if="errors.precio" class="mt-1 text-sm text-red-600">{{ errors.precio }}</p>
+          <p v-else class="mt-1 text-xs text-gray-500">Precio del servicio en pesos mexicanos</p>
+        </div>
       </div>
     </div>
 
