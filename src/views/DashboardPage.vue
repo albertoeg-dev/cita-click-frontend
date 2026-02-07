@@ -10,13 +10,8 @@
     </template>
 
     <div class="mb-6">
-      <h2 class="text-3xl font-bold text-slate-900 mb-2 flex items-center gap-3">
-        ¡Bienvenido, {{ authStore.user?.nombre }}!
-        <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
-        </svg>
-      </h2>
-      <p class="text-slate-600">Aquí está el resumen de tu negocio</p>
+      <h2 class="text-3xl font-bold text-slate-900 mb-2">Dashboard</h2>
+      <p class="text-slate-600">Resumen y métricas de tu negocio</p>
     </div>
 
     <!-- Loading State -->
@@ -25,6 +20,43 @@
     </div>
 
     <div v-else>
+      <!-- Onboarding Checklist (solo si no está todo completo) -->
+      <OnboardingChecklist v-if="!checklistCerrado && !todasTareasCompletadas" @close="cerrarChecklist" class="mb-6" />
+
+      <!-- Acciones Rápidas (movido al inicio) -->
+      <div class="card bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-600 mb-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Acciones Rápidas
+            </h3>
+            <p class="text-slate-600 text-sm">
+              Gestiona tu negocio de forma rápida y eficiente
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <router-link to="/appointments" class="btn btn-primary btn-sm">
+              + Nueva Cita
+            </router-link>
+            <router-link to="/clients" class="btn btn-secondary btn-sm">
+              + Nuevo Cliente
+            </router-link>
+            <router-link to="/services" class="btn btn-secondary btn-sm">
+              + Nuevo Servicio
+            </router-link>
+            <router-link to="/reports" class="btn btn-secondary btn-sm flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Ver Reportes
+            </router-link>
+          </div>
+        </div>
+      </div>
+
       <!-- Grid de Estadísticas -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Citas Hoy -->
@@ -100,64 +132,39 @@
         </div>
       </div>
 
-      <!-- CTA Actualizar Plan -->
-      <div class="mb-6">
-        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl overflow-hidden">
-          <div class="p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex-1 text-white">
-              <div class="flex items-center gap-3 mb-3">
-                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                  <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h3 class="text-2xl font-bold">¿Listo para crecer?</h3>
-              </div>
-              <p class="text-white/90 text-lg mb-2">
-                Actualiza tu plan y desbloquea todas las funcionalidades premium
-              </p>
-              <ul class="space-y-2 text-sm text-white/80">
-                <li class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
-                  <span>Clientes y citas ilimitadas</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
-                  <span>Recordatorios automáticos por SMS/WhatsApp</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
-                  <span>Pagos integrados con Stripe Connect</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
-                  <span>Reportes avanzados y multi-sucursal</span>
-                </li>
-              </ul>
+      <!-- Notificación de Upgrade (sutil) -->
+      <div v-if="mostrarNotificacionUpgrade" class="mb-6 card border-l-4 border-indigo-600 bg-gradient-to-r from-indigo-50 to-purple-50">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
-            <div class="flex flex-col gap-3 w-full md:w-auto">
+            <div class="flex-1">
+              <h4 class="font-bold text-slate-900 mb-1">Desbloquea más funcionalidades</h4>
+              <p class="text-sm text-slate-700 mb-2">
+                Clientes y citas ilimitadas, recordatorios automáticos, pagos integrados y más.
+              </p>
               <router-link
                 to="/pricing"
-                class="inline-flex items-center justify-center px-8 py-4 bg-white text-indigo-600 font-bold rounded-xl shadow-xl hover:bg-gray-50 transition-all duration-200 transform hover:scale-105 hover:shadow-2xl whitespace-nowrap"
+                class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-700"
               >
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                Ver Planes
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
-                Ver Planes y Precios
               </router-link>
-              <p class="text-center text-white/70 text-xs">
-                🎉 7 días de prueba gratis • Sin compromiso
-              </p>
             </div>
           </div>
+          <button
+            @click="cerrarNotificacionUpgrade"
+            class="text-slate-400 hover:text-slate-600 transition-colors flex-shrink-0"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -280,74 +287,6 @@
         <TendenciaGrafica :tendencia="tendenciaSemanal" :loading="metricasLoading" />
       </div>
 
-      <!-- Acciones Rápidas -->
-      <div class="card bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-600">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              Acciones Rápidas
-            </h3>
-            <p class="text-slate-600 text-sm">
-              Gestiona tu negocio de forma rápida y eficiente
-            </p>
-          </div>
-          <div class="flex flex-wrap gap-3">
-            <router-link to="/appointments" class="btn btn-primary btn-sm">
-              + Nueva Cita
-            </router-link>
-            <router-link to="/clients" class="btn btn-secondary btn-sm">
-              + Nuevo Cliente
-            </router-link>
-            <router-link to="/services" class="btn btn-secondary btn-sm">
-              + Nuevo Servicio
-            </router-link>
-            <router-link to="/pricing" class="btn btn-secondary btn-sm flex items-center gap-1 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200 text-indigo-700 hover:from-indigo-100 hover:to-purple-100">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              Actualizar Plan
-            </router-link>
-            <router-link to="/reports" class="btn btn-secondary btn-sm flex items-center gap-1">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-              Ver Reportes
-            </router-link>
-          </div>
-        </div>
-      </div>
-
-      <!-- Getting Started (solo si no hay datos) -->
-      <div
-        v-if="!tieneContenido"
-        class="mt-6 card border-l-4 border-amber-600 bg-gradient-to-r from-amber-50 to-transparent"
-      >
-        <div class="flex items-start justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-amber-900 mb-2 flex items-center gap-2">
-              <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              Comienza Ahora
-            </h3>
-            <p class="text-amber-800 text-sm leading-relaxed mb-4">
-              Configura tu negocio en estos sencillos pasos:
-            </p>
-            <ol class="list-decimal list-inside text-amber-800 text-sm space-y-2">
-              <li>Configura tu perfil de negocio y horarios de atención</li>
-              <li>Agrega los servicios que ofreces</li>
-              <li>Registra a tus clientes</li>
-              <li>Crea y gestiona tus citas</li>
-            </ol>
-          </div>
-          <router-link to="/settings" class="btn btn-primary btn-sm ml-4 flex-shrink-0">
-            Configurar Ahora
-          </router-link>
-        </div>
-      </div>
     </div>
   </DashboardLayout>
 </template>
@@ -369,14 +308,17 @@ import IngresosWidget from '../components/dashboard/IngresosWidget.vue'
 import CitasWidget from '../components/dashboard/CitasWidget.vue'
 import ServiciosWidget from '../components/dashboard/ServiciosWidget.vue'
 import TendenciaGrafica from '../components/dashboard/TendenciaGrafica.vue'
+import OnboardingChecklist from '../components/dashboard/OnboardingChecklist.vue'
 import { formatearNombreCompleto, formatearPrecio, formatearFechaHora } from '../utils/formatters'
 import { ESTADOS_CITA_LABELS } from '../utils/constants'
+import { useBusinessStore } from '../stores/businessStore'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const citasStore = useCitasStore()
 const clientesStore = useClientesStore()
 const serviciosStore = useServiciosStore()
+const businessStore = useBusinessStore()
 const toast = useToast()
 const {
   metricas,
@@ -390,6 +332,8 @@ const {
 } = useDashboardMetricas()
 
 const loading = ref(true)
+const checklistCerrado = ref(false)
+const mostrarNotificacionUpgrade = ref(true)
 
 // Computed
 const citasHoy = computed(() => {
@@ -450,7 +394,26 @@ const tieneContenido = computed(() => {
   )
 })
 
+const todasTareasCompletadas = computed(() => {
+  return (
+    businessStore.negocio?.nombre &&
+    businessStore.horarios?.length > 0 &&
+    serviciosStore.servicios.length > 0 &&
+    clientesStore.clientes.length > 0 &&
+    citasStore.citas.length > 0
+  )
+})
+
 // Métodos
+const cerrarChecklist = () => {
+  checklistCerrado.value = true
+  localStorage.setItem('dashboard_checklist_cerrado', 'true')
+}
+
+const cerrarNotificacionUpgrade = () => {
+  mostrarNotificacionUpgrade.value = false
+  localStorage.setItem('dashboard_upgrade_cerrado', 'true')
+}
 const getEstadoVariant = (estado) => {
   const variants = {
     PENDIENTE: 'warning',
@@ -476,6 +439,8 @@ const cargarDatos = async () => {
       citasStore.cargarCitas(),
       clientesStore.cargarClientes(),
       serviciosStore.cargarServicios(),
+      businessStore.cargarNegocio(),
+      businessStore.cargarHorarios(),
       cargarMetricas()
     ])
 
@@ -509,5 +474,16 @@ const cargarDatos = async () => {
 // Lifecycle
 onMounted(() => {
   cargarDatos()
+
+  // Cargar preferencias de localStorage
+  const checklistCerradoStorage = localStorage.getItem('dashboard_checklist_cerrado')
+  if (checklistCerradoStorage === 'true') {
+    checklistCerrado.value = true
+  }
+
+  const upgradeCerradoStorage = localStorage.getItem('dashboard_upgrade_cerrado')
+  if (upgradeCerradoStorage === 'true') {
+    mostrarNotificacionUpgrade.value = false
+  }
 })
 </script>
