@@ -757,11 +757,6 @@ const enviarConfirmacion = async () => {
   enviandoConfirmacion.value = true
 
   try {
-      citaId: citaParaConfirmar.value.id,
-      canal: canalSeleccionado.value,
-      confirmarPago: confirmarPago.value
-    })
-
     await citasStore.enviarConfirmacionCita(
       citaParaConfirmar.value.id,
       canalSeleccionado.value,
