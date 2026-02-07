@@ -92,7 +92,7 @@
               placeholder="contacto@tunegocio.com"
               :disabled="loading"
               @blur="validateField('email')"
-              class="block w-full pl-10 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              class="block w-full pl-11 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               :class="errors.email ? 'border-red-300' : 'border-gray-300'"
             />
           </div>
@@ -118,7 +118,7 @@
               :disabled="loading"
               @input="handleTelefonoInput"
               @blur="validateField('telefono')"
-              class="block w-full pl-10 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              class="block w-full pl-11 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               :class="errors.telefono ? 'border-red-300' : 'border-gray-300'"
             />
           </div>

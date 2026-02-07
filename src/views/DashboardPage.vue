@@ -132,42 +132,6 @@
         </div>
       </div>
 
-      <!-- Notificación de Upgrade (sutil) -->
-      <div v-if="mostrarNotificacionUpgrade" class="mb-6 card border-l-4 border-indigo-600 bg-gradient-to-r from-indigo-50 to-purple-50">
-        <div class="flex items-start justify-between gap-4">
-          <div class="flex items-start gap-3">
-            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <h4 class="font-bold text-slate-900 mb-1">Desbloquea más funcionalidades</h4>
-              <p class="text-sm text-slate-700 mb-2">
-                Clientes y citas ilimitadas, recordatorios automáticos, pagos integrados y más.
-              </p>
-              <router-link
-                to="/pricing"
-                class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-700"
-              >
-                Ver Planes
-                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </router-link>
-            </div>
-          </div>
-          <button
-            @click="cerrarNotificacionUpgrade"
-            class="text-slate-400 hover:text-slate-600 transition-colors flex-shrink-0"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
       <!-- Resumen de Citas y Límites del Plan -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <!-- Citas por Estado -->
@@ -333,7 +297,6 @@ const {
 
 const loading = ref(true)
 const checklistCerrado = ref(false)
-const mostrarNotificacionUpgrade = ref(true)
 
 // Computed
 const citasHoy = computed(() => {
@@ -410,9 +373,20 @@ const cerrarChecklist = () => {
   localStorage.setItem('dashboard_checklist_cerrado', 'true')
 }
 
-const cerrarNotificacionUpgrade = () => {
-  mostrarNotificacionUpgrade.value = false
-  localStorage.setItem('dashboard_upgrade_cerrado', 'true')
+const mostrarNotificacionUpgradeFn = () => {
+  // Verificar si el usuario está en plan gratuito
+  const planActual = suscripcionStore.suscripcion?.plan?.nombre || 'FREE'
+  const upgradeCerrado = localStorage.getItem('dashboard_upgrade_cerrado')
+
+  if (planActual === 'FREE' && upgradeCerrado !== 'true') {
+    // Mostrar notificación azul tipo info
+    toast.info(
+      'Desbloquea más funcionalidades',
+      'Mejora tu plan para acceder a clientes y citas ilimitadas, recordatorios automáticos y más.',
+      10000 // 10 segundos
+    )
+    localStorage.setItem('dashboard_upgrade_cerrado', 'true')
+  }
 }
 const getEstadoVariant = (estado) => {
   const variants = {
@@ -472,8 +446,8 @@ const cargarDatos = async () => {
 }
 
 // Lifecycle
-onMounted(() => {
-  cargarDatos()
+onMounted(async () => {
+  await cargarDatos()
 
   // Cargar preferencias de localStorage
   const checklistCerradoStorage = localStorage.getItem('dashboard_checklist_cerrado')
@@ -481,9 +455,7 @@ onMounted(() => {
     checklistCerrado.value = true
   }
 
-  const upgradeCerradoStorage = localStorage.getItem('dashboard_upgrade_cerrado')
-  if (upgradeCerradoStorage === 'true') {
-    mostrarNotificacionUpgrade.value = false
-  }
+  // Mostrar notificación de upgrade si es plan gratuito
+  mostrarNotificacionUpgradeFn()
 })
 </script>
