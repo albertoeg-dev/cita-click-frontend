@@ -17,12 +17,7 @@
         + Nuevo Servicio
       </button>
     </template>
-
-    <div class="mb-6">
-      <h2 class="text-3xl font-bold text-slate-900 mb-2">Gestión de Servicios</h2>
-      <p class="text-slate-600">Administra los servicios que ofrece tu negocio</p>
-    </div>
-
+    
     <!-- Filtros -->
     <div class="card mb-6">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">

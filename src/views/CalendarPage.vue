@@ -1,11 +1,15 @@
 <template>
   <DashboardLayout>
     <template #title>
-      <div class="flex items-center gap-2">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        Calendario
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Calendario de Citas
+        </div>
+        <span class="text-sm text-slate-500 ml-8 mt-1">Visualiza todas tus citas en un calendario mensual</span>
       </div>
     </template>
 
@@ -15,87 +19,57 @@
       </button>
     </template>
 
-    <div class="mb-6">
-      <h2 class="text-3xl font-bold text-slate-900 mb-2">Calendario de Citas</h2>
-      <p class="text-slate-600">Visualiza todas tus citas en un calendario mensual</p>
-    </div>
-
     <!-- Controles del calendario -->
     <div class="card mb-6 space-y-4">
       <div class="flex flex-col md:flex-row items-center justify-between gap-4">
         <!-- Selector de Vista -->
         <div class="flex gap-1 bg-slate-100 p-1 rounded-lg">
-          <button
-            @click="vistaActual = 'dia'"
-            :class="[
-              'px-4 py-2 text-sm font-medium rounded-md transition-all',
-              vistaActual === 'dia'
-                ? 'bg-white text-blue-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            ]"
-          >
+          <button @click="vistaActual = 'dia'" :class="[
+            'px-4 py-2 text-sm font-medium rounded-md transition-all',
+            vistaActual === 'dia'
+              ? 'bg-white text-blue-600 shadow-sm'
+              : 'text-slate-600 hover:text-slate-900'
+          ]">
             Día
           </button>
-          <button
-            @click="vistaActual = 'semana'"
-            :class="[
-              'px-4 py-2 text-sm font-medium rounded-md transition-all',
-              vistaActual === 'semana'
-                ? 'bg-white text-blue-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            ]"
-          >
+          <button @click="vistaActual = 'semana'" :class="[
+            'px-4 py-2 text-sm font-medium rounded-md transition-all',
+            vistaActual === 'semana'
+              ? 'bg-white text-blue-600 shadow-sm'
+              : 'text-slate-600 hover:text-slate-900'
+          ]">
             Semana
           </button>
-          <button
-            @click="vistaActual = 'mes'"
-            :class="[
-              'px-4 py-2 text-sm font-medium rounded-md transition-all',
-              vistaActual === 'mes'
-                ? 'bg-white text-blue-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            ]"
-          >
+          <button @click="vistaActual = 'mes'" :class="[
+            'px-4 py-2 text-sm font-medium rounded-md transition-all',
+            vistaActual === 'mes'
+              ? 'bg-white text-blue-600 shadow-sm'
+              : 'text-slate-600 hover:text-slate-900'
+          ]">
             Mes
           </button>
         </div>
 
         <!-- Navegación de mes/semana/día -->
         <div class="flex items-center gap-4">
-          <button
-            @click="navegarAnterior"
-            class="btn btn-secondary btn-sm"
-            :disabled="citasStore.loading"
-          >
+          <button @click="navegarAnterior" class="btn btn-secondary btn-sm" :disabled="citasStore.loading">
             ← Anterior
           </button>
           <h3 class="text-xl font-bold text-slate-900 min-w-[200px] text-center">
             {{ tituloVista }}
           </h3>
-          <button
-            @click="navegarSiguiente"
-            class="btn btn-secondary btn-sm"
-            :disabled="citasStore.loading"
-          >
+          <button @click="navegarSiguiente" class="btn btn-secondary btn-sm" :disabled="citasStore.loading">
             Siguiente →
           </button>
         </div>
 
         <!-- Botón hoy -->
-        <button
-          @click="irAHoy"
-          class="btn btn-secondary btn-sm"
-          :disabled="citasStore.loading"
-        >
+        <button @click="irAHoy" class="btn btn-secondary btn-sm" :disabled="citasStore.loading">
           Hoy
         </button>
 
         <!-- Filtro por estado -->
-        <Select
-          v-model="filtroEstado"
-          :options="opcionesEstado"
-          @change="aplicarFiltro"
-        />
+        <Select v-model="filtroEstado" :options="opcionesEstado" @change="aplicarFiltro" />
       </div>
 
       <!-- Leyenda de estados (movida aquí desde abajo) -->
@@ -131,26 +105,18 @@
     <div v-if="!citasStore.loading && vistaActual === 'dia'" class="card">
       <div class="space-y-1">
         <!-- Horas del día (8 AM - 8 PM) -->
-        <div
-          v-for="hora in horasDelDia"
-          :key="hora"
-          class="flex border-b border-slate-100 hover:bg-slate-50"
-        >
+        <div v-for="hora in horasDelDia" :key="hora" class="flex border-b border-slate-100 hover:bg-slate-50">
           <div class="w-20 p-3 text-sm font-medium text-slate-600 flex-shrink-0">
             {{ hora }}
           </div>
           <div class="flex-1 p-2 min-h-[60px]">
-            <div
-              v-for="cita in citasDeHora(hora)"
-              :key="cita.id"
-              @click="verDetalleCita(cita)"
-              :class="[
-                'mb-2 p-2 rounded-md cursor-pointer transition-all hover:scale-102 hover:shadow-md',
-                getEstadoClasses(cita.estado)
-              ]"
-            >
+            <div v-for="cita in citasDeHora(hora)" :key="cita.id" @click="verDetalleCita(cita)" :class="[
+              'mb-2 p-2 rounded-md cursor-pointer transition-all hover:scale-102 hover:shadow-md',
+              getEstadoClasses(cita.estado)
+            ]">
               <div class="font-medium text-sm">
-                {{ formatearNombreCompleto(cita.cliente?.nombre, cita.cliente?.apellidoPaterno, cita.cliente?.apellidoMaterno) }}
+                {{ formatearNombreCompleto(cita.cliente?.nombre, cita.cliente?.apellidoPaterno,
+                  cita.cliente?.apellidoMaterno) }}
               </div>
               <div class="text-xs opacity-75">
                 {{ cita.servicio?.nombre }} - {{ formatearDuracion(cita.servicio?.duracion) }}
@@ -167,11 +133,7 @@
         <!-- Encabezados de días -->
         <div class="grid grid-cols-8 gap-px bg-slate-200 border border-slate-200 rounded-t-lg overflow-hidden">
           <div class="bg-slate-100 p-2"></div>
-          <div
-            v-for="dia in diasSemana"
-            :key="dia.fecha"
-            class="bg-slate-100 p-2 text-center"
-          >
+          <div v-for="dia in diasSemana" :key="dia.fecha" class="bg-slate-100 p-2 text-center">
             <div class="text-xs text-slate-600">{{ DIAS_SEMANA[dia.diaSemana].short }}</div>
             <div :class="['text-sm font-semibold', dia.esHoy ? 'text-blue-600' : 'text-slate-900']">
               {{ dia.numero }}
@@ -181,29 +143,16 @@
 
         <!-- Horas y citas -->
         <div class="grid grid-cols-8 gap-px bg-slate-200 border-x border-b border-slate-200 rounded-b-lg">
-          <div
-            v-for="hora in horasDelDia"
-            :key="hora"
-            class="col-span-8 grid grid-cols-8 gap-px"
-          >
+          <div v-for="hora in horasDelDia" :key="hora" class="col-span-8 grid grid-cols-8 gap-px">
             <div class="bg-white p-2 text-xs text-slate-600 font-medium">
               {{ hora }}
             </div>
-            <div
-              v-for="dia in diasSemana"
-              :key="`${hora}-${dia.fecha}`"
-              class="bg-white p-1 min-h-[50px] hover:bg-slate-50"
-            >
-              <div
-                v-for="cita in citasDeHoraDia(hora, dia.fecha)"
-                :key="cita.id"
-                @click="verDetalleCita(cita)"
-                :class="[
-                  'text-xs p-1 rounded cursor-pointer mb-1 truncate',
-                  getEstadoClasses(cita.estado)
-                ]"
-                :title="`${cita.cliente?.nombre} - ${cita.servicio?.nombre}`"
-              >
+            <div v-for="dia in diasSemana" :key="`${hora}-${dia.fecha}`"
+              class="bg-white p-1 min-h-[50px] hover:bg-slate-50">
+              <div v-for="cita in citasDeHoraDia(hora, dia.fecha)" :key="cita.id" @click="verDetalleCita(cita)" :class="[
+                'text-xs p-1 rounded cursor-pointer mb-1 truncate',
+                getEstadoClasses(cita.estado)
+              ]" :title="`${cita.cliente?.nombre} - ${cita.servicio?.nombre}`">
                 {{ cita.cliente?.nombre }}
               </div>
             </div>
@@ -216,37 +165,28 @@
     <div v-else-if="!citasStore.loading && vistaActual === 'mes'" class="card">
       <!-- Encabezados de días -->
       <div class="grid grid-cols-7 gap-px bg-slate-200 border border-slate-200 rounded-t-lg overflow-hidden">
-        <div
-          v-for="dia in DIAS_SEMANA"
-          :key="dia.value"
-          class="bg-slate-100 p-3 text-center font-semibold text-slate-700 text-sm"
-        >
+        <div v-for="dia in DIAS_SEMANA" :key="dia.value"
+          class="bg-slate-100 p-3 text-center font-semibold text-slate-700 text-sm">
           {{ dia.short }}
         </div>
       </div>
 
       <!-- Celdas del calendario -->
-      <div class="grid grid-cols-7 gap-px bg-slate-200 border-l border-r border-b border-slate-200 rounded-b-lg overflow-hidden">
-        <div
-          v-for="(dia, index) in diasDelMes"
-          :key="index"
-          :class="[
-            'bg-white p-2 min-h-[120px] transition-colors',
-            dia.esOtroMes ? 'bg-slate-50' : '',
-            dia.esHoy ? 'bg-blue-50' : '',
-            'hover:bg-slate-50 cursor-pointer'
-          ]"
-          @click="seleccionarDia(dia)"
-        >
+      <div
+        class="grid grid-cols-7 gap-px bg-slate-200 border-l border-r border-b border-slate-200 rounded-b-lg overflow-hidden">
+        <div v-for="(dia, index) in diasDelMes" :key="index" :class="[
+          'bg-white p-2 min-h-[120px] transition-colors',
+          dia.esOtroMes ? 'bg-slate-50' : '',
+          dia.esHoy ? 'bg-blue-50' : '',
+          'hover:bg-slate-50 cursor-pointer'
+        ]" @click="seleccionarDia(dia)">
           <!-- Número del día -->
           <div class="flex items-center justify-between mb-2">
-            <span
-              :class="[
-                'text-sm font-medium',
-                dia.esOtroMes ? 'text-slate-400' : 'text-slate-900',
-                dia.esHoy ? 'bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs' : ''
-              ]"
-            >
+            <span :class="[
+              'text-sm font-medium',
+              dia.esOtroMes ? 'text-slate-400' : 'text-slate-900',
+              dia.esHoy ? 'bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs' : ''
+            ]">
               {{ dia.numero }}
             </span>
             <span v-if="dia.citas.length > 0" class="text-xs text-slate-500">
@@ -256,26 +196,18 @@
 
           <!-- Lista de citas del día -->
           <div class="space-y-1">
-            <div
-              v-for="cita in dia.citas.slice(0, 3)"
-              :key="cita.id"
-              @click.stop="verDetalleCita(cita)"
-              :class="[
-                'text-xs p-1 rounded truncate cursor-pointer transition-all hover:scale-105',
-                getEstadoClasses(cita.estado)
-              ]"
-              :title="`${formatearHora(cita.fechaHora)} - ${cita.cliente?.nombre} ${cita.cliente?.apellidoPaterno} - ${cita.servicio?.nombre}`"
-            >
+            <div v-for="cita in dia.citas.slice(0, 3)" :key="cita.id" @click.stop="verDetalleCita(cita)" :class="[
+              'text-xs p-1 rounded truncate cursor-pointer transition-all hover:scale-105',
+              getEstadoClasses(cita.estado)
+            ]"
+              :title="`${formatearHora(cita.fechaHora)} - ${cita.cliente?.nombre} ${cita.cliente?.apellidoPaterno} - ${cita.servicio?.nombre}`">
               <div class="font-medium truncate">
                 {{ formatearHora(cita.fechaHora) }} {{ cita.cliente?.nombre }}
               </div>
             </div>
             <!-- Indicador de más citas -->
-            <div
-              v-if="dia.citas.length > 3"
-              class="text-xs text-blue-600 font-medium cursor-pointer hover:underline"
-              @click.stop="verTodasCitas(dia)"
-            >
+            <div v-if="dia.citas.length > 3" class="text-xs text-blue-600 font-medium cursor-pointer hover:underline"
+              @click.stop="verTodasCitas(dia)">
               + {{ dia.citas.length - 3 }} más
             </div>
           </div>
@@ -284,27 +216,13 @@
     </div>
 
     <!-- Modal Crear Cita -->
-    <Modal
-      v-model="modalCrearAbierto"
-      title="Crear Nueva Cita"
-      size="2xl"
-      :closable="!guardando"
-    >
-      <AppointmentForm
-        ref="appointmentFormRef"
-        :cita="null"
-        :loading="guardando"
-        @submit="guardarCita"
-        @cancel="cerrarModalCrear"
-      />
+    <Modal v-model="modalCrearAbierto" title="Crear Nueva Cita" size="2xl" :closable="!guardando">
+      <AppointmentForm ref="appointmentFormRef" :cita="null" :loading="guardando" @submit="guardarCita"
+        @cancel="cerrarModalCrear" />
     </Modal>
 
     <!-- Modal Detalle de Cita -->
-    <Modal
-      v-model="modalDetalleAbierto"
-      title="Detalles de la Cita"
-      size="lg"
-    >
+    <Modal v-model="modalDetalleAbierto" title="Detalles de la Cita" size="lg">
       <div v-if="citaSeleccionada" class="space-y-4">
         <!-- Estado -->
         <div>
@@ -326,7 +244,9 @@
               </div>
               <div>
                 <p class="font-medium text-slate-900">
-                  {{ formatearNombreCompleto(citaSeleccionada.cliente?.nombre, citaSeleccionada.cliente?.apellidoPaterno, citaSeleccionada.cliente?.apellidoMaterno) }}
+                  {{ formatearNombreCompleto(citaSeleccionada.cliente?.nombre,
+                    citaSeleccionada.cliente?.apellidoPaterno,
+                  citaSeleccionada.cliente?.apellidoMaterno) }}
                 </p>
                 <p v-if="citaSeleccionada.cliente?.telefono" class="text-sm text-slate-600">
                   {{ formatearTelefono(citaSeleccionada.cliente?.telefono) }}
@@ -340,7 +260,8 @@
             <p class="text-sm text-slate-500 mb-1">Servicio</p>
             <p class="font-medium text-slate-900">{{ citaSeleccionada.servicio?.nombre }}</p>
             <p class="text-sm text-slate-600">
-              {{ formatearDuracion(citaSeleccionada.servicio?.duracion) }} - {{ formatearPrecio(citaSeleccionada.servicio?.precio) }}
+              {{ formatearDuracion(citaSeleccionada.servicio?.duracion) }} - {{
+                formatearPrecio(citaSeleccionada.servicio?.precio) }}
             </p>
           </div>
 
@@ -359,38 +280,23 @@
 
         <!-- Acciones -->
         <div class="flex gap-2 pt-4 border-t">
-          <button
-            v-if="citaSeleccionada.estado === 'PENDIENTE'"
-            @click="cambiarEstado(citaSeleccionada, 'CONFIRMADA')"
-            class="btn btn-primary btn-sm"
-          >
+          <button v-if="citaSeleccionada.estado === 'PENDIENTE'" @click="cambiarEstado(citaSeleccionada, 'CONFIRMADA')"
+            class="btn btn-primary btn-sm">
             Confirmar Cita
           </button>
-          <button
-            v-if="citaSeleccionada.estado === 'CONFIRMADA'"
-            @click="cambiarEstado(citaSeleccionada, 'COMPLETADA')"
-            class="btn btn-success btn-sm"
-          >
+          <button v-if="citaSeleccionada.estado === 'CONFIRMADA'" @click="cambiarEstado(citaSeleccionada, 'COMPLETADA')"
+            class="btn btn-success btn-sm">
             Completar Cita
           </button>
-          <button
-            v-if="citaSeleccionada.estado !== 'CANCELADA' && citaSeleccionada.estado !== 'COMPLETADA'"
-            @click="abrirModalEditar"
-            class="btn btn-secondary btn-sm"
-          >
+          <button v-if="citaSeleccionada.estado !== 'CANCELADA' && citaSeleccionada.estado !== 'COMPLETADA'"
+            @click="abrirModalEditar" class="btn btn-secondary btn-sm">
             Editar
           </button>
-          <button
-            v-if="citaSeleccionada.estado !== 'CANCELADA'"
-            @click="confirmarCancelar"
-            class="btn btn-danger btn-sm"
-          >
+          <button v-if="citaSeleccionada.estado !== 'CANCELADA'" @click="confirmarCancelar"
+            class="btn btn-danger btn-sm">
             Cancelar Cita
           </button>
-          <button
-            @click="cerrarModalDetalle"
-            class="btn btn-secondary btn-sm ml-auto"
-          >
+          <button @click="cerrarModalDetalle" class="btn btn-secondary btn-sm ml-auto">
             Cerrar
           </button>
         </div>
@@ -398,34 +304,16 @@
     </Modal>
 
     <!-- Modal Editar Cita -->
-    <Modal
-      v-model="modalEditarAbierto"
-      title="Editar Cita"
-      size="2xl"
-      :closable="!guardando"
-    >
-      <AppointmentForm
-        ref="editFormRef"
-        :cita="citaSeleccionada"
-        :loading="guardando"
-        @submit="actualizarCita"
-        @cancel="cerrarModalEditar"
-      />
+    <Modal v-model="modalEditarAbierto" title="Editar Cita" size="2xl" :closable="!guardando">
+      <AppointmentForm ref="editFormRef" :cita="citaSeleccionada" :loading="guardando" @submit="actualizarCita"
+        @cancel="cerrarModalEditar" />
     </Modal>
 
     <!-- Modal Ver Todas las Citas del Día -->
-    <Modal
-      v-model="modalTodasCitasAbierto"
-      :title="`Citas del ${diaSeleccionado?.fecha || ''}`"
-      size="lg"
-    >
+    <Modal v-model="modalTodasCitasAbierto" :title="`Citas del ${diaSeleccionado?.fecha || ''}`" size="lg">
       <div v-if="diaSeleccionado" class="space-y-2">
-        <div
-          v-for="cita in diaSeleccionado.citas"
-          :key="cita.id"
-          @click="verDetalleCita(cita)"
-          class="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors"
-        >
+        <div v-for="cita in diaSeleccionado.citas" :key="cita.id" @click="verDetalleCita(cita)"
+          class="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
           <div class="flex items-center justify-between mb-2">
             <Badge :variant="getEstadoVariant(cita.estado)" class="text-xs">
               {{ ESTADOS_CITA_LABELS[cita.estado] }}
@@ -433,7 +321,9 @@
             <span class="text-sm font-medium text-slate-900">{{ formatearHora(cita.fechaHora) }}</span>
           </div>
           <p class="text-sm text-slate-900 font-medium">
-            {{ formatearNombreCompleto(cita.cliente?.nombre, cita.cliente?.apellidoPaterno, cita.cliente?.apellidoMaterno) }}
+            {{ formatearNombreCompleto(cita.cliente?.nombre, cita.cliente?.apellidoPaterno,
+              cita.cliente?.apellidoMaterno)
+            }}
           </p>
           <p class="text-sm text-slate-600">{{ cita.servicio?.nombre }}</p>
         </div>
@@ -441,15 +331,10 @@
     </Modal>
 
     <!-- Confirm Dialog para Cancelar -->
-    <ConfirmDialog
-      ref="confirmDialogRef"
-      title="Cancelar cita"
+    <ConfirmDialog ref="confirmDialogRef" title="Cancelar cita"
       message="¿Estás seguro de que deseas cancelar esta cita?"
-      description="Esta acción cambiará el estado de la cita a CANCELADA."
-      confirm-text="Cancelar cita"
-      @confirm="cancelarCita"
-      @cancel="cerrarConfirmDialog"
-    />
+      description="Esta acción cambiará el estado de la cita a CANCELADA." confirm-text="Cancelar cita"
+      @confirm="cancelarCita" @cancel="cerrarConfirmDialog" />
   </DashboardLayout>
 </template>
 

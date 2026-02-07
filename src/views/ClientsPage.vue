@@ -1,11 +1,14 @@
 <template>
   <DashboardLayout>
     <template #title>
+      <div class="flex flex-col">
       <div class="flex items-center gap-2">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
-        Clientes
+        Gestión de Clientes
+      </div>
+        <span class="text-sm text-slate-500 ml-8 mt-1">Administra todos tus clientes y su historial de citas</span>
       </div>
     </template>
 
@@ -15,12 +18,7 @@
       </button>
     </template>
 
-    <div class="mb-6">
-      <h2 class="text-3xl font-bold text-slate-900 mb-2">Gestión de Clientes</h2>
-      <p class="text-slate-600">Administra todos tus clientes y su historial de citas</p>
-    </div>
-
-    <!-- Búsqueda -->
+    <!-- Búsqueda y Filtros -->
     <div class="card mb-6">
       <div class="flex flex-col md:flex-row gap-4 items-end">
         <div class="flex-1">
@@ -38,6 +36,16 @@
             </template>
           </Input>
         </div>
+        <button
+          @click="toggleFiltroCumpleaños"
+          :class="[
+            'btn transition-all',
+            filtroCumpleañosMes ? 'btn-primary' : 'btn-secondary'
+          ]"
+          title="Filtrar clientes con cumpleaños este mes"
+        >
+          🎂 {{ filtroCumpleañosMes ? 'Ver Todos' : 'Cumpleaños del Mes' }}
+        </button>
         <button @click="limpiarBusqueda" class="btn btn-secondary">
           Limpiar
         </button>
@@ -137,7 +145,18 @@
               <div class="text-sm text-gray-900">{{ cliente.telefono ? formatearTelefono(cliente.telefono) : '-' }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ cliente.fechaNacimiento ? formatearFecha(cliente.fechaNacimiento) : '-' }}</div>
+              <div class="flex items-center gap-2">
+                <div class="text-sm text-gray-900">
+                  {{ cliente.fechaNacimiento ? formatearFecha(cliente.fechaNacimiento) : '-' }}
+                </div>
+                <span
+                  v-if="esCumpleañosProximo(cliente.fechaNacimiento)"
+                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800"
+                  :title="`Cumpleaños en ${diasParaCumpleaños(cliente.fechaNacimiento)} días`"
+                >
+                  🎂
+                </span>
+              </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
               <button
@@ -238,6 +257,7 @@ const clienteSeleccionado = ref(null)
 const clienteAEliminar = ref(null)
 const guardando = ref(false)
 const busqueda = ref('')
+const filtroCumpleañosMes = ref(false)
 
 // Métodos
 const cargarClientes = async () => {
@@ -260,14 +280,80 @@ const buscarClientes = async () => {
 
 const limpiarBusqueda = async () => {
   busqueda.value = ''
+  filtroCumpleañosMes.value = false
   clientesStore.limpiarBusqueda()
   await cargarClientes()
+}
+
+// Función para alternar filtro de cumpleaños del mes
+const toggleFiltroCumpleaños = () => {
+  filtroCumpleañosMes.value = !filtroCumpleañosMes.value
+
+  if (filtroCumpleañosMes.value) {
+    // Filtrar clientes con cumpleaños este mes
+    const mesActual = new Date().getMonth()
+    const clientesFiltrados = clientesStore.clientes.filter(cliente => {
+      if (!cliente.fechaNacimiento) return false
+      const fechaNacimiento = new Date(cliente.fechaNacimiento)
+      return fechaNacimiento.getMonth() === mesActual
+    })
+
+    // Actualizar lista temporal
+    clientesStore.clientes = clientesFiltrados
+
+    if (clientesFiltrados.length === 0) {
+      toast.info('Sin cumpleaños', 'No hay clientes con cumpleaños este mes')
+    } else {
+      toast.success('Filtro aplicado', `Encontrados ${clientesFiltrados.length} cliente(s) con cumpleaños este mes`)
+    }
+  } else {
+    // Recargar todos los clientes
+    cargarClientes()
+  }
 }
 
 const obtenerIniciales = (nombre, apellido) => {
   const inicial1 = nombre ? nombre.charAt(0).toUpperCase() : ''
   const inicial2 = apellido ? apellido.charAt(0).toUpperCase() : ''
   return inicial1 + inicial2
+}
+
+// Función para verificar si el cumpleaños está próximo (dentro de los próximos 7 días)
+const esCumpleañosProximo = (fechaNacimiento) => {
+  if (!fechaNacimiento) return false
+
+  const hoy = new Date()
+  const fecha = new Date(fechaNacimiento)
+
+  // Obtener el cumpleaños de este año
+  const cumpleañosEsteAño = new Date(hoy.getFullYear(), fecha.getMonth(), fecha.getDate())
+
+  // Si ya pasó este año, calcular para el próximo año
+  if (cumpleañosEsteAño < hoy) {
+    cumpleañosEsteAño.setFullYear(hoy.getFullYear() + 1)
+  }
+
+  // Calcular diferencia en días
+  const diferencia = Math.ceil((cumpleañosEsteAño - hoy) / (1000 * 60 * 60 * 24))
+
+  // Retornar true si está dentro de los próximos 7 días
+  return diferencia >= 0 && diferencia <= 7
+}
+
+// Función para obtener días faltantes para el cumpleaños
+const diasParaCumpleaños = (fechaNacimiento) => {
+  if (!fechaNacimiento) return 0
+
+  const hoy = new Date()
+  const fecha = new Date(fechaNacimiento)
+
+  const cumpleañosEsteAño = new Date(hoy.getFullYear(), fecha.getMonth(), fecha.getDate())
+
+  if (cumpleañosEsteAño < hoy) {
+    cumpleañosEsteAño.setFullYear(hoy.getFullYear() + 1)
+  }
+
+  return Math.ceil((cumpleañosEsteAño - hoy) / (1000 * 60 * 60 * 24))
 }
 
 const verPerfil = (cliente) => {

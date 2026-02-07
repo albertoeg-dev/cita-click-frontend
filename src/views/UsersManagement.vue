@@ -1,14 +1,21 @@
 <template>
   <DashboardLayout>
     <template #title>
-      👥 Usuarios
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Gestión de Usuarios
+        </div>
+        <span class="text-sm text-slate-500 ml-8 mt-1">Administra los usuarios y permisos de tu equipo</span>
+      </div>
     </template>
 
     <template #headerActions>
       <button
         @click="mostrarModalInvitar = true"
-        class="btn btn-primary btn-sm"
-      >
+        class="btn btn-primary btn-sm">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
@@ -163,37 +170,139 @@
     />
 
     <!-- Modal Cambiar Rol -->
-    <div v-if="mostrarModalCambiarRol" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-      <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Cambiar Rol de Usuario</h3>
-
-        <div class="mb-4">
-          <p class="text-sm text-gray-600 mb-2">
-            Usuario: <strong>{{ usuarioSeleccionado?.nombre }} {{ usuarioSeleccionado?.apellidoPaterno }}</strong>
-          </p>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            Nuevo Rol
-          </label>
-          <select
-            v-model="nuevoRol"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="admin">Administrador</option>
-            <option value="empleado">Empleado</option>
-            <option value="recepcionista">Recepcionista</option>
-          </select>
+    <div v-if="mostrarModalCambiarRol" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+      <div class="relative bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900">Cambiar Rol de Usuario</h3>
+          <button @click="cerrarModalCambiarRol" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
-        <div class="flex justify-end space-x-3">
+        <div class="mb-6">
+          <p class="text-sm text-gray-600">
+            Usuario: <strong class="text-gray-900">{{ usuarioSeleccionado?.nombre }} {{ usuarioSeleccionado?.apellidoPaterno }}</strong>
+          </p>
+        </div>
+
+        <!-- Opciones de Roles -->
+        <div class="space-y-3 mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-3">
+            Selecciona el nuevo rol
+          </label>
+
+          <!-- Administrador -->
+          <div
+            @click="nuevoRol = 'admin'"
+            :class="[
+              'border-2 rounded-lg p-4 cursor-pointer transition-all',
+              nuevoRol === 'admin' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+            ]"
+          >
+            <div class="flex items-start">
+              <div class="flex items-center h-5">
+                <input
+                  type="radio"
+                  value="admin"
+                  v-model="nuevoRol"
+                  class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                />
+              </div>
+              <div class="ml-3 flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-semibold text-gray-900">Administrador</span>
+                  <span class="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                    Acceso completo
+                  </span>
+                </div>
+                <p class="text-xs text-gray-600 mt-1">
+                  Puede gestionar usuarios, servicios, clientes, citas, configuración y acceder a reportes completos.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empleado -->
+          <div
+            @click="nuevoRol = 'empleado'"
+            :class="[
+              'border-2 rounded-lg p-4 cursor-pointer transition-all',
+              nuevoRol === 'empleado' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-gray-300'
+            ]"
+          >
+            <div class="flex items-start">
+              <div class="flex items-center h-5">
+                <input
+                  type="radio"
+                  value="empleado"
+                  v-model="nuevoRol"
+                  class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
+                />
+              </div>
+              <div class="ml-3 flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-semibold text-gray-900">Empleado</span>
+                  <span class="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                    Acceso operativo
+                  </span>
+                </div>
+                <p class="text-xs text-gray-600 mt-1">
+                  Puede gestionar sus propias citas, ver clientes, completar servicios y acceder a su calendario.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recepcionista -->
+          <div
+            @click="nuevoRol = 'recepcionista'"
+            :class="[
+              'border-2 rounded-lg p-4 cursor-pointer transition-all',
+              nuevoRol === 'recepcionista' ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200 hover:border-gray-300'
+            ]"
+          >
+            <div class="flex items-start">
+              <div class="flex items-center h-5">
+                <input
+                  type="radio"
+                  value="recepcionista"
+                  v-model="nuevoRol"
+                  class="w-4 h-4 text-yellow-600 border-gray-300 focus:ring-yellow-500"
+                />
+              </div>
+              <div class="ml-3 flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-semibold text-gray-900">Recepcionista</span>
+                  <span class="px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                    Acceso básico
+                  </span>
+                </div>
+                <p class="text-xs text-gray-600 mt-1">
+                  Puede crear y gestionar citas, registrar clientes y confirmar asistencias. Sin acceso a configuración.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-4 border-t">
           <button
             @click="cerrarModalCambiarRol"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
           >
             Cancelar
           </button>
           <button
             @click="cambiarRol"
-            class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+            :disabled="!nuevoRol || nuevoRol === usuarioSeleccionado?.rol"
+            :class="[
+              'px-4 py-2 text-sm font-medium text-white rounded-md transition-colors',
+              !nuevoRol || nuevoRol === usuarioSeleccionado?.rol
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-indigo-600 hover:bg-indigo-700'
+            ]"
           >
             Cambiar Rol
           </button>
@@ -208,10 +317,12 @@ import { ref, onMounted } from 'vue'
 import DashboardLayout from '@/components/layout/DashboardLayout.vue'
 import { useUsuariosStore } from '@/stores/usuariosStore'
 import { usePlanesStore } from '@/stores/planesStore'
+import { useToast } from '@/composables/useToast'
 import InviteUserModal from '@/components/usuarios/InviteUserModal.vue'
 
 const usuariosStore = useUsuariosStore()
 const planesStore = usePlanesStore()
+const toast = useToast()
 
 const mostrarModalInvitar = ref(false)
 const mostrarModalCambiarRol = ref(false)
@@ -268,11 +379,29 @@ const cerrarModalCambiarRol = () => {
 }
 
 const cambiarRol = async () => {
+  // Validaciones
+  if (!nuevoRol.value) {
+    toast.error('Error', 'Debes seleccionar un rol')
+    return
+  }
+
+  if (nuevoRol.value === usuarioSeleccionado.value.rol) {
+    toast.warning('Sin cambios', 'El usuario ya tiene este rol asignado')
+    return
+  }
+
   try {
     await usuariosStore.cambiarRol(usuarioSeleccionado.value.id, nuevoRol.value)
+    toast.success(
+      'Rol actualizado',
+      `El rol de ${usuarioSeleccionado.value.nombre} ha sido cambiado a ${obtenerNombreRol(nuevoRol.value)}`
+    )
     cerrarModalCambiarRol()
   } catch (error) {
-    alert(error.response?.data?.message || 'Error al cambiar el rol')
+    toast.error(
+      'Error al cambiar rol',
+      error.response?.data?.message || 'No se pudo actualizar el rol del usuario'
+    )
   }
 }
 
@@ -281,8 +410,15 @@ const confirmarDesactivar = async (usuario) => {
     try {
       await usuariosStore.desactivarUsuario(usuario.id)
       await planesStore.cargarUso()
+      toast.success(
+        'Usuario desactivado',
+        `${usuario.nombre} ${usuario.apellidoPaterno} ha sido desactivado correctamente`
+      )
     } catch (error) {
-      alert(error.response?.data?.message || 'Error al desactivar usuario')
+      toast.error(
+        'Error al desactivar usuario',
+        error.response?.data?.message || 'No se pudo desactivar al usuario'
+      )
     }
   }
 }

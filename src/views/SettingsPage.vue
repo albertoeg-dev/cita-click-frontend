@@ -13,11 +13,6 @@
       </div>
     </template>
 
-    <div class="mb-6">
-      <h2 class="text-3xl font-bold text-slate-900 mb-2">Configuración</h2>
-      <p class="text-slate-600">Administra la información y horarios de tu negocio</p>
-    </div>
-
     <!-- Tabs -->
     <div class="card mb-6">
       <div class="flex gap-4 border-b border-slate-200">

@@ -1,18 +1,16 @@
 <template>
   <DashboardLayout>
     <template #title>
+    <div class="flex flex-col">
       <div class="flex items-center gap-2">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
         Dashboard
       </div>
+        <span class="text-sm text-slate-500 ml-8 mt-1">Resumen y métricas de tu negocio</span>
+      </div>
     </template>
-
-    <div class="mb-6">
-      <h2 class="text-3xl font-bold text-slate-900 mb-2">Dashboard</h2>
-      <p class="text-slate-600">Resumen y métricas de tu negocio</p>
-    </div>
 
     <!-- Loading State -->
     <div v-if="loading" class="flex justify-center py-12">
@@ -23,7 +21,7 @@
       <!-- Onboarding Checklist (solo si no está todo completo) -->
       <OnboardingChecklist v-if="!checklistCerrado && !todasTareasCompletadas" @close="cerrarChecklist" class="mb-6" />
 
-      <!-- Acciones Rápidas (movido al inicio) -->
+      <!-- Acciones Rápidas (movido al inicio) 
       <div class="card bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-600 mb-6">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
@@ -56,6 +54,7 @@
           </div>
         </div>
       </div>
+      -->
 
       <!-- Grid de Estadísticas -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -262,6 +261,7 @@ import { useAuthStore } from '../stores/authStore'
 import { useCitasStore } from '../stores/citasStore'
 import { useClientesStore } from '../stores/clientesStore'
 import { useServiciosStore } from '../stores/serviciosStore'
+import { useSuscripcionStore } from '../stores/suscripcionStore'
 import { useToast } from '../composables/useToast'
 import { useDashboardMetricas } from '../composables/useDashboardMetricas'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
@@ -283,6 +283,7 @@ const citasStore = useCitasStore()
 const clientesStore = useClientesStore()
 const serviciosStore = useServiciosStore()
 const businessStore = useBusinessStore()
+const suscripcionStore = useSuscripcionStore()
 const toast = useToast()
 const {
   metricas,

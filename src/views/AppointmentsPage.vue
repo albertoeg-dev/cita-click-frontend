@@ -1,11 +1,15 @@
 <template>
   <DashboardLayout>
     <template #title>
-      <div class="flex items-center gap-2">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        Citas
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Gestión de Citas
+        </div>
+        <span class="text-sm text-slate-500 ml-8 mt-1">Administra todas las citas de tu negocio</span>
       </div>
     </template>
 
@@ -15,25 +19,11 @@
       </button>
     </template>
 
-    <div class="mb-6">
-      <h2 class="text-3xl font-bold text-slate-900 mb-2">Gestión de Citas</h2>
-      <p class="text-slate-600">Administra todas las citas de tu negocio</p>
-    </div>
-
     <!-- Filtros -->
     <div class="card mb-6">
       <div class="flex flex-col md:flex-row gap-4">
-        <DatePicker
-          v-model="filtros.fecha"
-          label="Filtrar por fecha"
-          @change="aplicarFiltros"
-        />
-        <Select
-          v-model="filtros.estado"
-          label="Estado"
-          :options="opcionesEstado"
-          @change="aplicarFiltros"
-        />
+        <DatePicker v-model="filtros.fecha" label="Filtrar por fecha" @change="aplicarFiltros" />
+        <Select v-model="filtros.estado" label="Estado" :options="opcionesEstado" @change="aplicarFiltros" />
         <button @click="limpiarFiltros" class="btn btn-secondary self-end">
           Limpiar filtros
         </button>
@@ -46,14 +36,12 @@
     </div>
 
     <!-- Empty State -->
-    <EmptyState
-      v-else-if="citasStore.citas.length === 0 && !filtros.fecha && !filtros.estado"
-      title="Sin citas aún"
-      description="Comienza creando tu primera cita para gestionar las reservas de tus clientes"
-    >
+    <EmptyState v-else-if="citasStore.citas.length === 0 && !filtros.fecha && !filtros.estado" title="Sin citas aún"
+      description="Comienza creando tu primera cita para gestionar las reservas de tus clientes">
       <template #icon>
         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
       </template>
       <template #action>
@@ -64,11 +52,8 @@
     </EmptyState>
 
     <!-- No results -->
-    <EmptyState
-      v-else-if="citasStore.citas.length === 0"
-      title="No se encontraron citas"
-      description="No hay citas que coincidan con los filtros seleccionados"
-    >
+    <EmptyState v-else-if="citasStore.citas.length === 0" title="No se encontraron citas"
+      description="No hay citas que coincidan con los filtros seleccionados">
       <template #action>
         <button @click="limpiarFiltros" class="btn btn-secondary">
           Limpiar filtros
@@ -78,11 +63,7 @@
 
     <!-- Lista de Citas -->
     <div v-else class="space-y-4">
-      <div
-        v-for="cita in citasStore.citas"
-        :key="cita.id"
-        class="card-hover"
-      >
+      <div v-for="cita in citasStore.citas" :key="cita.id" class="card-hover">
         <div class="flex items-start justify-between">
           <!-- Información de la cita -->
           <div class="flex-1">
@@ -106,7 +87,8 @@
                     </span>
                   </div>
                   <p class="text-sm font-medium text-gray-900">
-                    {{ formatearNombreCompleto(cita.cliente?.nombre, cita.cliente?.apellidoPaterno, cita.cliente?.apellidoMaterno) }}
+                    {{ formatearNombreCompleto(cita.cliente?.nombre, cita.cliente?.apellidoPaterno,
+                      cita.cliente?.apellidoMaterno) }}
                   </p>
                 </div>
               </div>
@@ -131,86 +113,74 @@
           <!-- Acciones -->
           <div class="relative ml-4" @click.stop>
             <!-- Botón de menú -->
-            <button
-              @click="toggleMenu(cita.id)"
-              class="text-xs px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center gap-2"
-            >
+            <button @click="toggleMenu(cita.id)"
+              class="text-xs px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center gap-2">
               <span>Acciones</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
             <!-- Menú desplegable -->
-            <div
-              v-if="menuAbierto === cita.id"
-              class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10"
-            >
+            <div v-if="menuAbierto === cita.id"
+              class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
               <!-- Confirmar cita -->
-              <button
-                v-if="cita.estado === 'PENDIENTE'"
-                @click="abrirModalConfirmarCita(cita); menuAbierto = null"
-                class="w-full text-left px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 flex items-center gap-2"
-              >
+              <button v-if="cita.estado === 'PENDIENTE'" @click="abrirModalConfirmarCita(cita); menuAbierto = null"
+                class="w-full text-left px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
                 Confirmar cita
               </button>
 
               <!-- Completar cita -->
-              <button
-                v-if="cita.estado === 'CONFIRMADA'"
-                @click="cambiarEstado(cita, 'COMPLETADA'); menuAbierto = null"
-                class="w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-green-50 flex items-center gap-2"
-              >
+              <button v-if="cita.estado === 'CONFIRMADA'" @click="cambiarEstado(cita, 'COMPLETADA'); menuAbierto = null"
+                class="w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-green-50 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Completar cita
               </button>
 
               <!-- Separador -->
-              <div v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'" class="border-t border-gray-200 my-1"></div>
+              <div v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
+                class="border-t border-gray-200 my-1">
+              </div>
 
               <!-- Recordatorios -->
               <div v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'" class="px-4 py-2">
                 <p class="text-xs font-semibold text-gray-500 uppercase">Recordar por</p>
               </div>
 
-              <button
-                v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
+              <button v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
                 @click="enviarRecordatorioEmail(cita); menuAbierto = null"
                 :disabled="enviandoRecordatorio === cita.id || !cita.cliente?.email || !emailRecordatoriosHabilitado"
                 class="w-full text-left px-4 py-2 text-sm text-purple-700 hover:bg-purple-50 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                :title="!emailRecordatoriosHabilitado ? 'Tu plan no incluye recordatorios por email. Actualiza a Profesional o Premium' : (cita.cliente?.email ? 'Enviar recordatorio por Email' : 'Cliente sin email registrado')"
-              >
+                :title="!emailRecordatoriosHabilitado ? 'Tu plan no incluye recordatorios por email. Actualiza a Profesional o Premium' : (cita.cliente?.email ? 'Enviar recordatorio por Email' : 'Cliente sin email registrado')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 {{ enviandoRecordatorio === cita.id ? 'Enviando...' : 'Email' }}
               </button>
 
-              <button
-                v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
-                disabled
+              <button v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'" disabled
                 class="w-full text-left px-4 py-2 text-sm text-gray-400 cursor-not-allowed flex items-center gap-2"
-                title="SMS estará disponible próximamente"
-              >
+                title="SMS estará disponible próximamente">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
                 SMS (Próximamente)
               </button>
 
-              <button
-                v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
-                disabled
+              <button v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'" disabled
                 class="w-full text-left px-4 py-2 text-sm text-gray-400 cursor-not-allowed flex items-center gap-2"
-                title="WhatsApp estará disponible próximamente"
-              >
+                title="WhatsApp estará disponible próximamente">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                  <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
                 </svg>
                 WhatsApp (Próximamente)
               </button>
@@ -219,37 +189,31 @@
               <div class="border-t border-gray-200 my-1"></div>
 
               <!-- Solicitar Pago -->
-              <button
-                v-if="cita.estado !== 'CANCELADA'"
-                @click="abrirModalPago(cita); menuAbierto = null"
-                class="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 flex items-center gap-2"
-              >
+              <button v-if="cita.estado !== 'CANCELADA'" @click="abrirModalPago(cita); menuAbierto = null"
+                class="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 Solicitar Pago
               </button>
 
               <!-- Editar -->
-              <button
-                v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
+              <button v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
                 @click="abrirModalEditar(cita); menuAbierto = null"
-                class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2"
-              >
+                class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
                 Editar
               </button>
 
               <!-- Cancelar -->
-              <button
-                v-if="cita.estado !== 'CANCELADA'"
-                @click="confirmarCancelar(cita); menuAbierto = null"
-                class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-              >
+              <button v-if="cita.estado !== 'CANCELADA'" @click="confirmarCancelar(cita); menuAbierto = null"
+                class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
                 Cancelar
               </button>
@@ -280,54 +244,33 @@
     </div>
 
     <!-- Modal Crear/Editar -->
-    <Modal
-      v-model="modalAbierto"
-      :title="modoEdicion ? 'Editar Cita' : 'Crear Nueva Cita'"
-      size="2xl"
-      :closable="!guardando"
-    >
-      <AppointmentForm
-        ref="appointmentFormRef"
-        :cita="citaSeleccionada"
-        :loading="guardando"
-        @submit="guardarCita"
-        @cancel="cerrarModal"
-      />
+    <Modal v-model="modalAbierto" :title="modoEdicion ? 'Editar Cita' : 'Crear Nueva Cita'" size="2xl"
+      :closable="!guardando">
+      <AppointmentForm ref="appointmentFormRef" :cita="citaSeleccionada" :loading="guardando" @submit="guardarCita"
+        @cancel="cerrarModal" />
     </Modal>
 
     <!-- Confirm Dialog -->
-    <ConfirmDialog
-      ref="confirmDialogRef"
-      title="Cancelar cita"
+    <ConfirmDialog ref="confirmDialogRef" title="Cancelar cita"
       :message="`¿Estás seguro de que deseas cancelar esta cita?`"
-      description="Esta acción cambiará el estado de la cita a CANCELADA."
-      confirm-text="Cancelar cita"
-      @confirm="cancelarCita"
-      @cancel="citaACancelar = null"
-    />
+      description="Esta acción cambiará el estado de la cita a CANCELADA." confirm-text="Cancelar cita"
+      @confirm="cancelarCita" @cancel="citaACancelar = null" />
 
     <!-- Modal de Pago -->
-    <PaymentModal
-      :is-open="modalPagoAbierto"
-      :cita="citaParaPago"
-      @close="cerrarModalPago"
-      @success="manejarPagoExitoso"
-    />
+    <PaymentModal :is-open="modalPagoAbierto" :cita="citaParaPago" @close="cerrarModalPago"
+      @success="manejarPagoExitoso" />
 
     <!-- Modal Confirmación WhatsApp/SMS -->
-    <Modal
-      v-model="modalConfirmacionAbierto"
-      title="Enviar Confirmación al Cliente"
-      size="md"
-      :closable="!enviandoConfirmacion"
-    >
+    <Modal v-model="modalConfirmacionAbierto" title="Enviar Confirmación al Cliente" size="md"
+      :closable="!enviandoConfirmacion">
       <div v-if="citaParaConfirmar" class="space-y-4">
         <!-- Información de la cita -->
         <div class="bg-gray-50 p-4 rounded-lg">
           <h4 class="font-semibold text-sm text-gray-900 mb-2">Información de la cita</h4>
           <div class="space-y-1 text-sm">
             <p><span class="text-gray-600">Cliente:</span>
-              <span class="font-medium">{{ citaParaConfirmar.cliente.nombre }} {{ citaParaConfirmar.cliente.apellido }}</span>
+              <span class="font-medium">{{ citaParaConfirmar.cliente.nombre }} {{ citaParaConfirmar.cliente.apellido
+                }}</span>
             </p>
             <p><span class="text-gray-600">Teléfono:</span>
               <span class="font-medium">{{ citaParaConfirmar.cliente.telefono || 'No disponible' }}</span>
@@ -346,45 +289,33 @@
           <label class="block text-sm font-medium text-gray-700 mb-2">Canal de envío</label>
           <div class="space-y-2">
             <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input
-                type="radio"
-                v-model="canalSeleccionado"
-                value="WHATSAPP"
-                class="mr-3 text-blue-600"
-              />
+              <input type="radio" v-model="canalSeleccionado" value="WHATSAPP" class="mr-3 text-blue-600" />
               <div class="flex items-center">
                 <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                 </svg>
                 <span class="text-sm font-medium">WhatsApp</span>
               </div>
             </label>
 
             <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input
-                type="radio"
-                v-model="canalSeleccionado"
-                value="SMS"
-                class="mr-3 text-blue-600"
-              />
+              <input type="radio" v-model="canalSeleccionado" value="SMS" class="mr-3 text-blue-600" />
               <div class="flex items-center">
                 <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
                 <span class="text-sm font-medium">SMS</span>
               </div>
             </label>
 
             <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input
-                type="radio"
-                v-model="canalSeleccionado"
-                value="AMBOS"
-                class="mr-3 text-blue-600"
-              />
+              <input type="radio" v-model="canalSeleccionado" value="AMBOS" class="mr-3 text-blue-600" />
               <div class="flex items-center">
                 <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
                 </svg>
                 <span class="text-sm font-medium">Ambos (WhatsApp + SMS)</span>
               </div>
@@ -395,11 +326,7 @@
         <!-- Confirmación de pago -->
         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
           <label class="flex items-start cursor-pointer">
-            <input
-              type="checkbox"
-              v-model="confirmarPago"
-              class="mt-1 mr-3 text-blue-600 rounded"
-            />
+            <input type="checkbox" v-model="confirmarPago" class="mt-1 mr-3 text-blue-600 rounded" />
             <div>
               <span class="text-sm font-medium text-gray-900">Confirmar pago recibido</span>
               <p class="text-xs text-gray-600 mt-1">
@@ -411,23 +338,18 @@
 
         <!-- Botones -->
         <div class="flex justify-end gap-2 pt-2">
-          <button
-            type="button"
-            @click="cerrarModalConfirmacion"
-            :disabled="enviandoConfirmacion"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <button type="button" @click="cerrarModalConfirmacion" :disabled="enviandoConfirmacion"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
             Cancelar
           </button>
-          <button
-            type="button"
-            @click="enviarConfirmacion"
+          <button type="button" @click="enviarConfirmacion"
             :disabled="enviandoConfirmacion || !citaParaConfirmar.cliente.telefono"
-            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
             <svg v-if="enviandoConfirmacion" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
             </svg>
             <span>{{ enviandoConfirmacion ? 'Enviando...' : 'Enviar Confirmación' }}</span>
           </button>
@@ -436,12 +358,7 @@
     </Modal>
 
     <!-- Modal Confirmar Cita con Pago -->
-    <Modal
-      v-model="modalConfirmarCitaAbierto"
-      title="Confirmar Cita"
-      size="md"
-      :closable="!confirmandoCita"
-    >
+    <Modal v-model="modalConfirmarCitaAbierto" title="Confirmar Cita" size="md" :closable="!confirmandoCita">
       <div v-if="citaAConfirmar" class="space-y-4">
         <!-- Información de la cita -->
         <div class="bg-gray-50 p-4 rounded-lg">
@@ -465,15 +382,12 @@
         <!-- Checkbox de pago -->
         <div class="bg-green-50 border border-green-200 rounded-lg p-3">
           <label class="flex items-start cursor-pointer">
-            <input
-              type="checkbox"
-              v-model="pagoRecibido"
-              class="mt-1 mr-3 text-blue-600 rounded"
-            />
+            <input type="checkbox" v-model="pagoRecibido" class="mt-1 mr-3 text-blue-600 rounded" />
             <div>
               <span class="text-sm font-medium text-gray-900">El cliente ya realizó el pago</span>
               <p class="text-xs text-gray-600 mt-1">
-                Marca esta opción si el cliente ya pagó por el servicio. Esto ayudará a tener un mejor control de tus ingresos.
+                Marca esta opción si el cliente ya pagó por el servicio. Esto ayudará a tener un mejor control de tus
+                ingresos.
               </p>
             </div>
           </label>
@@ -489,23 +403,17 @@
 
         <!-- Botones -->
         <div class="flex justify-end gap-2 pt-2">
-          <button
-            type="button"
-            @click="cerrarModalConfirmarCita"
-            :disabled="confirmandoCita"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <button type="button" @click="cerrarModalConfirmarCita" :disabled="confirmandoCita"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
             Cancelar
           </button>
-          <button
-            type="button"
-            @click="confirmarCita"
-            :disabled="confirmandoCita"
-            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
+          <button type="button" @click="confirmarCita" :disabled="confirmandoCita"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
             <svg v-if="confirmandoCita" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
             </svg>
             <span>{{ confirmandoCita ? 'Confirmando...' : 'Confirmar Cita' }}</span>
           </button>
