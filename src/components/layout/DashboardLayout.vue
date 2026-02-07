@@ -3,24 +3,11 @@
     <!-- Sidebar -->
     <aside
       :class="sidebarCollapsed ? 'w-20' : 'w-64'"
-      class="bg-slate-800 border-r border-slate-700 overflow-y-auto transition-all duration-300"
+      class="bg-slate-800 border-r border-slate-700 flex flex-col transition-all duration-300"
     >
-      <div class="sticky top-0 bg-slate-800 border-b border-slate-700" :class="sidebarCollapsed ? 'p-4' : 'p-6'">
-        <!-- Toggle Button -->
-        <button
-          @click="toggleSidebar"
-          class="w-full flex items-center justify-center p-2 mb-6 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-all duration-200"
-          :title="sidebarCollapsed ? 'Expandir menú' : 'Contraer menú'"
-        >
-          <svg v-if="!sidebarCollapsed" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-          </svg>
-          <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-          </svg>
-        </button>
-
-        <!-- Logo and Title -->
+      <div class="flex-1 overflow-y-auto">
+        <div class="sticky top-0 bg-slate-800 border-b border-slate-700" :class="sidebarCollapsed ? 'p-4' : 'p-6'">
+          <!-- Logo and Title -->
         <div class="mb-8" :class="sidebarCollapsed ? 'flex justify-center' : 'flex items-center gap-3'">
           <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg flex-shrink-0">
             CC
@@ -120,6 +107,23 @@
             </span>
           </router-link>
         </nav>
+        </div>
+      </div>
+
+      <!-- Toggle Button (fijo al fondo) -->
+      <div class="p-4 border-t border-slate-700 bg-slate-800">
+        <button
+          @click="toggleSidebar"
+          class="w-12 h-12 mx-auto flex items-center justify-center rounded-full text-slate-400 hover:text-white hover:bg-slate-700 transition-all duration-200 shadow-lg"
+          :title="sidebarCollapsed ? 'Expandir menú' : 'Contraer menú'"
+        >
+          <svg v-if="!sidebarCollapsed" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+          </svg>
+          <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
     </aside>
 

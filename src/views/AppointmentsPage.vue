@@ -786,10 +786,6 @@ const enviarRecordatorioEmail = async (cita) => {
   enviandoRecordatorio.value = cita.id
 
   try {
-      citaId: cita.id,
-      clienteEmail: cita.cliente.email
-    })
-
     await citasStore.enviarRecordatorioCita(cita.id, 'email')
 
     toast.success('Recordatorio enviado', 'Se envió el recordatorio por email al cliente exitosamente')
