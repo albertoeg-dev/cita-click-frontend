@@ -30,9 +30,28 @@
           >
             <option value="">Selecciona un tipo</option>
             <option value="SALON">Salón de Belleza</option>
+            <option value="BARBERIA">Barbería</option>
             <option value="SPA">Spa</option>
-            <option value="CLINICA">Clínica</option>
-            <option value="CONSULTORIO">Consultorio</option>
+            <option value="ESTETICA">Estética</option>
+            <option value="CENTRO_MASAJES">Centro de Masajes</option>
+            <option value="CLINICA_DENTAL">Clínica Dental</option>
+            <option value="CLINICA_MEDICA">Clínica Médica</option>
+            <option value="CONSULTORIO_MEDICO">Consultorio Médico</option>
+            <option value="CONSULTORIO_PSICOLOGIA">Consultorio Psicología</option>
+            <option value="FISIOTERAPIA">Fisioterapia</option>
+            <option value="NUTRICION">Nutrición</option>
+            <option value="VETERINARIA">Veterinaria</option>
+            <option value="GYM">Gimnasio</option>
+            <option value="CENTRO_YOGA">Centro de Yoga</option>
+            <option value="ESTUDIO_PILATES">Estudio de Pilates</option>
+            <option value="TALLER_AUTOMOTRIZ">Taller Automotriz</option>
+            <option value="TALLER_MECANICO">Taller Mecánico</option>
+            <option value="LAVADO_AUTOS">Lavado de Autos</option>
+            <option value="ESTUDIO_FOTOGRAFIA">Estudio de Fotografía</option>
+            <option value="ESTUDIO_TATUAJES">Estudio de Tatuajes</option>
+            <option value="ASESORIA_LEGAL">Asesoría Legal</option>
+            <option value="ASESORIA_CONTABLE">Asesoría Contable</option>
+            <option value="CONSULTORIA">Consultoría</option>
             <option value="OTRO">Otro</option>
           </select>
           <p v-if="errors.tipo" class="mt-1 text-sm text-red-600">{{ errors.tipo }}</p>
@@ -57,40 +76,55 @@
       <h4 class="text-sm font-semibold text-gray-900 mb-3 pb-2 border-b">Información de Contacto</h4>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Email de Contacto -->
-        <Input
-          v-model="formData.email"
-          type="email"
-          label="Email de Contacto"
-          placeholder="contacto@tunegocio.com"
-          :error="errors.email"
-          :disabled="loading"
-          @blur="validateField('email')"
-        >
-          <template #icon>
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          </template>
-        </Input>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Email de Contacto
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <input
+              v-model="formData.email"
+              type="email"
+              placeholder="contacto@tunegocio.com"
+              :disabled="loading"
+              @blur="validateField('email')"
+              class="block w-full pl-10 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              :class="errors.email ? 'border-red-300' : 'border-gray-300'"
+            />
+          </div>
+          <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
+        </div>
 
         <!-- Teléfono -->
-        <Input
-          v-model="formData.telefono"
-          type="tel"
-          label="Teléfono de Contacto"
-          placeholder="5512345678"
-          :error="errors.telefono"
-          :required="true"
-          :disabled="loading"
-          help="Formato: 10 dígitos sin espacios ni guiones"
-          @blur="validateField('telefono')"
-        >
-          <template #icon>
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-          </template>
-        </Input>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Teléfono de Contacto <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            </div>
+            <input
+              v-model="formData.telefono"
+              type="tel"
+              placeholder="5512345678"
+              maxlength="10"
+              :disabled="loading"
+              @input="handleTelefonoInput"
+              @blur="validateField('telefono')"
+              class="block w-full pl-10 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              :class="errors.telefono ? 'border-red-300' : 'border-gray-300'"
+            />
+          </div>
+          <p v-if="errors.telefono" class="mt-1 text-sm text-red-600">{{ errors.telefono }}</p>
+          <p v-else class="mt-1 text-xs text-gray-500">Formato: 10 dígitos sin espacios ni guiones</p>
+        </div>
       </div>
     </div>
 
@@ -158,21 +192,6 @@
           placeholder="México"
           :disabled="loading"
         />
-      </div>
-    </div>
-
-    <!-- Preview del Negocio -->
-    <div v-if="showPreview && isFormValid" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-      <h4 class="text-sm font-semibold text-blue-900 mb-2">Vista Previa:</h4>
-      <div class="space-y-1 text-sm text-blue-800">
-        <p><strong>Nombre:</strong> {{ formData.nombre }}</p>
-        <p><strong>Tipo:</strong> {{ getTipoLabel(formData.tipo) }}</p>
-        <p v-if="formData.descripcion"><strong>Descripción:</strong> {{ formData.descripcion }}</p>
-        <p v-if="formData.email"><strong>Email:</strong> {{ formData.email }}</p>
-        <p><strong>Teléfono:</strong> {{ formatearTelefono(formData.telefono) }}</p>
-        <p v-if="getDireccionCompleta">
-          <strong>Dirección:</strong> {{ getDireccionCompleta }}
-        </p>
       </div>
     </div>
 
@@ -283,6 +302,21 @@ const getTipoLabel = (tipo) => {
   return TIPOS_NEGOCIO_LABELS[tipo] || tipo
 }
 
+// Handle telefono input - solo números
+const handleTelefonoInput = (event) => {
+  const value = event.target.value
+  // Remover todo excepto números
+  const onlyNumbers = value.replace(/\D/g, '')
+  formData.value.telefono = onlyNumbers.substring(0, 10)
+
+  // Validar en tiempo real
+  if (onlyNumbers.length > 0 && onlyNumbers.length < 10) {
+    errors.value.telefono = `Faltan ${10 - onlyNumbers.length} dígitos`
+  } else if (onlyNumbers.length === 10) {
+    errors.value.telefono = ''
+  }
+}
+
 // Validar campo
 const validateField = (field) => {
 
@@ -309,8 +343,15 @@ const validateField = (field) => {
     case 'telefono':
       if (!requerido(formData.value.telefono)) {
         errors.value.telefono = 'El teléfono es requerido'
-      } else if (!validarTelefono(formData.value.telefono)) {
-        errors.value.telefono = 'Teléfono inválido (10 dígitos)'
+      } else if (!/^\d{10}$/.test(formData.value.telefono)) {
+        const digitos = formData.value.telefono.replace(/\D/g, '').length
+        if (digitos === 0) {
+          errors.value.telefono = 'El teléfono es requerido'
+        } else if (digitos < 10) {
+          errors.value.telefono = `Faltan ${10 - digitos} dígitos`
+        } else {
+          errors.value.telefono = 'Teléfono inválido (solo 10 dígitos)'
+        }
       } else {
         errors.value.telefono = ''
       }

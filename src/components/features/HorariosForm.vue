@@ -120,14 +120,19 @@
               @click="toggleDia(dia.value)"
               :disabled="guardando"
               :class="[
-                'px-4 py-3 border-2 rounded-lg font-medium text-sm transition-all',
+                'px-4 py-3 border-2 rounded-lg font-medium text-sm transition-all relative',
                 formData.diasSeleccionados.includes(dia.value)
                   ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : isDiaConfigurado(dia.value)
+                  ? 'border-green-500 bg-green-50 text-green-700 hover:border-green-600'
                   : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
               ]"
             >
               <svg v-if="formData.diasSeleccionados.includes(dia.value)" class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <svg v-else-if="isDiaConfigurado(dia.value)" class="w-4 h-4 inline mr-1 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
               </svg>
               {{ dia.label }}
             </button>
@@ -193,27 +198,6 @@
           </div>
         </div>
 
-        <!-- Preview mejorado -->
-        <div v-if="isFormValid && !modoEdicion && formData.diasSeleccionados.length > 0" class="p-4 bg-green-50 border border-green-200 rounded-lg">
-          <p class="text-sm font-medium text-green-900 mb-2">Vista previa:</p>
-          <div class="space-y-1">
-            <div v-for="diaVal in formData.diasSeleccionados" :key="diaVal" class="text-sm text-green-800">
-              <strong>{{ DIAS_SEMANA_LABELS[diaVal] }}</strong>:
-              {{ formatearHora(formData.horaInicio) }} - {{ formatearHora(formData.horaFin) }}
-              <span v-if="!formData.activo" class="text-xs ml-1">(Inactivo)</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Preview para modo edición -->
-        <div v-else-if="isFormValid && modoEdicion" class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p class="text-sm text-blue-900">
-            <strong>{{ DIAS_SEMANA_LABELS[formData.diaSemana] }}</strong>:
-            {{ formatearHora(formData.horaInicio) }} - {{ formatearHora(formData.horaFin) }}
-            <span v-if="!formData.activo" class="text-xs">(Inactivo)</span>
-          </p>
-        </div>
-
         <!-- Botones -->
         <div class="flex items-center justify-end gap-3 pt-4 border-t">
           <button
@@ -262,6 +246,7 @@ import LoadingSpinner from '../common/LoadingSpinner.vue'
 import EmptyState from '../common/EmptyState.vue'
 import { validarHorario, requerido } from '../../utils/validators'
 import { DIAS_SEMANA_LABELS, DIAS_SEMANA } from '../../utils/constants'
+import { useToast } from '../../composables/useToast'
 
 const props = defineProps({
   horarios: {
@@ -275,6 +260,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['crear', 'actualizar', 'eliminar'])
+
+// Composables
+const toast = useToast()
 
 // Referencias
 const confirmDialogRef = ref(null)
@@ -325,6 +313,11 @@ const isFormValid = computed(() => {
     return formData.value.diasSeleccionados.length > 0 && tieneHorarios
   }
 })
+
+// Verificar si un día ya tiene horario configurado
+const isDiaConfigurado = (diaValue) => {
+  return props.horarios.some(h => h.diaSemana === diaValue)
+}
 
 // Métodos
 const toggleDia = (diaValue) => {
@@ -429,21 +422,45 @@ const handleSubmit = async () => {
         activo,
       }
       emit('actualizar', horarioSeleccionado.value.id, datos)
+      toast.success('Horario actualizado', 'El horario se actualizó correctamente')
     } else {
       // Modo crear: crear múltiples horarios
+      const cantidadDias = formData.value.diasSeleccionados.length
+      let exitosos = 0
+      let errores = 0
+
       for (const dia of formData.value.diasSeleccionados) {
-        const datos = {
-          diaSemana: Number(dia),
-          horaInicio,
-          horaFin,
-          activo,
+        try {
+          const datos = {
+            diaSemana: Number(dia),
+            horaInicio,
+            horaFin,
+            activo,
+          }
+          emit('crear', datos)
+          exitosos++
+        } catch (error) {
+          console.error('[HorariosForm] Error al crear horario:', error)
+          errores++
         }
-        emit('crear', datos)
+      }
+
+      // Mostrar una sola notificación al final
+      if (errores === 0) {
+        const mensaje = cantidadDias === 1
+          ? 'El horario se agregó correctamente'
+          : `Se agregaron ${cantidadDias} horarios correctamente`
+        toast.success('Horarios guardados', mensaje)
+      } else if (exitosos > 0) {
+        toast.warning('Guardado parcial', `Se guardaron ${exitosos} de ${cantidadDias} horarios`)
+      } else {
+        toast.error('Error al guardar', 'No se pudieron guardar los horarios')
       }
     }
     cerrarModal()
   } catch (error) {
     console.error('[HorariosForm] Error al guardar:', error)
+    toast.error('Error', error.message || 'Ocurrió un error al guardar')
   } finally {
     guardando.value = false
   }

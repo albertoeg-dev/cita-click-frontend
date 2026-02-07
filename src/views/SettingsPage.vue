@@ -67,7 +67,6 @@
           v-else
           :negocio="businessStore.negocio"
           :loading="guardandoPerfil"
-          :show-preview="true"
           @submit="guardarPerfil"
           @cancel="cancelarEdicionPerfil"
         />
@@ -138,12 +137,12 @@ const cancelarEdicionPerfil = () => {
 
 // Métodos - Horarios
 const crearHorario = async (datos) => {
+  // No mostrar notificación aquí, se manejará en HorariosForm para batch
   try {
     await businessStore.crearHorario(datos)
-    toast.success('Horario agregado', 'El horario se agregó correctamente')
   } catch (error) {
     console.error('[SettingsPage] Error al crear horario:', error)
-    toast.error('Error al agregar', error.message || 'No se pudo agregar el horario')
+    throw error
   }
 }
 
