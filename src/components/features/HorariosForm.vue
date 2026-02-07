@@ -347,7 +347,6 @@ const formatearHora = (hora) => {
 }
 
 const validateField = (field) => {
-  console.log('[HorariosForm] Validando campo:', field)
 
   switch (field) {
     case 'diaSemana':
@@ -368,7 +367,6 @@ const validateField = (field) => {
 }
 
 const validateForm = () => {
-  console.log('[HorariosForm] Validando formulario completo')
 
   const validation = validarHorario({
     ...formData.value,
@@ -377,14 +375,12 @@ const validateForm = () => {
 
   if (!validation.valido) {
     errors.value = { ...errors.value, ...validation.errores }
-    console.log('[HorariosForm] Errores de validación:', validation.errores)
   }
 
   return validation.valido
 }
 
 const abrirModalAgregar = () => {
-  console.log('[HorariosForm] Abriendo modal para agregar')
   modoEdicion.value = false
   horarioSeleccionado.value = null
   resetForm()
@@ -392,7 +388,6 @@ const abrirModalAgregar = () => {
 }
 
 const abrirModalEditar = (horario) => {
-  console.log('[HorariosForm] Abriendo modal para editar:', horario)
   modoEdicion.value = true
   horarioSeleccionado.value = horario
   formData.value = {
@@ -405,7 +400,6 @@ const abrirModalEditar = (horario) => {
 }
 
 const cerrarModal = () => {
-  console.log('[HorariosForm] Cerrando modal')
   modalAbierto.value = false
   modoEdicion.value = false
   horarioSeleccionado.value = null
@@ -414,10 +408,8 @@ const cerrarModal = () => {
 }
 
 const handleSubmit = async () => {
-  console.log('[HorariosForm] Enviando formulario')
 
   if (!validateForm()) {
-    console.warn('[HorariosForm] Formulario inválido')
     return
   }
 
@@ -436,11 +428,9 @@ const handleSubmit = async () => {
         horaFin,
         activo,
       }
-      console.log('[HorariosForm] Actualizando horario:', datos)
       emit('actualizar', horarioSeleccionado.value.id, datos)
     } else {
       // Modo crear: crear múltiples horarios
-      console.log('[HorariosForm] Creando', formData.value.diasSeleccionados.length, 'horarios')
       for (const dia of formData.value.diasSeleccionados) {
         const datos = {
           diaSemana: Number(dia),
@@ -448,7 +438,6 @@ const handleSubmit = async () => {
           horaFin,
           activo,
         }
-        console.log('[HorariosForm] Creando horario para día:', dia, datos)
         emit('crear', datos)
       }
     }
@@ -461,7 +450,6 @@ const handleSubmit = async () => {
 }
 
 const confirmarEliminar = (horario) => {
-  console.log('[HorariosForm] Solicitando confirmación para eliminar:', horario)
   horarioAEliminar.value = horario
   confirmDialogRef.value?.open()
 }
@@ -469,14 +457,12 @@ const confirmarEliminar = (horario) => {
 const eliminarHorario = () => {
   if (!horarioAEliminar.value) return
 
-  console.log('[HorariosForm] Eliminando horario:', horarioAEliminar.value)
   emit('eliminar', horarioAEliminar.value.id)
   confirmDialogRef.value?.close()
   horarioAEliminar.value = null
 }
 
 const resetForm = () => {
-  console.log('[HorariosForm] Reseteando formulario')
   formData.value = {
     diaSemana: '',
     diasSeleccionados: [],

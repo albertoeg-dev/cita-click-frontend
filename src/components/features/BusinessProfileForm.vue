@@ -285,7 +285,6 @@ const getTipoLabel = (tipo) => {
 
 // Validar campo
 const validateField = (field) => {
-  console.log('[BusinessProfileForm] Validando campo:', field)
 
   switch (field) {
     case 'nombre':
@@ -328,13 +327,11 @@ const validateField = (field) => {
 
 // Validar formulario completo
 const validateForm = () => {
-  console.log('[BusinessProfileForm] Validando formulario completo')
 
   const validation = validarNegocio(formData.value)
 
   if (!validation.valido) {
     errors.value = { ...errors.value, ...validation.errores }
-    console.log('[BusinessProfileForm] Errores de validación:', validation.errores)
   }
 
   return validation.valido
@@ -342,10 +339,8 @@ const validateForm = () => {
 
 // Manejar envío
 const handleSubmit = () => {
-  console.log('[BusinessProfileForm] Enviando formulario')
 
   if (!validateForm()) {
-    console.warn('[BusinessProfileForm] Formulario inválido')
     return
   }
 
@@ -366,19 +361,16 @@ const handleSubmit = () => {
     },
   }
 
-  console.log('[BusinessProfileForm] Datos a enviar:', datos)
   emit('submit', datos)
 }
 
 // Manejar cancelación
 const handleCancel = () => {
-  console.log('[BusinessProfileForm] Cancelando formulario')
   emit('cancel')
 }
 
 // Resetear formulario
 const resetForm = () => {
-  console.log('[BusinessProfileForm] Reseteando formulario')
   formData.value = {
     nombre: '',
     tipo: '',
@@ -408,7 +400,6 @@ const resetForm = () => {
 // Cargar negocio si está en modo edición
 const loadNegocio = () => {
   if (props.negocio) {
-    console.log('[BusinessProfileForm] Cargando negocio para edición:', props.negocio)
 
     formData.value = {
       nombre: props.negocio.nombre || '',

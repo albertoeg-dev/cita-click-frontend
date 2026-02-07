@@ -269,7 +269,6 @@ const isFormValid = computed(() => {
 
 // Validar campo
 const validateField = (field) => {
-  console.log('[AppointmentForm] Validando campo:', field)
 
   switch (field) {
     case 'clienteId':
@@ -298,13 +297,11 @@ const cargarDisponibilidad = async () => {
   horarioSeleccionado.value = null
 
   try {
-    console.log('[AppointmentForm] Cargando disponibilidad para:', formData.value.fecha, formData.value.servicioId)
 
     // Usar el composable de disponibilidad con el ID de la cita si estamos editando
     const citaIdExcluir = isEditMode.value ? props.cita.id : null
     await obtenerHorariosDisponibles(formData.value.fecha, [formData.value.servicioId], citaIdExcluir)
 
-    console.log('[AppointmentForm] Horarios cargados:', horarios.value.length)
   } catch (error) {
     console.error('[AppointmentForm] Error al cargar disponibilidad:', error)
   }
@@ -319,7 +316,6 @@ const handleServicioChange = () => {
 // Watch para sincronizar horario seleccionado con formData.hora
 watch(horarioSeleccionado, (nuevoHorario) => {
   if (nuevoHorario) {
-    console.log('[AppointmentForm] Horario seleccionado:', nuevoHorario)
     formData.value.hora = nuevoHorario.horaInicio
     validateField('hora')
   }
@@ -327,7 +323,6 @@ watch(horarioSeleccionado, (nuevoHorario) => {
 
 // Validar formulario completo
 const validateForm = () => {
-  console.log('[AppointmentForm] Validando formulario completo')
 
   const fechaHora = `${formData.value.fecha}T${formData.value.hora}:00`
   const validation = validarCita({
@@ -337,7 +332,6 @@ const validateForm = () => {
 
   if (!validation.valido) {
     errors.value = { ...errors.value, ...validation.errores }
-    console.log('[AppointmentForm] Errores de validación:', validation.errores)
   }
 
   return validation.valido
@@ -345,10 +339,8 @@ const validateForm = () => {
 
 // Manejar envío
 const handleSubmit = () => {
-  console.log('[AppointmentForm] Enviando formulario')
 
   if (!validateForm()) {
-    console.warn('[AppointmentForm] Formulario inválido')
     return
   }
 
@@ -383,19 +375,16 @@ const handleSubmit = () => {
     }
   }
 
-  console.log('[AppointmentForm] Datos a enviar:', datos)
   emit('submit', datos)
 }
 
 // Manejar cancelación
 const handleCancel = () => {
-  console.log('[AppointmentForm] Cancelando formulario')
   emit('cancel')
 }
 
 // Resetear formulario
 const resetForm = () => {
-  console.log('[AppointmentForm] Reseteando formulario')
   formData.value = {
     clienteId: '',
     servicioId: '',
@@ -423,7 +412,6 @@ const resetForm = () => {
 // Cargar cita si está en modo edición
 const loadCita = () => {
   if (props.cita) {
-    console.log('[AppointmentForm] Cargando cita para edición:', props.cita)
 
     // Extraer fecha y hora de fechaHora
     const fechaHora = props.cita.fechaHora || ''
@@ -465,7 +453,6 @@ const loadCita = () => {
 
 // Cargar datos necesarios
 const cargarDatos = async () => {
-  console.log('[AppointmentForm] Cargando clientes y servicios')
 
   try {
     await Promise.all([
@@ -481,7 +468,6 @@ const cargarDatos = async () => {
 watch(() => props.cita, loadCita, { immediate: true })
 
 onMounted(() => {
-  console.log('[AppointmentForm] Componente montado, modo edición:', isEditMode.value)
   cargarDatos()
 })
 

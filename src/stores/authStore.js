@@ -17,9 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[AuthStore] Registrando usuario:', payload)
       const response = await authService.register(payload)
-      console.log('[AuthStore] Respuesta del registro:', response)
 
       if (response.success && response.data?.token) {
         token.value = response.data.token
@@ -29,7 +27,6 @@ export const useAuthStore = defineStore('auth', () => {
         }
         localStorage.setItem('token', token.value)
         localStorage.setItem('user', JSON.stringify(user.value))
-        console.log('[AuthStore] Usuario registrado exitosamente')
         return response
       }
       throw new Error(response.message || 'Error en registro')
@@ -46,9 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[AuthStore] Iniciando sesión:', email)
       const response = await authService.login(email, password)
-      console.log('[AuthStore] Respuesta del login:', response)
 
       if (response.success && response.data?.token) {
         token.value = response.data.token
@@ -58,7 +53,6 @@ export const useAuthStore = defineStore('auth', () => {
         }
         localStorage.setItem('token', token.value)
         localStorage.setItem('user', JSON.stringify(user.value))
-        console.log('[AuthStore] Login exitoso')
         return response
       }
       throw new Error(response.message || 'Error en login')
@@ -75,9 +69,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[AuthStore] Iniciando login con Google')
       const response = await authService.googleAuth(idToken, negocioData)
-      console.log('[AuthStore] Respuesta de Google Auth:', response)
 
       if (response.success && response.data?.token) {
         token.value = response.data.token
@@ -87,7 +79,6 @@ export const useAuthStore = defineStore('auth', () => {
         }
         localStorage.setItem('token', token.value)
         localStorage.setItem('user', JSON.stringify(user.value))
-        console.log('[AuthStore] Login con Google exitoso')
         return response
       }
       throw new Error(response.message || 'Error en autenticación con Google')
@@ -102,8 +93,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   const logout = async () => {
     try {
+      // Intentar llamar al backend, pero no fallar si no funciona
       await authService.logout()
+    } catch (error) {
+      // Error ignorado
     } finally {
+      // Siempre limpiar el estado local
       token.value = null
       user.value = null
       localStorage.removeItem('token')
@@ -113,8 +108,23 @@ export const useAuthStore = defineStore('auth', () => {
 
   const loadUserFromStorage = () => {
     const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-      user.value = JSON.parse(storedUser)
+    const storedToken = localStorage.getItem('token')
+
+    if (storedUser && storedToken) {
+      try {
+        user.value = JSON.parse(storedUser)
+      } catch (error) {
+        console.error('[AuthStore] Error al parsear usuario de localStorage:', error)
+        // Si hay error parseando, limpiar localStorage
+        localStorage.removeItem('user')
+        localStorage.removeItem('token')
+        token.value = null
+        user.value = null
+      }
+    } else if (storedToken && !storedUser) {
+      // Token sin usuario, limpiar todo
+      localStorage.removeItem('token')
+      token.value = null
     }
   }
 

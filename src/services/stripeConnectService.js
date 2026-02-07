@@ -13,36 +13,34 @@ const stripeConnectService = {
   },
 
   /**
-   * Obtiene el estado de la cuenta conectada del usuario
+   * Obtiene el estado de la cuenta conectada del usuario autenticado
    */
-  async getAccountStatus(usuarioId) {
-    const response = await api.get(`/v1/stripe-connect/status?usuarioId=${usuarioId}`);
+  async getStatus() {
+    const response = await api.get('/v1/stripe-connect/status');
     return response.data;
   },
 
   /**
-   * Obtiene la cuenta conectada del usuario
+   * Obtiene la cuenta conectada del usuario autenticado
    */
-  async getAccount(usuarioId) {
-    const response = await api.get(`/v1/stripe-connect/account?usuarioId=${usuarioId}`);
+  async getAccount() {
+    const response = await api.get('/v1/stripe-connect/account');
     return response.data;
   },
 
   /**
    * Genera un link de onboarding para completar la configuracion
    */
-  async createOnboardingLink(usuarioId, refreshUrl, returnUrl) {
-    const response = await api.post('/v1/stripe-connect/onboarding-link', null, {
-      params: { usuarioId, refreshUrl, returnUrl }
-    });
+  async createOnboardingLink() {
+    const response = await api.post('/v1/stripe-connect/onboarding-link');
     return response.data;
   },
 
   /**
    * Actualiza el estado de la cuenta conectada
    */
-  async refreshAccount(usuarioId) {
-    const response = await api.post(`/v1/stripe-connect/refresh?usuarioId=${usuarioId}`);
+  async refreshAccount() {
+    const response = await api.post('/v1/stripe-connect/refresh');
     return response.data;
   }
 };

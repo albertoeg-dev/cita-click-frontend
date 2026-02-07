@@ -10,10 +10,8 @@ export const clientesService = {
    */
   async getClientes(search = null) {
     try {
-      console.log('[ClientesService] Obteniendo clientes, búsqueda:', search)
       const params = search ? { search } : {}
       const response = await api.get('/clientes', { params })
-      console.log('[ClientesService] Clientes obtenidos:', response.data.data?.length || 0)
       return response.data
     } catch (error) {
       console.error('[ClientesService] Error al obtener clientes:', error)
@@ -27,9 +25,7 @@ export const clientesService = {
    */
   async getCliente(id) {
     try {
-      console.log('[ClientesService] Obteniendo cliente:', id)
       const response = await api.get(`/clientes/${id}`)
-      console.log('[ClientesService] Cliente obtenido')
       return response.data
     } catch (error) {
       console.error('[ClientesService] Error al obtener cliente:', error)
@@ -43,9 +39,7 @@ export const clientesService = {
    */
   async createCliente(data) {
     try {
-      console.log('[ClientesService] Creando cliente:', data)
       const response = await api.post('/clientes', data)
-      console.log('[ClientesService] Cliente creado exitosamente')
       return response.data
     } catch (error) {
       console.error('[ClientesService] Error al crear cliente:', error)
@@ -60,9 +54,7 @@ export const clientesService = {
    */
   async updateCliente(id, data) {
     try {
-      console.log('[ClientesService] Actualizando cliente:', id, data)
       const response = await api.put(`/clientes/${id}`, data)
-      console.log('[ClientesService] Cliente actualizado exitosamente')
       return response.data
     } catch (error) {
       console.error('[ClientesService] Error al actualizar cliente:', error)
@@ -76,9 +68,7 @@ export const clientesService = {
    */
   async deleteCliente(id) {
     try {
-      console.log('[ClientesService] Eliminando cliente:', id)
       const response = await api.delete(`/clientes/${id}`)
-      console.log('[ClientesService] Cliente eliminado exitosamente')
       return response.data
     } catch (error) {
       console.error('[ClientesService] Error al eliminar cliente:', error)

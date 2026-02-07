@@ -256,7 +256,6 @@ const serviciosInactivos = computed(() => serviciosStore.serviciosInactivos)
 // Métodos
 const cargarServicios = async () => {
   try {
-    console.log('[ServicesPage] Cargando servicios')
     await serviciosStore.cargarServicios()
   } catch (error) {
     console.error('[ServicesPage] Error al cargar servicios:', error)
@@ -265,11 +264,9 @@ const cargarServicios = async () => {
 }
 
 const aplicarFiltros = () => {
-  console.log('[ServicesPage] Aplicando filtros:', filtros.value)
 }
 
 const limpiarFiltros = () => {
-  console.log('[ServicesPage] Limpiando filtros')
   filtros.value = {
     busqueda: '',
     estado: 'todos',
@@ -277,21 +274,18 @@ const limpiarFiltros = () => {
 }
 
 const abrirModalCrear = () => {
-  console.log('[ServicesPage] Abriendo modal para crear')
   modoEdicion.value = false
   servicioSeleccionado.value = null
   modalAbierto.value = true
 }
 
 const abrirModalEditar = (servicio) => {
-  console.log('[ServicesPage] Abriendo modal para editar:', servicio)
   modoEdicion.value = true
   servicioSeleccionado.value = { ...servicio }
   modalAbierto.value = true
 }
 
 const cerrarModal = () => {
-  console.log('[ServicesPage] Cerrando modal')
   modalAbierto.value = false
   modoEdicion.value = false
   servicioSeleccionado.value = null
@@ -302,7 +296,6 @@ const guardarServicio = async (datos) => {
   guardando.value = true
 
   try {
-    console.log('[ServicesPage] Guardando servicio:', datos)
 
     if (modoEdicion.value) {
       await serviciosStore.actualizarServicio(servicioSeleccionado.value.id, datos)
@@ -325,7 +318,6 @@ const guardarServicio = async (datos) => {
 }
 
 const confirmarEliminar = (servicio) => {
-  console.log('[ServicesPage] Solicitando confirmación para eliminar:', servicio)
   servicioAEliminar.value = servicio
   confirmDialogRef.value?.open()
 }
@@ -336,7 +328,6 @@ const eliminarServicio = async () => {
   confirmDialogRef.value?.setLoading(true)
 
   try {
-    console.log('[ServicesPage] Eliminando servicio:', servicioAEliminar.value)
     await serviciosStore.eliminarServicio(servicioAEliminar.value.id)
     toast.success('Servicio eliminado', 'El servicio se desactivó correctamente')
     confirmDialogRef.value?.close()
@@ -354,7 +345,6 @@ const eliminarServicio = async () => {
 
 // Lifecycle
 onMounted(() => {
-  console.log('[ServicesPage] Componente montado')
   cargarServicios()
 })
 </script>

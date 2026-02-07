@@ -202,7 +202,6 @@ const isEditMode = computed(() => !!props.cliente)
 
 // Validar un campo específico
 const validateField = (field) => {
-  console.log('[ClientForm] Validando campo:', field, formData.value[field])
 
   switch (field) {
     case 'nombre':
@@ -249,12 +248,10 @@ const validateField = (field) => {
 
 // Validar todo el formulario
 const validateForm = () => {
-  console.log('[ClientForm] Validando formulario completo')
   const validation = validarCliente(formData.value)
 
   if (!validation.valido) {
     errors.value = validation.errores
-    console.log('[ClientForm] Errores de validación:', validation.errores)
   }
 
   return validation.valido
@@ -272,10 +269,8 @@ const isFormValid = computed(() => {
 
 // Manejar envío del formulario
 const handleSubmit = () => {
-  console.log('[ClientForm] Enviando formulario')
 
   if (!validateForm()) {
-    console.warn('[ClientForm] Formulario inválido')
     return
   }
 
@@ -287,19 +282,16 @@ const handleSubmit = () => {
   if (!datosLimpios.fechaNacimiento) delete datosLimpios.fechaNacimiento
   if (!datosLimpios.notas) delete datosLimpios.notas
 
-  console.log('[ClientForm] Datos del formulario:', datosLimpios)
   emit('submit', datosLimpios)
 }
 
 // Manejar cancelación
 const handleCancel = () => {
-  console.log('[ClientForm] Cancelando formulario')
   emit('cancel')
 }
 
 // Resetear formulario
 const resetForm = () => {
-  console.log('[ClientForm] Reseteando formulario')
   formData.value = {
     nombre: '',
     apellidoPaterno: '',
@@ -322,7 +314,6 @@ const resetForm = () => {
 // Cargar datos del cliente si está en modo edición
 const loadCliente = () => {
   if (props.cliente) {
-    console.log('[ClientForm] Cargando cliente para edición:', props.cliente)
     formData.value = {
       nombre: props.cliente.nombre || '',
       apellidoPaterno: props.cliente.apellidoPaterno || '',
@@ -342,7 +333,6 @@ const loadCliente = () => {
 watch(() => props.cliente, loadCliente, { immediate: true })
 
 onMounted(() => {
-  console.log('[ClientForm] Componente montado, modo edición:', isEditMode.value)
 })
 
 defineExpose({

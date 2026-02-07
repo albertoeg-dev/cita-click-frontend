@@ -17,13 +17,11 @@ export function useDashboardMetricas() {
     error.value = null
 
     try {
-      console.log('[useDashboardMetricas] Cargando métricas...')
 
       const response = await api.get('/dashboard/metricas')
 
       if (response.data.success) {
         metricas.value = response.data.data
-        console.log('[useDashboardMetricas] Métricas cargadas:', metricas.value)
       } else {
         error.value = response.data.message || 'Error al cargar métricas'
         console.error('[useDashboardMetricas] Error en respuesta:', error.value)

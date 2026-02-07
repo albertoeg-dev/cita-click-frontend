@@ -23,12 +23,11 @@ export function useToast() {
   const toastComponent = instance.appContext.config.globalProperties.$toast
 
   if (!toastComponent) {
-    console.warn('[useToast] Componente Toast no encontrado. Asegúrate de haberlo registrado globalmente.')
     return {
-      success: (message) => console.log('Toast success:', message),
+      success: (message) => {},
       error: (message) => console.error('Toast error:', message),
-      warning: (message) => console.warn('Toast warning:', message),
-      info: (message) => console.info('Toast info:', message),
+      warning: (message) => {},
+      info: (message) => {},
     }
   }
 

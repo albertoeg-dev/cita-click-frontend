@@ -19,10 +19,6 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${authStore.token}`
     }
     
-    console.log(`[API] ${config.method.toUpperCase()} ${config.url}`)
-    if (authStore.token) {
-      console.log(`[AUTH] Token presente: ${authStore.token.substring(0, 20)}...`)
-    }
     
     return config
   },
@@ -31,25 +27,56 @@ api.interceptors.request.use(
   }
 )
 
+// Variable para evitar múltiples limpiezas de sesión simultáneas
+let isHandlingAuthError = false
+
 // Interceptor de response - Manejar errores
 api.interceptors.response.use(
   (response) => {
-    console.log(`[API] Response ${response.status} from ${response.config.url}`)
     return response
   },
-  (error) => {
-    if (error.response?.status === 401) {
-      console.error('[AUTH] Token inválido o expirado')
-      const authStore = useAuthStore()
-      authStore.logout()
-      window.location.href = '/login'
+  async (error) => {
+    // Manejar errores de autenticación (401, 403)
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      console.error(`[AUTH] Error ${error.response.status}: ${error.response.data?.message || 'No autorizado'}`)
+
+      // Evitar múltiples limpiezas simultáneas
+      if (!isHandlingAuthError) {
+        isHandlingAuthError = true
+
+        const authStore = useAuthStore()
+
+        // Solo limpiar sesión si hay token (evitar loops)
+        if (authStore.token) {
+
+          // Limpiar sesión de forma sincrónica
+          authStore.token = null
+          authStore.user = null
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+
+        }
+
+        // Reset después de 1 segundo
+        setTimeout(() => {
+          isHandlingAuthError = false
+        }, 1000)
+      }
+
+      // Rechazar inmediatamente para que no siga intentando
+      return Promise.reject(error)
     }
-    
-    if (error.response?.status === 403) {
-      console.error('[AUTH] Acceso denegado (403)')
-      console.error('Error:', error.response.data)
+
+    // Otros errores de servidor (500, 502, etc.)
+    if (error.response?.status >= 500) {
+      console.error('[API] Error del servidor:', error.response.status, error.response.data)
     }
-    
+
+    // Errores de red (sin conexión)
+    if (!error.response) {
+      console.error('[API] Error de red: No se pudo conectar con el servidor')
+    }
+
     return Promise.reject(error)
   }
 )

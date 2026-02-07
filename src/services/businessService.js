@@ -42,7 +42,6 @@ export const businessService = {
    */
   async createHorario(data) {
     try {
-      console.log('[BusinessService] Creando horario:', data)
 
       // Mapear campos del frontend al formato esperado por el backend
       const payload = {
@@ -52,9 +51,7 @@ export const businessService = {
         activo: data.activo
       }
 
-      console.log('[BusinessService] Payload mapeado:', payload)
       const response = await api.post(`/negocios/horarios/${data.diaSemana}`, payload)
-      console.log('[BusinessService] Horario creado exitosamente')
       return response.data
     } catch (error) {
       console.error('[BusinessService] Error al crear horario:', error)
@@ -67,7 +64,6 @@ export const businessService = {
    */
   async updateHorario(id, data) {
     try {
-      console.log('[BusinessService] Actualizando horario:', id, data)
 
       // Mapear campos del frontend al formato esperado por el backend
       const payload = {
@@ -77,9 +73,7 @@ export const businessService = {
         activo: data.activo
       }
 
-      console.log('[BusinessService] Payload mapeado:', payload)
       const response = await api.put(`/negocios/horarios/${id}`, payload)
-      console.log('[BusinessService] Horario actualizado exitosamente')
       return response.data
     } catch (error) {
       console.error('[BusinessService] Error al actualizar horario:', error)
@@ -92,9 +86,7 @@ export const businessService = {
    */
   async deleteHorario(id) {
     try {
-      console.log('[BusinessService] Eliminando horario:', id)
       const response = await api.delete(`/negocios/horarios/${id}`)
-      console.log('[BusinessService] Horario eliminado exitosamente')
       return response.data
     } catch (error) {
       console.error('[BusinessService] Error al eliminar horario:', error)

@@ -28,7 +28,6 @@ export const requiresFeature = {
     }
 
     if (!feature) {
-      console.warn('[v-requires-feature] No se especificó una funcionalidad')
       return
     }
 

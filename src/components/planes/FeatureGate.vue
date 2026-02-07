@@ -106,7 +106,6 @@ const verificarAcceso = async () => {
   loading.value = true
   try {
     hasAccess.value = await tieneFuncionalidad(props.feature)
-    console.log(`[FeatureGate] Verificando '${props.feature}': ${hasAccess.value}`)
   } catch (error) {
     console.error('[FeatureGate] Error al verificar acceso:', error)
     hasAccess.value = false

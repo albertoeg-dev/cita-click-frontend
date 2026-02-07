@@ -110,7 +110,6 @@ const guardarPerfil = async (datos) => {
   guardandoPerfil.value = true
 
   try {
-    console.log('[SettingsPage] Guardando perfil del negocio:', datos)
 
     if (businessStore.negocio?.id) {
       // Actualizar negocio existente
@@ -133,7 +132,6 @@ const guardarPerfil = async (datos) => {
 }
 
 const cancelarEdicionPerfil = () => {
-  console.log('[SettingsPage] Cancelando edición del perfil')
   // Recargar datos originales
   cargarDatos()
 }
@@ -141,7 +139,6 @@ const cancelarEdicionPerfil = () => {
 // Métodos - Horarios
 const crearHorario = async (datos) => {
   try {
-    console.log('[SettingsPage] Creando horario:', datos)
     await businessStore.crearHorario(datos)
     toast.success('Horario agregado', 'El horario se agregó correctamente')
   } catch (error) {
@@ -152,7 +149,6 @@ const crearHorario = async (datos) => {
 
 const actualizarHorario = async (id, datos) => {
   try {
-    console.log('[SettingsPage] Actualizando horario:', id, datos)
     await businessStore.actualizarHorario(id, datos)
     toast.success('Horario actualizado', 'El horario se actualizó correctamente')
   } catch (error) {
@@ -163,7 +159,6 @@ const actualizarHorario = async (id, datos) => {
 
 const eliminarHorario = async (id) => {
   try {
-    console.log('[SettingsPage] Eliminando horario:', id)
     await businessStore.eliminarHorario(id)
     toast.success('Horario eliminado', 'El horario se eliminó correctamente')
   } catch (error) {
@@ -175,7 +170,6 @@ const eliminarHorario = async (id) => {
 // Cargar datos
 const cargarDatos = async () => {
   try {
-    console.log('[SettingsPage] Cargando datos del negocio')
     await Promise.all([
       businessStore.cargarNegocio(),
       businessStore.cargarHorarios(),
@@ -188,7 +182,6 @@ const cargarDatos = async () => {
 
 // Lifecycle
 onMounted(() => {
-  console.log('[SettingsPage] Componente montado')
   cargarDatos()
 })
 </script>

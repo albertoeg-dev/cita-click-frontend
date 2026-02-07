@@ -14,7 +14,13 @@
       <p class="text-slate-600">Visualiza y descarga reportes detallados de tu negocio</p>
     </div>
 
-    <!-- Filtros de Fecha -->
+    <FeatureGate
+      feature="reportes_avanzados"
+      title="Reportes Avanzados - Solo Premium"
+      message="Los reportes avanzados con estadísticas detalladas y exportación a PDF/Excel están disponibles exclusivamente en el plan Premium."
+      :show-upgrade-button="true"
+    >
+      <!-- Filtros de Fecha -->
     <div class="card mb-6">
       <h3 class="text-lg font-semibold text-slate-900 mb-4">Seleccionar Período</h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -238,6 +244,7 @@
     <div v-else-if="reportesStore.loading" class="flex justify-center py-12">
       <LoadingSpinner size="lg" />
     </div>
+    </FeatureGate>
   </DashboardLayout>
 </template>
 
@@ -246,6 +253,7 @@ import { ref, computed } from 'vue'
 import { useReportesStore } from '../stores/reportesStore'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
+import FeatureGate from '../components/planes/FeatureGate.vue'
 import DatePicker from '../components/common/DatePicker.vue'
 import LoadingSpinner from '../components/common/LoadingSpinner.vue'
 import EmptyState from '../components/common/EmptyState.vue'
@@ -347,7 +355,6 @@ const formatearMes = (mes) => {
 
 const cargarReporte = async () => {
   try {
-    console.log('[ReportsPage] Cargando reporte:', tipoReporte.value)
 
     let reporte = null
 
@@ -381,7 +388,6 @@ const descargarPDF = async () => {
   descargando.value = true
 
   try {
-    console.log('[ReportsPage] Descargando PDF')
 
     if (tipoReporte.value === 'diario') {
       await reportesStore.descargarReporteDiarioPDF(fechaSeleccionada.value)
@@ -413,7 +419,6 @@ const descargarExcel = async () => {
   descargando.value = true
 
   try {
-    console.log('[ReportsPage] Descargando Excel')
 
     if (tipoReporte.value === 'diario') {
       await reportesStore.descargarReporteDiarioExcel(fechaSeleccionada.value)

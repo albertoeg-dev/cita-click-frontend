@@ -242,7 +242,6 @@ const busqueda = ref('')
 // Métodos
 const cargarClientes = async () => {
   try {
-    console.log('[ClientsPage] Cargando clientes')
     await clientesStore.cargarClientes()
   } catch (error) {
     console.error('[ClientsPage] Error al cargar clientes:', error)
@@ -252,7 +251,6 @@ const cargarClientes = async () => {
 
 const buscarClientes = async () => {
   try {
-    console.log('[ClientsPage] Buscando clientes:', busqueda.value)
     await clientesStore.buscarClientes(busqueda.value)
   } catch (error) {
     console.error('[ClientsPage] Error al buscar clientes:', error)
@@ -261,7 +259,6 @@ const buscarClientes = async () => {
 }
 
 const limpiarBusqueda = async () => {
-  console.log('[ClientsPage] Limpiando búsqueda')
   busqueda.value = ''
   clientesStore.limpiarBusqueda()
   await cargarClientes()
@@ -274,26 +271,22 @@ const obtenerIniciales = (nombre, apellido) => {
 }
 
 const verPerfil = (cliente) => {
-  console.log('[ClientsPage] Navegando a perfil de cliente:', cliente.id)
   router.push({ name: 'ClientProfile360', params: { id: cliente.id } })
 }
 
 const abrirModalCrear = () => {
-  console.log('[ClientsPage] Abriendo modal para crear')
   modoEdicion.value = false
   clienteSeleccionado.value = null
   modalAbierto.value = true
 }
 
 const abrirModalEditar = (cliente) => {
-  console.log('[ClientsPage] Abriendo modal para editar:', cliente)
   modoEdicion.value = true
   clienteSeleccionado.value = { ...cliente }
   modalAbierto.value = true
 }
 
 const cerrarModal = () => {
-  console.log('[ClientsPage] Cerrando modal')
   modalAbierto.value = false
   modoEdicion.value = false
   clienteSeleccionado.value = null
@@ -304,7 +297,6 @@ const guardarCliente = async (datos) => {
   guardando.value = true
 
   try {
-    console.log('[ClientsPage] Guardando cliente:', datos)
 
     if (modoEdicion.value) {
       await clientesStore.actualizarCliente(clienteSeleccionado.value.id, datos)
@@ -327,7 +319,6 @@ const guardarCliente = async (datos) => {
 }
 
 const confirmarEliminar = (cliente) => {
-  console.log('[ClientsPage] Solicitando confirmación para eliminar:', cliente)
   clienteAEliminar.value = cliente
   confirmDialogRef.value?.open()
 }
@@ -338,7 +329,6 @@ const eliminarCliente = async () => {
   confirmDialogRef.value?.setLoading(true)
 
   try {
-    console.log('[ClientsPage] Eliminando cliente:', clienteAEliminar.value)
     await clientesStore.eliminarCliente(clienteAEliminar.value.id)
     toast.success('Cliente eliminado', 'El cliente se eliminó correctamente')
     confirmDialogRef.value?.close()
@@ -356,7 +346,6 @@ const eliminarCliente = async () => {
 
 // Lifecycle
 onMounted(() => {
-  console.log('[ClientsPage] Componente montado')
   cargarClientes()
 })
 </script>

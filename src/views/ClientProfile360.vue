@@ -302,7 +302,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
@@ -352,10 +352,8 @@ const cargarPerfil = async () => {
   error.value = null
 
   try {
-    console.log('[ClientProfile360] Cargando perfil para cliente:', route.params.id)
     const response = await api.get(`/clientes/${route.params.id}/perfil360`)
     perfil.value = response.data.data // Acceder al objeto dentro de ApiResponse
-    console.log('[ClientProfile360] Perfil cargado:', perfil.value)
   } catch (err) {
     console.error('[ClientProfile360] Error al cargar perfil:', err)
     error.value = err.message || 'Error al cargar el perfil del cliente'
@@ -365,8 +363,32 @@ const cargarPerfil = async () => {
   }
 }
 
+// Recargar cuando la ventana recupera el foco (usuario vuelve de otra pestaña)
+const handleVisibilityChange = () => {
+  if (!document.hidden) {
+    cargarPerfil()
+  }
+}
+
+// Watch para recargar cuando cambia el ID del cliente en la ruta
+watch(
+  () => route.params.id,
+  (newId, oldId) => {
+    if (newId && newId !== oldId) {
+      cargarPerfil()
+    }
+  }
+)
+
 onMounted(() => {
-  console.log('[ClientProfile360] Componente montado')
   cargarPerfil()
+
+  // Agregar listener para recargar cuando la ventana recupera el foco
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+})
+
+onUnmounted(() => {
+  // Remover listener al desmontar
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
 })
 </script>

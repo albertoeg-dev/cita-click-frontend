@@ -12,18 +12,26 @@ export const useClientesStore = defineStore('clientes', () => {
 
   // ACTIONS
   const cargarClientes = async (search = null) => {
+    // Verificar si hay token antes de intentar cargar
+    const token = localStorage.getItem('token')
+    if (!token) {
+      loading.value = false
+      return
+    }
+
     loading.value = true
     error.value = null
     try {
-      console.log('[ClientesStore] Cargando clientes, búsqueda:', search)
       const response = await clientesService.getClientes(search)
       if (response.success) {
         clientes.value = response.data
-        console.log('[ClientesStore] Clientes cargados:', clientes.value?.length || 0)
       }
     } catch (err) {
       console.error('[ClientesStore] Error al cargar clientes:', err)
-      error.value = err.message || err.mensaje || 'Error al cargar clientes'
+      // Si es error de autenticación, no establecer error (el interceptor maneja)
+      if (err.response?.status !== 401 && err.response?.status !== 403) {
+        error.value = err.message || err.mensaje || 'Error al cargar clientes'
+      }
     } finally {
       loading.value = false
     }
@@ -38,11 +46,9 @@ export const useClientesStore = defineStore('clientes', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ClientesStore] Cargando cliente:', id)
       const response = await clientesService.getCliente(id)
       if (response.success) {
         clienteActual.value = response.data
-        console.log('[ClientesStore] Cliente cargado')
       }
     } catch (err) {
       console.error('[ClientesStore] Error al cargar cliente:', err)
@@ -56,11 +62,9 @@ export const useClientesStore = defineStore('clientes', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ClientesStore] Creando cliente')
       const response = await clientesService.createCliente(data)
       if (response.success) {
         await cargarClientes()
-        console.log('[ClientesStore] Cliente creado y lista actualizada')
         return response
       }
     } catch (err) {
@@ -76,11 +80,9 @@ export const useClientesStore = defineStore('clientes', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ClientesStore] Actualizando cliente:', id)
       const response = await clientesService.updateCliente(id, data)
       if (response.success) {
         await cargarClientes()
-        console.log('[ClientesStore] Cliente actualizado y lista actualizada')
         return response
       }
     } catch (err) {
@@ -96,11 +98,9 @@ export const useClientesStore = defineStore('clientes', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ClientesStore] Eliminando cliente:', id)
       const response = await clientesService.deleteCliente(id)
       if (response.success) {
         await cargarClientes()
-        console.log('[ClientesStore] Cliente eliminado y lista actualizada')
         return response
       }
     } catch (err) {

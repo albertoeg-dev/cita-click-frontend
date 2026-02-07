@@ -100,6 +100,67 @@
         </div>
       </div>
 
+      <!-- CTA Actualizar Plan -->
+      <div class="mb-6">
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl overflow-hidden">
+          <div class="p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex-1 text-white">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold">¿Listo para crecer?</h3>
+              </div>
+              <p class="text-white/90 text-lg mb-2">
+                Actualiza tu plan y desbloquea todas las funcionalidades premium
+              </p>
+              <ul class="space-y-2 text-sm text-white/80">
+                <li class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  <span>Clientes y citas ilimitadas</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  <span>Recordatorios automáticos por SMS/WhatsApp</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  <span>Pagos integrados con Stripe Connect</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  <span>Reportes avanzados y multi-sucursal</span>
+                </li>
+              </ul>
+            </div>
+            <div class="flex flex-col gap-3 w-full md:w-auto">
+              <router-link
+                to="/pricing"
+                class="inline-flex items-center justify-center px-8 py-4 bg-white text-indigo-600 font-bold rounded-xl shadow-xl hover:bg-gray-50 transition-all duration-200 transform hover:scale-105 hover:shadow-2xl whitespace-nowrap"
+              >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                Ver Planes y Precios
+              </router-link>
+              <p class="text-center text-white/70 text-xs">
+                🎉 7 días de prueba gratis • Sin compromiso
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Resumen de Citas y Límites del Plan -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <!-- Citas por Estado -->
@@ -242,6 +303,12 @@
             </router-link>
             <router-link to="/services" class="btn btn-secondary btn-sm">
               + Nuevo Servicio
+            </router-link>
+            <router-link to="/pricing" class="btn btn-secondary btn-sm flex items-center gap-1 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200 text-indigo-700 hover:from-indigo-100 hover:to-purple-100">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Actualizar Plan
             </router-link>
             <router-link to="/reports" class="btn btn-secondary btn-sm flex items-center gap-1">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -395,7 +462,6 @@ const getEstadoVariant = (estado) => {
 }
 
 const irACita = (citaId) => {
-  console.log('[DashboardPage] Navegando a cita:', citaId)
   router.push('/appointments')
 }
 
@@ -404,16 +470,37 @@ const cargarDatos = async () => {
   loading.value = true
 
   try {
-    console.log('[DashboardPage] Cargando datos del dashboard')
-    await Promise.all([
+
+    // Usar Promise.allSettled para que si una falla, no afecte a las demás
+    const results = await Promise.allSettled([
       citasStore.cargarCitas(),
       clientesStore.cargarClientes(),
       serviciosStore.cargarServicios(),
       cargarMetricas()
     ])
+
+    // Verificar si hubo errores de autenticación (el interceptor ya manejó el logout)
+    const authErrors = results.filter(r =>
+      r.status === 'rejected' &&
+      (r.reason?.response?.status === 401 || r.reason?.response?.status === 403)
+    )
+
+    if (authErrors.length > 0) {
+      return // No mostrar toast, el usuario será redirigido
+    }
+
+    // Verificar otros errores
+    const otherErrors = results.filter(r => r.status === 'rejected' && !authErrors.includes(r))
+    if (otherErrors.length > 0) {
+      console.error('[DashboardPage] Errores al cargar datos:', otherErrors)
+      toast.error('Error al cargar algunos datos', 'Algunos datos no pudieron ser cargados')
+    }
   } catch (error) {
-    console.error('[DashboardPage] Error al cargar datos:', error)
-    toast.error('Error al cargar datos', error.message || 'Intenta de nuevo')
+    console.error('[DashboardPage] Error inesperado al cargar datos:', error)
+    // No mostrar toast si es error de autenticación
+    if (error?.response?.status !== 401 && error?.response?.status !== 403) {
+      toast.error('Error al cargar datos', error.message || 'Intenta de nuevo')
+    }
   } finally {
     loading.value = false
   }
@@ -421,7 +508,6 @@ const cargarDatos = async () => {
 
 // Lifecycle
 onMounted(() => {
-  console.log('[DashboardPage] Componente montado')
   cargarDatos()
 })
 </script>

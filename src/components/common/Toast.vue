@@ -61,7 +61,6 @@ const addToast = (message, type = 'info', description = '', duration = 3000) => 
   const id = nextId++
   const toast = { id, message, type, description }
 
-  console.log(`[Toast] Mostrando ${type}:`, message)
 
   toasts.value.push(toast)
 

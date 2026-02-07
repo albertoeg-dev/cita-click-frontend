@@ -14,11 +14,9 @@ export const useBusinessStore = defineStore('business', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[BusinessStore] Cargando datos del negocio')
       const response = await businessService.getPerfil()
       if (response.success) {
         negocio.value = response.data
-        console.log('[BusinessStore] Negocio cargado:', negocio.value?.nombre)
       }
     } catch (err) {
       console.error('[BusinessStore] Error al cargar negocio:', err)
@@ -32,11 +30,9 @@ export const useBusinessStore = defineStore('business', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[BusinessStore] Actualizando datos del negocio')
       const response = await businessService.updatePerfil(data)
       if (response.success) {
         negocio.value = response.data
-        console.log('[BusinessStore] Negocio actualizado')
         return response
       }
     } catch (err) {
@@ -52,11 +48,9 @@ export const useBusinessStore = defineStore('business', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[BusinessStore] Cargando horarios')
       const response = await businessService.getHorarios()
       if (response.success) {
         horarios.value = response.data
-        console.log('[BusinessStore] Horarios cargados:', horarios.value?.length || 0)
       }
     } catch (err) {
       console.error('[BusinessStore] Error al cargar horarios:', err)
@@ -70,11 +64,9 @@ export const useBusinessStore = defineStore('business', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[BusinessStore] Creando horario')
       const response = await businessService.createHorario(data)
       if (response.success) {
         await cargarHorarios()
-        console.log('[BusinessStore] Horario creado y lista actualizada')
         return response
       }
     } catch (err) {
@@ -90,11 +82,9 @@ export const useBusinessStore = defineStore('business', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[BusinessStore] Actualizando horario:', id)
       const response = await businessService.updateHorario(id, data)
       if (response.success) {
         await cargarHorarios()
-        console.log('[BusinessStore] Horario actualizado y lista actualizada')
         return response
       }
     } catch (err) {
@@ -110,11 +100,9 @@ export const useBusinessStore = defineStore('business', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[BusinessStore] Eliminando horario:', id)
       const response = await businessService.deleteHorario(id)
       if (response.success) {
         await cargarHorarios()
-        console.log('[BusinessStore] Horario eliminado y lista actualizada')
         return response
       }
     } catch (err) {

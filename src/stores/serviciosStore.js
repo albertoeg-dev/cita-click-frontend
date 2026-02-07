@@ -20,10 +20,16 @@ export const useServiciosStore = defineStore('servicios', () => {
 
   // ACTIONS
   const cargarServicios = async (activos = null) => {
+    // Verificar si hay token antes de intentar cargar
+    const token = localStorage.getItem('token')
+    if (!token) {
+      loading.value = false
+      return
+    }
+
     loading.value = true
     error.value = null
     try {
-      console.log('[ServiciosStore] Cargando servicios')
       const response = await serviciosService.getServicios(activos)
       if (response.success) {
         // Map duracionMinutos to duracion for frontend compatibility
@@ -31,11 +37,13 @@ export const useServiciosStore = defineStore('servicios', () => {
           ...servicio,
           duracion: servicio.duracionMinutos
         }))
-        console.log('[ServiciosStore] Servicios cargados:', servicios.value?.length || 0)
       }
     } catch (err) {
       console.error('[ServiciosStore] Error al cargar servicios:', err)
-      error.value = err.message || err.mensaje || 'Error al cargar servicios'
+      // Si es error de autenticación, no establecer error (el interceptor maneja)
+      if (err.response?.status !== 401 && err.response?.status !== 403) {
+        error.value = err.message || err.mensaje || 'Error al cargar servicios'
+      }
     } finally {
       loading.value = false
     }
@@ -45,7 +53,6 @@ export const useServiciosStore = defineStore('servicios', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ServiciosStore] Cargando servicio:', id)
       const response = await serviciosService.getServicio(id)
       if (response.success) {
         // Map duracionMinutos to duracion for frontend compatibility
@@ -53,7 +60,6 @@ export const useServiciosStore = defineStore('servicios', () => {
           ...response.data,
           duracion: response.data.duracionMinutos
         }
-        console.log('[ServiciosStore] Servicio cargado')
       }
     } catch (err) {
       console.error('[ServiciosStore] Error al cargar servicio:', err)
@@ -67,11 +73,9 @@ export const useServiciosStore = defineStore('servicios', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ServiciosStore] Creando servicio')
       const response = await serviciosService.createServicio(data)
       if (response.success) {
         await cargarServicios()
-        console.log('[ServiciosStore] Servicio creado y lista actualizada')
         return response
       }
     } catch (err) {
@@ -87,11 +91,9 @@ export const useServiciosStore = defineStore('servicios', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ServiciosStore] Actualizando servicio:', id)
       const response = await serviciosService.updateServicio(id, data)
       if (response.success) {
         await cargarServicios()
-        console.log('[ServiciosStore] Servicio actualizado y lista actualizada')
         return response
       }
     } catch (err) {
@@ -107,11 +109,9 @@ export const useServiciosStore = defineStore('servicios', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ServiciosStore] Eliminando servicio:', id)
       const response = await serviciosService.deleteServicio(id)
       if (response.success) {
         await cargarServicios()
-        console.log('[ServiciosStore] Servicio eliminado y lista actualizada')
         return response
       }
     } catch (err) {

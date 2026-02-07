@@ -15,7 +15,6 @@ export function useDisponibilidad() {
    */
   const obtenerHorariosDisponibles = async (fecha, servicioIds, citaIdExcluir = null) => {
     if (!fecha || !servicioIds || servicioIds.length === 0) {
-      console.warn('[useDisponibilidad] Fecha o servicios no proporcionados')
       return
     }
 
@@ -24,7 +23,6 @@ export function useDisponibilidad() {
     horarios.value = []
 
     try {
-      console.log('[useDisponibilidad] Consultando disponibilidad:', { fecha, servicioIds })
 
       const response = await api.post('/citas/disponibilidad', {
         fecha,
@@ -37,7 +35,6 @@ export function useDisponibilidad() {
         horarios.value = data.horariosDisponibles || []
         duracionTotal.value = data.duracionTotal || 0
 
-        console.log('[useDisponibilidad] Horarios obtenidos:', horarios.value.length)
       } else {
         error.value = response.data.message || 'Error al obtener disponibilidad'
         console.error('[useDisponibilidad] Error en respuesta:', error.value)

@@ -10,11 +10,9 @@ export const reportesService = {
    */
   async getReporteDiario(fecha) {
     try {
-      console.log('[ReportesService] Obteniendo reporte diario:', fecha)
       const response = await api.get('/reportes/diario', {
         params: { fecha }
       })
-      console.log('[ReportesService] Reporte diario obtenido')
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al obtener reporte diario:', error)
@@ -28,11 +26,9 @@ export const reportesService = {
    */
   async getReporteSemanal(fechaInicio) {
     try {
-      console.log('[ReportesService] Obteniendo reporte semanal:', fechaInicio)
       const response = await api.get('/reportes/semanal', {
         params: { fechaInicio }
       })
-      console.log('[ReportesService] Reporte semanal obtenido')
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al obtener reporte semanal:', error)
@@ -47,11 +43,9 @@ export const reportesService = {
    */
   async getReporteMensual(mes, anio) {
     try {
-      console.log('[ReportesService] Obteniendo reporte mensual:', mes, '/', anio)
       const response = await api.get('/reportes/mensual', {
         params: { mes, anio }
       })
-      console.log('[ReportesService] Reporte mensual obtenido')
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al obtener reporte mensual:', error)
@@ -65,12 +59,10 @@ export const reportesService = {
    */
   async descargarPdfDiario(fecha) {
     try {
-      console.log('[ReportesService] Descargando PDF diario:', fecha)
       const response = await api.get('/reportes/diario/pdf', {
         params: { fecha },
         responseType: 'blob'
       })
-      console.log('[ReportesService] PDF descargado')
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al descargar PDF:', error)
@@ -84,12 +76,10 @@ export const reportesService = {
    */
   async descargarPdfSemanal(fechaInicio) {
     try {
-      console.log('[ReportesService] Descargando PDF semanal:', fechaInicio)
       const response = await api.get('/reportes/semanal/pdf', {
         params: { fechaInicio },
         responseType: 'blob'
       })
-      console.log('[ReportesService] PDF descargado')
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al descargar PDF:', error)
@@ -104,12 +94,10 @@ export const reportesService = {
    */
   async descargarPdfMensual(mes, anio) {
     try {
-      console.log('[ReportesService] Descargando PDF mensual:', mes, '/', anio)
       const response = await api.get('/reportes/mensual/pdf', {
         params: { mes, anio },
         responseType: 'blob'
       })
-      console.log('[ReportesService] PDF descargado')
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al descargar PDF:', error)
@@ -123,12 +111,10 @@ export const reportesService = {
    */
   async descargarExcelDiario(fecha) {
     try {
-      console.log('[ReportesService] Descargando Excel diario:', fecha)
       const response = await api.get('/reportes/diario/excel', {
         params: { fecha },
         responseType: 'blob'
       })
-      console.log('[ReportesService] Excel descargado')
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al descargar Excel:', error)
@@ -142,12 +128,10 @@ export const reportesService = {
    */
   async descargarExcelSemanal(fechaInicio) {
     try {
-      console.log('[ReportesService] Descargando Excel semanal:', fechaInicio)
       const response = await api.get('/reportes/semanal/excel', {
         params: { fechaInicio },
         responseType: 'blob'
       })
-      console.log('[ReportesService] Excel descargado')
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al descargar Excel:', error)
@@ -162,12 +146,10 @@ export const reportesService = {
    */
   async descargarExcelMensual(mes, anio) {
     try {
-      console.log('[ReportesService] Descargando Excel mensual:', mes, '/', anio)
       const response = await api.get('/reportes/mensual/excel', {
         params: { mes, anio },
         responseType: 'blob'
       })
-      console.log('[ReportesService] Excel descargado')
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al descargar Excel:', error)
@@ -181,7 +163,6 @@ export const reportesService = {
    * @param {string} filename - Nombre del archivo
    */
   downloadFile(blob, filename) {
-    console.log('[ReportesService] Iniciando descarga:', filename)
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
@@ -190,6 +171,5 @@ export const reportesService = {
     link.click()
     link.remove()
     window.URL.revokeObjectURL(url)
-    console.log('[ReportesService] Descarga completada')
   },
 }

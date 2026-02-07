@@ -141,14 +141,11 @@ const seleccionarPlan = async (planId) => {
   procesandoPlan.value = planId
 
   try {
-    // Crear sesión de checkout
-    const checkoutData = await crearCheckoutSession(planId)
-
-    // Redirigir a la página de checkout
+    // Redirigir a la página de confirmación de suscripción
     router.push({
-      name: 'Checkout',
-      params: { sessionId: checkoutData.sessionId },
-      query: { clientSecret: checkoutData.clientSecret }
+      name: 'SubscriptionCheckout',
+      params: { planId },
+      query: { plan: planId }
     })
   } catch (err) {
     console.error('Error seleccionando plan:', err)

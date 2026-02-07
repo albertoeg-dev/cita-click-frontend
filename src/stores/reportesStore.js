@@ -13,11 +13,9 @@ export const useReportesStore = defineStore('reportes', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ReportesStore] Cargando reporte diario:', fecha)
       const response = await reportesService.getReporteDiario(fecha)
       if (response.success) {
         reporteActual.value = response.data
-        console.log('[ReportesStore] Reporte diario cargado')
         return response.data
       }
     } catch (err) {
@@ -33,11 +31,9 @@ export const useReportesStore = defineStore('reportes', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ReportesStore] Cargando reporte semanal:', fechaInicio)
       const response = await reportesService.getReporteSemanal(fechaInicio)
       if (response.success) {
         reporteActual.value = response.data
-        console.log('[ReportesStore] Reporte semanal cargado')
         return response.data
       }
     } catch (err) {
@@ -53,11 +49,9 @@ export const useReportesStore = defineStore('reportes', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ReportesStore] Cargando reporte mensual:', mes, '/', anio)
       const response = await reportesService.getReporteMensual(mes, anio)
       if (response.success) {
         reporteActual.value = response.data
-        console.log('[ReportesStore] Reporte mensual cargado')
         return response.data
       }
     } catch (err) {
@@ -73,7 +67,6 @@ export const useReportesStore = defineStore('reportes', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ReportesStore] Descargando PDF:', tipo, params)
       let blob
       let filename
 
@@ -95,7 +88,6 @@ export const useReportesStore = defineStore('reportes', () => {
       }
 
       reportesService.downloadFile(blob, filename)
-      console.log('[ReportesStore] PDF descargado exitosamente')
     } catch (err) {
       console.error('[ReportesStore] Error al descargar PDF:', err)
       error.value = err.message || err.mensaje || 'Error al descargar el PDF'
@@ -109,7 +101,6 @@ export const useReportesStore = defineStore('reportes', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[ReportesStore] Descargando Excel:', tipo, params)
       let blob
       let filename
 
@@ -131,7 +122,6 @@ export const useReportesStore = defineStore('reportes', () => {
       }
 
       reportesService.downloadFile(blob, filename)
-      console.log('[ReportesStore] Excel descargado exitosamente')
     } catch (err) {
       console.error('[ReportesStore] Error al descargar Excel:', err)
       error.value = err.message || err.mensaje || 'Error al descargar el Excel'

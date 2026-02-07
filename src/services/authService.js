@@ -33,7 +33,6 @@ export const authService = {
    */
   async googleAuth(idToken, negocioData = {}) {
     try {
-      console.log('[AuthService] Autenticando con Google')
       const response = await api.post('/auth/google', {
         idToken,
         nombreNegocio: negocioData.nombreNegocio,

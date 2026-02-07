@@ -567,7 +567,6 @@ const citasDelDia = computed(() => {
 })
 
 const diasDelMes = computed(() => {
-  console.log('[CalendarPage] Calculando días del mes:', mesActual.value, añoActual.value)
 
   const primerDia = new Date(añoActual.value, mesActual.value, 1)
   const ultimoDia = new Date(añoActual.value, mesActual.value + 1, 0)
@@ -768,7 +767,6 @@ const semanaSiguiente = () => {
 }
 
 const mesAnterior = () => {
-  console.log('[CalendarPage] Navegando al mes anterior')
   if (mesActual.value === 0) {
     mesActual.value = 11
     añoActual.value--
@@ -778,7 +776,6 @@ const mesAnterior = () => {
 }
 
 const mesSiguiente = () => {
-  console.log('[CalendarPage] Navegando al mes siguiente')
   if (mesActual.value === 11) {
     mesActual.value = 0
     añoActual.value++
@@ -788,7 +785,6 @@ const mesSiguiente = () => {
 }
 
 const irAHoy = () => {
-  console.log('[CalendarPage] Navegando a hoy')
   const hoy = new Date()
   diaActual.value = hoy.getDate()
   mesActual.value = hoy.getMonth()
@@ -797,7 +793,6 @@ const irAHoy = () => {
 
 // Interacciones
 const seleccionarDia = (dia) => {
-  console.log('[CalendarPage] Día seleccionado:', dia)
   if (dia.citas.length === 0) {
     // Si no hay citas, abrir modal para crear
     abrirModalCrear()
@@ -811,26 +806,22 @@ const seleccionarDia = (dia) => {
 }
 
 const verDetalleCita = (cita) => {
-  console.log('[CalendarPage] Ver detalle de cita:', cita)
   citaSeleccionada.value = cita
   modalTodasCitasAbierto.value = false
   modalDetalleAbierto.value = true
 }
 
 const verTodasCitas = (dia) => {
-  console.log('[CalendarPage] Ver todas las citas del día:', dia)
   diaSeleccionado.value = dia
   modalTodasCitasAbierto.value = true
 }
 
 // CRUD de citas
 const abrirModalCrear = () => {
-  console.log('[CalendarPage] Abriendo modal para crear cita')
   modalCrearAbierto.value = true
 }
 
 const cerrarModalCrear = () => {
-  console.log('[CalendarPage] Cerrando modal de crear')
   modalCrearAbierto.value = false
   guardando.value = false
 }
@@ -839,7 +830,6 @@ const guardarCita = async (datos) => {
   guardando.value = true
 
   try {
-    console.log('[CalendarPage] Creando cita:', datos)
     await citasStore.crearCita(datos)
     toast.success('Cita creada', 'La cita se creó correctamente')
     cerrarModalCrear()
@@ -853,19 +843,16 @@ const guardarCita = async (datos) => {
 }
 
 const cerrarModalDetalle = () => {
-  console.log('[CalendarPage] Cerrando modal de detalle')
   modalDetalleAbierto.value = false
   citaSeleccionada.value = null
 }
 
 const abrirModalEditar = () => {
-  console.log('[CalendarPage] Abriendo modal para editar')
   modalDetalleAbierto.value = false
   modalEditarAbierto.value = true
 }
 
 const cerrarModalEditar = () => {
-  console.log('[CalendarPage] Cerrando modal de editar')
   modalEditarAbierto.value = false
   guardando.value = false
 }
@@ -874,7 +861,6 @@ const actualizarCita = async (datos) => {
   guardando.value = true
 
   try {
-    console.log('[CalendarPage] Actualizando cita:', datos)
     await citasStore.actualizarCita(citaSeleccionada.value.id, datos)
     toast.success('Cita actualizada', 'La cita se actualizó correctamente')
     cerrarModalEditar()
@@ -890,7 +876,6 @@ const actualizarCita = async (datos) => {
 
 const cambiarEstado = async (cita, nuevoEstado) => {
   try {
-    console.log('[CalendarPage] Cambiando estado de cita:', cita.id, 'a', nuevoEstado)
     await citasStore.cambiarEstadoCita(cita.id, nuevoEstado)
     toast.success('Estado actualizado', `La cita se marcó como ${ESTADOS_CITA_LABELS[nuevoEstado]}`)
     cerrarModalDetalle()
@@ -902,7 +887,6 @@ const cambiarEstado = async (cita, nuevoEstado) => {
 }
 
 const confirmarCancelar = () => {
-  console.log('[CalendarPage] Solicitando confirmación para cancelar cita')
   confirmDialogRef.value?.open()
 }
 
@@ -912,7 +896,6 @@ const cancelarCita = async () => {
   confirmDialogRef.value?.setLoading(true)
 
   try {
-    console.log('[CalendarPage] Cancelando cita:', citaSeleccionada.value.id)
     await citasStore.cancelarCita(citaSeleccionada.value.id)
     toast.success('Cita cancelada', 'La cita se canceló correctamente')
     confirmDialogRef.value?.close()
@@ -927,18 +910,15 @@ const cancelarCita = async () => {
 }
 
 const cerrarConfirmDialog = () => {
-  console.log('[CalendarPage] Cerrando confirm dialog')
 }
 
 // Filtros
 const aplicarFiltro = () => {
-  console.log('[CalendarPage] Aplicando filtro de estado:', filtroEstado.value)
 }
 
 // Cargar citas
 const cargarCitas = async () => {
   try {
-    console.log('[CalendarPage] Cargando citas del mes')
     // Cargar todas las citas sin filtros de fecha para tener vista completa del mes
     await citasStore.cargarCitas()
   } catch (error) {
@@ -949,13 +929,11 @@ const cargarCitas = async () => {
 
 // Watchers
 watch([mesActual, añoActual], () => {
-  console.log('[CalendarPage] Mes o año cambiado, recargando citas')
   cargarCitas()
 })
 
 // Lifecycle
 onMounted(() => {
-  console.log('[CalendarPage] Componente montado')
   cargarCitas()
 })
 </script>

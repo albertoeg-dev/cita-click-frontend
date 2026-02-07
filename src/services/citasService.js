@@ -11,13 +11,11 @@ export const citasService = {
    */
   async getCitas(fecha = null, estado = null) {
     try {
-      console.log('[CitasService] Obteniendo citas, fecha:', fecha, 'estado:', estado)
       const params = {}
       if (fecha) params.fecha = fecha
       if (estado) params.estado = estado
 
       const response = await api.get('/citas', { params })
-      console.log('[CitasService] Citas obtenidas:', response.data.data?.length || 0)
       return response.data
     } catch (error) {
       console.error('[CitasService] Error al obtener citas:', error)
@@ -31,9 +29,7 @@ export const citasService = {
    */
   async getCita(id) {
     try {
-      console.log('[CitasService] Obteniendo cita:', id)
       const response = await api.get(`/citas/${id}`)
-      console.log('[CitasService] Cita obtenida')
       return response.data
     } catch (error) {
       console.error('[CitasService] Error al obtener cita:', error)
@@ -47,9 +43,7 @@ export const citasService = {
    */
   async createCita(data) {
     try {
-      console.log('[CitasService] Creando cita:', data)
       const response = await api.post('/citas', data)
-      console.log('[CitasService] Cita creada exitosamente')
       return response.data
     } catch (error) {
       console.error('[CitasService] Error al crear cita:', error)
@@ -64,9 +58,7 @@ export const citasService = {
    */
   async updateCita(id, data) {
     try {
-      console.log('[CitasService] Actualizando cita:', id, data)
       const response = await api.put(`/citas/${id}`, data)
-      console.log('[CitasService] Cita actualizada exitosamente')
       return response.data
     } catch (error) {
       console.error('[CitasService] Error al actualizar cita:', error)
@@ -81,14 +73,14 @@ export const citasService = {
    */
   async cambiarEstado(id, estado) {
     try {
-      console.log('[CitasService] Cambiando estado de cita:', id, 'a', estado)
       const response = await api.patch(`/citas/${id}/estado`, null, {
         params: { estado }
       })
-      console.log('[CitasService] Estado cambiado exitosamente')
       return response.data
     } catch (error) {
-      console.error('[CitasService] Error al cambiar estado:', error)
+      console.error('[CitasService] Error completo:', error)
+      console.error('[CitasService] Error response:', error.response)
+      console.error('[CitasService] Error data:', error.response?.data)
       throw error.response?.data || error.message
     }
   },
@@ -99,9 +91,7 @@ export const citasService = {
    */
   async cancelarCita(id) {
     try {
-      console.log('[CitasService] Cancelando cita:', id)
       const response = await api.delete(`/citas/${id}`)
-      console.log('[CitasService] Cita cancelada exitosamente')
       return response.data
     } catch (error) {
       console.error('[CitasService] Error al cancelar cita:', error)
@@ -116,14 +106,61 @@ export const citasService = {
    */
   async getDisponibilidad(servicioId, fecha) {
     try {
-      console.log('[CitasService] Obteniendo disponibilidad para servicio:', servicioId, 'fecha:', fecha)
       const response = await api.get('/citas/disponibilidad', {
         params: { servicioId, fecha }
       })
-      console.log('[CitasService] Disponibilidad obtenida:', response.data.data?.horariosDisponibles?.length || 0, 'slots')
       return response.data
     } catch (error) {
       console.error('[CitasService] Error al obtener disponibilidad:', error)
+      throw error.response?.data || error.message
+    }
+  },
+
+  /**
+   * Enviar confirmación de cita por WhatsApp/SMS
+   * @param {string} id - ID de la cita
+   * @param {string} canal - Canal de envío (WHATSAPP, SMS, AMBOS)
+   * @param {boolean} confirmarPago - Si se confirma el pago
+   */
+  async enviarConfirmacionCita(id, canal, confirmarPago) {
+    try {
+      const response = await api.post(`/citas/${id}/enviar-confirmacion`, null, {
+        params: { canal, confirmarPago }
+      })
+      return response.data
+    } catch (error) {
+      console.error('[CitasService] Error al enviar confirmación:', error)
+      throw error.response?.data || error.message
+    }
+  },
+
+  /**
+   * Enviar recordatorio de cita (solo EMAIL disponible)
+   * @param {string} id - ID de la cita
+   * @param {string} canal - Canal de envío (solo 'email' permitido)
+   */
+  async enviarRecordatorioCita(id, canal) {
+    try {
+      const response = await api.post(`/citas/${id}/enviar-recordatorio`, null, {
+        params: { canal }
+      })
+      return response.data
+    } catch (error) {
+      console.error('[CitasService] Error al enviar recordatorio:', error)
+      throw error.response?.data || error.message
+    }
+  },
+
+  /**
+   * Registrar pago de una cita
+   * @param {string} id - ID de la cita
+   */
+  async registrarPago(id) {
+    try {
+      const response = await api.patch(`/citas/${id}/registrar-pago`)
+      return response.data
+    } catch (error) {
+      console.error('[CitasService] Error al registrar pago:', error)
       throw error.response?.data || error.message
     }
   },

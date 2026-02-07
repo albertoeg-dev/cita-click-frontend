@@ -157,7 +157,6 @@ const isEditMode = computed(() => !!props.servicio)
 
 // Validar un campo específico
 const validateField = (field) => {
-  console.log('[ServiceForm] Validando campo:', field, formData.value[field])
 
   switch (field) {
     case 'nombre':
@@ -190,12 +189,10 @@ const validateField = (field) => {
 
 // Validar todo el formulario
 const validateForm = () => {
-  console.log('[ServiceForm] Validando formulario completo')
   const validation = validarServicio(formData.value)
 
   if (!validation.valido) {
     errors.value = validation.errores
-    console.log('[ServiceForm] Errores de validación:', validation.errores)
   }
 
   return validation.valido
@@ -212,26 +209,21 @@ const isFormValid = computed(() => {
 
 // Manejar envío del formulario
 const handleSubmit = () => {
-  console.log('[ServiceForm] Enviando formulario')
 
   if (!validateForm()) {
-    console.warn('[ServiceForm] Formulario inválido')
     return
   }
 
-  console.log('[ServiceForm] Datos del formulario:', formData.value)
   emit('submit', { ...formData.value })
 }
 
 // Manejar cancelación
 const handleCancel = () => {
-  console.log('[ServiceForm] Cancelando formulario')
   emit('cancel')
 }
 
 // Resetear formulario
 const resetForm = () => {
-  console.log('[ServiceForm] Reseteando formulario')
   formData.value = {
     nombre: '',
     descripcion: '',
@@ -250,7 +242,6 @@ const resetForm = () => {
 // Cargar datos del servicio si está en modo edición
 const loadServicio = () => {
   if (props.servicio) {
-    console.log('[ServiceForm] Cargando servicio para edición:', props.servicio)
     formData.value = {
       nombre: props.servicio.nombre || '',
       descripcion: props.servicio.descripcion || '',
@@ -267,7 +258,6 @@ const loadServicio = () => {
 watch(() => props.servicio, loadServicio, { immediate: true })
 
 onMounted(() => {
-  console.log('[ServiceForm] Componente montado, modo edición:', isEditMode.value)
 })
 
 defineExpose({

@@ -10,10 +10,8 @@ export const serviciosService = {
    */
   async getServicios(activos = null) {
     try {
-      console.log('[ServiciosService] Obteniendo servicios, activos:', activos)
       const params = activos !== null ? { activos } : {}
       const response = await api.get('/servicios', { params })
-      console.log('[ServiciosService] Servicios obtenidos:', response.data.data?.length || 0)
       return response.data
     } catch (error) {
       console.error('[ServiciosService] Error al obtener servicios:', error)
@@ -27,9 +25,7 @@ export const serviciosService = {
    */
   async getServicio(id) {
     try {
-      console.log('[ServiciosService] Obteniendo servicio:', id)
       const response = await api.get(`/servicios/${id}`)
-      console.log('[ServiciosService] Servicio obtenido')
       return response.data
     } catch (error) {
       console.error('[ServiciosService] Error al obtener servicio:', error)
@@ -43,7 +39,6 @@ export const serviciosService = {
    */
   async createServicio(data) {
     try {
-      console.log('[ServiciosService] Creando servicio:', data)
 
       // Mapear campos del frontend al formato esperado por el backend
       const payload = {
@@ -54,9 +49,7 @@ export const serviciosService = {
         activo: data.activo
       }
 
-      console.log('[ServiciosService] Payload mapeado:', payload)
       const response = await api.post('/servicios', payload)
-      console.log('[ServiciosService] Servicio creado exitosamente')
       return response.data
     } catch (error) {
       console.error('[ServiciosService] Error al crear servicio:', error)
@@ -71,7 +64,6 @@ export const serviciosService = {
    */
   async updateServicio(id, data) {
     try {
-      console.log('[ServiciosService] Actualizando servicio:', id, data)
 
       // Mapear campos del frontend al formato esperado por el backend
       const payload = {
@@ -82,9 +74,7 @@ export const serviciosService = {
         activo: data.activo
       }
 
-      console.log('[ServiciosService] Payload mapeado:', payload)
       const response = await api.put(`/servicios/${id}`, payload)
-      console.log('[ServiciosService] Servicio actualizado exitosamente')
       return response.data
     } catch (error) {
       console.error('[ServiciosService] Error al actualizar servicio:', error)
@@ -98,9 +88,7 @@ export const serviciosService = {
    */
   async deleteServicio(id) {
     try {
-      console.log('[ServiciosService] Eliminando servicio:', id)
       const response = await api.delete(`/servicios/${id}`)
-      console.log('[ServiciosService] Servicio eliminado exitosamente')
       return response.data
     } catch (error) {
       console.error('[ServiciosService] Error al eliminar servicio:', error)

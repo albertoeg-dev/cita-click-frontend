@@ -33,12 +33,12 @@
           v-model="selectedPlan"
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
         >
-          <option value="starter">Starter - $349/mes (7 días gratis)</option>
-          <option value="professional">Professional - $699/mes (7 días gratis)</option>
-          <option value="enterprise">Enterprise - $1,499/mes</option>
+          <option value="basico">Básico - $299/mes (7 días gratis)</option>
+          <option value="profesional">Profesional - $699/mes (7 días gratis)</option>
+          <option value="premium">Premium - $1,299/mes</option>
         </select>
         <p class="text-xs text-gray-600 mt-2">
-          Los planes Starter y Professional incluyen 7 días de prueba gratis. Sin tarjeta de crédito.
+          Los planes Básico y Profesional incluyen 7 días de prueba gratis. Sin tarjeta de crédito.
         </p>
       </div>
 
@@ -159,21 +159,19 @@ const apellidoMaterno = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
-const selectedPlan = ref('starter')
+const selectedPlan = ref('basico')
 const loading = ref(false)
 const error = ref('')
 
 // Cargar plan desde URL query params
 onMounted(() => {
   const planFromQuery = route.query.plan
-  if (planFromQuery && ['starter', 'professional', 'enterprise'].includes(planFromQuery)) {
+  if (planFromQuery && ['basico', 'profesional', 'premium'].includes(planFromQuery)) {
     selectedPlan.value = planFromQuery
-    console.log('[RegisterPage] Plan precargado desde URL:', planFromQuery)
   }
 })
 
 const handleRegister = async () => {
-  console.log('[RegisterPage] Iniciando registro con plan:', selectedPlan.value)
 
   // Validaciones
   if (!nombre.value || !apellidoPaterno.value || !apellidoMaterno.value || !email.value || !password.value) {
@@ -204,9 +202,7 @@ const handleRegister = async () => {
       plan: selectedPlan.value,
     }
 
-    console.log('[RegisterPage] Datos a enviar:', datos)
     await authStore.register(datos)
-    console.log('[RegisterPage] Registro exitoso')
     router.push('/dashboard')
   } catch (err) {
     console.error('[RegisterPage] Error al registrar:', err)
@@ -217,7 +213,6 @@ const handleRegister = async () => {
 }
 
 const handleGoogleSuccess = () => {
-  console.log('[RegisterPage] Google register exitoso')
   error.value = ''
 }
 

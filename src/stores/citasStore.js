@@ -29,18 +29,26 @@ export const useCitasStore = defineStore('citas', () => {
 
   // ACTIONS
   const cargarCitas = async (fecha = null, estado = null) => {
+    // Verificar si hay token antes de intentar cargar
+    const token = localStorage.getItem('token')
+    if (!token) {
+      loading.value = false
+      return
+    }
+
     loading.value = true
     error.value = null
     try {
-      console.log('[CitasStore] Cargando citas, fecha:', fecha, 'estado:', estado)
       const response = await citasService.getCitas(fecha, estado)
       if (response.success) {
         citas.value = response.data
-        console.log('[CitasStore] Citas cargadas:', citas.value?.length || 0)
       }
     } catch (err) {
       console.error('[CitasStore] Error al cargar citas:', err)
-      error.value = err.message || err.mensaje || 'Error al cargar citas'
+      // Si es error de autenticación, no establecer error (el interceptor maneja)
+      if (err.response?.status !== 401 && err.response?.status !== 403) {
+        error.value = err.message || err.mensaje || 'Error al cargar citas'
+      }
     } finally {
       loading.value = false
     }
@@ -50,11 +58,9 @@ export const useCitasStore = defineStore('citas', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[CitasStore] Cargando cita:', id)
       const response = await citasService.getCita(id)
       if (response.success) {
         citaActual.value = response.data
-        console.log('[CitasStore] Cita cargada')
       }
     } catch (err) {
       console.error('[CitasStore] Error al cargar cita:', err)
@@ -68,11 +74,9 @@ export const useCitasStore = defineStore('citas', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[CitasStore] Creando cita')
       const response = await citasService.createCita(data)
       if (response.success) {
         await cargarCitas()
-        console.log('[CitasStore] Cita creada y lista actualizada')
         return response
       }
     } catch (err) {
@@ -88,11 +92,9 @@ export const useCitasStore = defineStore('citas', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[CitasStore] Actualizando cita:', id)
       const response = await citasService.updateCita(id, data)
       if (response.success) {
         await cargarCitas()
-        console.log('[CitasStore] Cita actualizada y lista actualizada')
         return response
       }
     } catch (err) {
@@ -108,11 +110,9 @@ export const useCitasStore = defineStore('citas', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[CitasStore] Cambiando estado de cita:', id, 'a', estado)
       const response = await citasService.cambiarEstado(id, estado)
       if (response.success) {
         await cargarCitas()
-        console.log('[CitasStore] Estado cambiado y lista actualizada')
         return response
       }
     } catch (err) {
@@ -128,11 +128,9 @@ export const useCitasStore = defineStore('citas', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[CitasStore] Cancelando cita:', id)
       const response = await citasService.cancelarCita(id)
       if (response.success) {
         await cargarCitas()
-        console.log('[CitasStore] Cita cancelada y lista actualizada')
         return response
       }
     } catch (err) {
@@ -148,7 +146,6 @@ export const useCitasStore = defineStore('citas', () => {
     loading.value = true
     error.value = null
     try {
-      console.log('[CitasStore] Cargando disponibilidad para servicio:', servicioId, 'fecha:', fecha)
       const response = await citasService.getDisponibilidad(servicioId, fecha)
       if (response.success) {
         // Backend devuelve data directamente como array de LocalDateTime strings
@@ -159,7 +156,6 @@ export const useCitasStore = defineStore('citas', () => {
           return horaCompleta.substring(0, 5) // "09:00"
         })
         horariosDisponibles.value = horarios
-        console.log('[CitasStore] Disponibilidad cargada:', horariosDisponibles.value.length, 'slots')
         // Retornar en el formato que el componente espera
         return { horariosDisponibles: horariosDisponibles.value }
       }
@@ -167,6 +163,62 @@ export const useCitasStore = defineStore('citas', () => {
       console.error('[CitasStore] Error al cargar disponibilidad:', err)
       error.value = err.message || err.mensaje || 'Error al cargar disponibilidad'
       horariosDisponibles.value = []
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const enviarConfirmacionCita = async (id, canal, confirmarPago) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await citasService.enviarConfirmacionCita(id, canal, confirmarPago)
+      if (response.success) {
+        return response
+      }
+    } catch (err) {
+      console.error('[CitasStore] Error al enviar confirmación:', err)
+      error.value = err.message || err.mensaje || 'Error al enviar confirmación'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const enviarRecordatorioCita = async (id, canal) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await citasService.enviarRecordatorioCita(id, canal)
+      if (response.success) {
+        return response
+      }
+    } catch (err) {
+      console.error('[CitasStore] Error al enviar recordatorio:', err)
+      error.value = err.message || err.mensaje || 'Error al enviar recordatorio'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const registrarPago = async (id) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await citasService.registrarPago(id)
+      if (response.success) {
+        // Actualizar la cita en el array local
+        const index = citas.value.findIndex(c => c.id === id)
+        if (index !== -1) {
+          citas.value[index] = response.data
+        }
+        return response
+      }
+    } catch (err) {
+      console.error('[CitasStore] Error al registrar pago:', err)
+      error.value = err.message || err.mensaje || 'Error al registrar pago'
       throw err
     } finally {
       loading.value = false
@@ -203,6 +255,9 @@ export const useCitasStore = defineStore('citas', () => {
     cambiarEstadoCita,
     cancelarCita,
     cargarDisponibilidad,
+    enviarConfirmacionCita,
+    enviarRecordatorioCita,
+    registrarPago,
     limpiarCitaActual,
     limpiarDisponibilidad,
   }

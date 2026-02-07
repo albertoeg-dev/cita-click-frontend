@@ -103,7 +103,6 @@ const handleLogin = async () => {
 }
 
 const handleGoogleSuccess = () => {
-  console.log('[LoginPage] Google login exitoso')
   error.value = ''
 }
 

@@ -79,13 +79,11 @@ onMounted(() => {
 const initGoogleSignIn = () => {
   // Esperar a que Google Identity Services esté disponible
   if (typeof google === 'undefined' || !google.accounts) {
-    console.log('[GoogleLoginButton] Esperando a que Google GSI se cargue...')
     setTimeout(initGoogleSignIn, 100)
     return
   }
 
   try {
-    console.log('[GoogleLoginButton] Inicializando Google Sign-In Button')
 
     // Renderizar el botón oficial de Google
     google.accounts.id.initialize({
@@ -111,7 +109,6 @@ const initGoogleSignIn = () => {
     )
 
     googleButtonRendered.value = true
-    console.log('[GoogleLoginButton] Botón de Google renderizado correctamente')
   } catch (error) {
     console.error('[GoogleLoginButton] Error al renderizar botón de Google:', error)
     emit('error', 'Error al cargar el botón de Google')
@@ -119,7 +116,6 @@ const initGoogleSignIn = () => {
 }
 
 const handleGoogleCallback = async (response) => {
-  console.log('[GoogleLoginButton] Callback de Google recibido')
   loading.value = true
 
   try {
@@ -130,12 +126,10 @@ const handleGoogleCallback = async (response) => {
       throw new Error('No se recibió token de Google')
     }
 
-    console.log('[GoogleLoginButton] Token recibido, autenticando con backend...')
 
     // Autenticar con el backend
     await authStore.googleLogin(idToken)
 
-    console.log('[GoogleLoginButton] Autenticación exitosa')
     loading.value = false
     emit('success')
 
