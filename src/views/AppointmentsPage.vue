@@ -819,10 +819,6 @@ const confirmarCita = async () => {
   confirmandoCita.value = true
 
   try {
-      citaId: citaAConfirmar.value.id,
-      pagoRecibido: pagoRecibido.value
-    })
-
     // Cambiar estado a CONFIRMADA
     await citasStore.cambiarEstadoCita(citaAConfirmar.value.id, 'CONFIRMADA')
 
