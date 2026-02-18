@@ -155,10 +155,14 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStripe } from '../composables/useStripe'
+import { useSuscripcionStore } from '../stores/suscripcionStore'
+import { usePlanesStore } from '../stores/planesStore'
 
 const route = useRoute()
 const router = useRouter()
 const { loading, error: stripeError, obtenerEstadoSesion } = useStripe()
+const suscripcionStore = useSuscripcionStore()
+const planesStore = usePlanesStore()
 
 const estado = ref(null)
 const customerEmail = ref(null)
@@ -178,6 +182,13 @@ onMounted(async () => {
     const data = await obtenerEstadoSesion(sessionId.value)
     estado.value = data.status
     customerEmail.value = data.customer_email
+
+    // Si el pago fue exitoso, recargar la info de suscripción y límites del plan
+    // para que el dashboard refleje el nuevo plan inmediatamente
+    if (data.status === 'complete') {
+      await suscripcionStore.cargarInfoSuscripcion()
+      await planesStore.cargarTodo()
+    }
   } catch (err) {
     error.value = stripeError.value || 'Error al verificar el estado del pago'
   }

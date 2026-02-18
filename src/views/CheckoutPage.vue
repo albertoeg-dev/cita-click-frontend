@@ -1,3 +1,6 @@
+<!-- DEPRECATED: Esta página se usaba para Stripe Embedded Checkout.
+     Ahora se usa Stripe Hosted Checkout que redirige directamente a checkout.stripe.com.
+     Se mantiene como referencia/fallback. -->
 <template>
   <div class="min-h-screen bg-gray-50 py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

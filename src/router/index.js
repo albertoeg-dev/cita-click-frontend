@@ -27,6 +27,7 @@ import PricingPage from '../views/PricingPage.vue'
 import SubscriptionCheckoutPage from '../views/SubscriptionCheckoutPage.vue'
 import CheckoutPage from '../views/CheckoutPage.vue'
 import PaymentSuccessPage from '../views/PaymentSuccessPage.vue'
+import PaymentCancelPage from '../views/PaymentCancelPage.vue'
 import PaymentHistoryPage from '../views/PaymentHistoryPage.vue'
 import PublicPaymentPage from '../views/PublicPaymentPage.vue'
 
@@ -173,6 +174,12 @@ const routes = [
     path: '/payment/success',
     name: 'PaymentSuccess',
     component: PaymentSuccessPage,
+    meta: { layout: 'minimal', requiresAuth: true },
+  },
+  {
+    path: '/payment/cancel',
+    name: 'PaymentCancel',
+    component: PaymentCancelPage,
     meta: { layout: 'minimal', requiresAuth: true },
   },
   {

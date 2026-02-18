@@ -331,12 +331,12 @@ const procederAlPago = async () => {
     if (response.success) {
       const checkoutData = response.data
 
-      // Redirigir al checkout de Stripe
-      router.push({
-        name: 'Checkout',
-        params: { sessionId: checkoutData.sessionId },
-        query: { clientSecret: checkoutData.clientSecret }
-      })
+      // Redirigir al Stripe Hosted Checkout
+      if (checkoutData.url) {
+        window.location.href = checkoutData.url
+      } else {
+        throw new Error('No se recibió URL de checkout')
+      }
     } else {
       throw new Error(response.message || 'Error al crear sesión de pago')
     }

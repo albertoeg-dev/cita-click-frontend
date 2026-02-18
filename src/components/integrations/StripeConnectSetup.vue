@@ -4,6 +4,32 @@
       <LoadingSpinner />
     </div>
 
+    <!-- Plan check: Solo usuarios Premium pueden usar Connect -->
+    <div v-else-if="!isPremium" class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <div class="ml-3 flex-1">
+          <h3 class="text-sm font-medium text-yellow-800">Exclusivo del Plan Premium</h3>
+          <div class="mt-2 text-sm text-yellow-700">
+            <p>Stripe Connect para recibir pagos de tus clientes solo esta disponible en el plan Premium.</p>
+          </div>
+          <div class="mt-4">
+            <router-link
+              to="/pricing"
+              class="text-sm font-medium text-yellow-800 hover:text-yellow-900 underline"
+            >
+              Actualizar a Premium
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div v-else-if="account && account.onboardingCompleted" class="account-active">
       <div class="bg-green-50 border border-green-200 rounded-lg p-6">
         <div class="flex items-start">
@@ -122,19 +148,37 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
+import { useSuscripcionStore } from '@/stores/suscripcionStore';
 import stripeConnectService from '@/services/stripeConnectService';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 import Badge from '@/components/common/Badge.vue';
 import Alert from '@/components/common/Alert.vue';
 
 const authStore = useAuthStore();
+const suscripcionStore = useSuscripcionStore();
 const loading = ref(true);
 const processing = ref(false);
 const account = ref(null);
 const error = ref(null);
+const isPremium = ref(false);
 
 onMounted(async () => {
-  await loadAccountStatus();
+  // Verificar plan primero
+  try {
+    if (!suscripcionStore.info) {
+      await suscripcionStore.cargarInfoSuscripcion();
+    }
+    isPremium.value = suscripcionStore.info?.plan?.toLowerCase() === 'premium';
+  } catch (err) {
+    console.error('Error verificando plan:', err);
+    isPremium.value = false;
+  }
+
+  if (isPremium.value) {
+    await loadAccountStatus();
+  } else {
+    loading.value = false;
+  }
 });
 
 const loadAccountStatus = async () => {
