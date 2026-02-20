@@ -22,33 +22,10 @@ const plantillaEmailService = {
   },
 
   /**
-   * Elimina el logo de la plantilla
-   */
-  async eliminarLogo() {
-    const response = await api.delete('/plantilla-email/logo')
-    return response.data
-  },
-
-  /**
    * Restaura la configuración a valores por defecto
    */
   async restaurarPorDefecto() {
     const response = await api.post('/plantilla-email/restaurar')
-    return response.data
-  },
-
-  /**
-   * Sube un archivo de logo
-   * @param {File} file - Archivo de imagen a subir
-   */
-  async subirLogo(file) {
-    const formData = new FormData()
-    formData.append('file', file)
-    const response = await api.post('/plantilla-email/upload-logo', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
     return response.data
   }
 }

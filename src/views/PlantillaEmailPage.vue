@@ -16,58 +16,6 @@
       <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Panel de Configuración -->
         <div class="space-y-6">
-          <!-- Logo -->
-          <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Logo</h3>
-
-            <div v-if="config.logoUrl" class="mb-4">
-              <img
-                :src="getImageUrl(config.logoUrl)"
-                alt="Logo actual"
-                class="max-w-[200px] max-h-[80px] object-contain border border-gray-200 rounded p-2"
-              >
-              <button
-                @click="eliminarLogo"
-                class="mt-2 text-sm text-red-600 hover:text-red-700"
-              >
-                Eliminar logo
-              </button>
-            </div>
-
-            <div v-else class="mb-4">
-              <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                <p class="mt-2 text-sm text-gray-600">Sin logo personalizado</p>
-              </div>
-            </div>
-
-            <!-- Upload de archivo -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Subir Logo
-              </label>
-              <input
-                ref="fileInput"
-                type="file"
-                accept="image/png,image/jpeg,image/jpg,image/svg+xml"
-                @change="handleFileUpload"
-                class="hidden"
-              >
-              <button
-                @click="$refs.fileInput.click()"
-                :disabled="subiendoLogo"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {{ subiendoLogo ? 'Subiendo...' : 'Seleccionar Archivo' }}
-              </button>
-              <p class="mt-2 text-xs text-gray-500">
-                Formatos: PNG, JPG, SVG. Dimensiones recomendadas: 200x80px. Tamaño máximo: 500KB
-              </p>
-            </div>
-          </div>
-
           <!-- Colores -->
           <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Colores</h3>
@@ -246,7 +194,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
 import Input from '../components/common/Input.vue'
@@ -261,13 +209,10 @@ const toast = useToast()
 // Estado
 const cargando = ref(true)
 const guardando = ref(false)
-const subiendoLogo = ref(false)
 const mostrarModalRestaurar = ref(false)
-const fileInput = ref(null)
 
 // Configuración
 const config = ref({
-  logoUrl: '',
   colorPrimario: '#1E40AF',
   colorSecundario: '#3B82F6',
   colorFondo: '#F3F4F6',
@@ -300,7 +245,6 @@ const previewHtml = computed(() => {
 })
 
 const generarPreviewClasico = () => {
-  const logo = config.value.logoUrl ? getImageUrl(config.value.logoUrl) : null
   const mensaje = config.value.mensajeBienvenida || 'Te recordamos tu próxima cita'
   const firma = config.value.firma || 'Equipo de Mi Negocio'
   const contacto = config.value.infoContacto || ''
@@ -330,7 +274,7 @@ const generarPreviewClasico = () => {
     <body>
       <div class="container">
         <div class="header">
-          ${logo ? `<img src="${logo}" alt="Logo" style="max-width: 200px; max-height: 80px; margin-bottom: 10px;">` : '<div class="header-emoji">🔔</div>'}
+          <div class="header-emoji">🔔</div>
           <h1>Recordatorio de Cita</h1>
         </div>
         <div class="content">
@@ -359,7 +303,6 @@ const generarPreviewClasico = () => {
 }
 
 const generarPreviewModerno = () => {
-  const logo = config.value.logoUrl ? getImageUrl(config.value.logoUrl) : null
   const mensaje = config.value.mensajeBienvenida || 'Te recordamos tu próxima cita'
   const firma = config.value.firma || 'Equipo de Mi Negocio'
   const contacto = config.value.infoContacto || ''
@@ -391,7 +334,7 @@ const generarPreviewModerno = () => {
     <body>
       <div class="container">
         <div class="header">
-          ${logo ? `<img src="${logo}" alt="Logo" style="max-width: 200px; max-height: 80px; margin-bottom: 15px; filter: brightness(0) invert(1);">` : '<div class="header-emoji">🔔</div>'}
+          <div class="header-emoji">🔔</div>
           <h1>Recordatorio de Cita</h1>
         </div>
         <div class="content">
@@ -444,7 +387,6 @@ const generarPreviewModerno = () => {
 }
 
 const generarPreviewMinimalista = () => {
-  const logo = config.value.logoUrl ? getImageUrl(config.value.logoUrl) : null
   const mensaje = config.value.mensajeBienvenida || 'Te recordamos tu próxima cita'
   const firma = config.value.firma || 'Equipo de Mi Negocio'
   const contacto = config.value.infoContacto || ''
@@ -459,7 +401,6 @@ const generarPreviewMinimalista = () => {
         body { margin: 0; padding: 40px 20px; font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #FFFFFF; }
         .container { max-width: 600px; margin: 0 auto; border: 1px solid #E5E7EB; }
         .header { border-bottom: 2px solid #000000; padding: 30px; text-align: center; background-color: #FFFFFF; }
-        .header-emoji { font-size: 40px; margin-bottom: 15px; }
         .header h1 { color: #000000; margin: 0; font-size: 22px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; }
         .content { padding: 40px 30px; background-color: #FFFFFF; }
         .greeting { font-size: 16px; color: #000000; margin-bottom: 25px; font-weight: 300; }
@@ -475,7 +416,6 @@ const generarPreviewMinimalista = () => {
     <body>
       <div class="container">
         <div class="header">
-          ${logo ? `<img src="${logo}" alt="Logo" style="max-width: 180px; max-height: 70px; margin-bottom: 15px;">` : '<div class="header-emoji">🔔</div>'}
           <h1>Recordatorio</h1>
         </div>
         <div class="content">
@@ -523,7 +463,6 @@ const cargarConfiguracion = async () => {
 
     if (response.success && response.data) {
       config.value = {
-        logoUrl: response.data.logoUrl || '',
         colorPrimario: response.data.colorPrimario || '#1E40AF',
         colorSecundario: response.data.colorSecundario || '#3B82F6',
         colorFondo: response.data.colorFondo || '#F3F4F6',
@@ -561,22 +500,6 @@ const guardarConfiguracion = async () => {
   }
 }
 
-const eliminarLogo = async () => {
-  try {
-    const response = await plantillaEmailService.eliminarLogo()
-
-    if (response.success) {
-      config.value.logoUrl = ''
-      toast.success('Logo eliminado exitosamente')
-    } else {
-      toast.error(response.message || 'Error al eliminar el logo')
-    }
-  } catch (error) {
-    console.error('Error al eliminar logo:', error)
-    toast.error('Error al eliminar el logo')
-  }
-}
-
 const confirmarRestaurar = () => {
   mostrarModalRestaurar.value = true
 }
@@ -596,55 +519,6 @@ const restaurarPorDefecto = async () => {
     console.error('Error al restaurar configuración:', error)
     toast.error('Error al restaurar la configuración')
   }
-}
-
-const handleFileUpload = async (event) => {
-  const file = event.target.files[0]
-  if (!file) return
-
-  // Validar tipo de archivo
-  const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml']
-  if (!validTypes.includes(file.type)) {
-    toast.error('Formato de archivo no válido. Usa PNG, JPG o SVG')
-    return
-  }
-
-  // Validar tamaño (máximo 500KB)
-  if (file.size > 500 * 1024) {
-    toast.error('El archivo excede el tamaño máximo de 500KB')
-    return
-  }
-
-  try {
-    subiendoLogo.value = true
-    const response = await plantillaEmailService.subirLogo(file)
-
-    if (response.success) {
-      config.value.logoUrl = response.data.logoUrl
-      toast.success('Logo subido exitosamente')
-      // Limpiar input
-      if (fileInput.value) {
-        fileInput.value.value = ''
-      }
-    } else {
-      toast.error(response.message || 'Error al subir el logo')
-    }
-  } catch (error) {
-    console.error('Error al subir logo:', error)
-    toast.error('Error al subir el logo')
-  } finally {
-    subiendoLogo.value = false
-  }
-}
-
-const getImageUrl = (logoUrl) => {
-  if (!logoUrl) return ''
-  // Si ya es una URL completa, retornarla tal cual
-  if (logoUrl.startsWith('http://') || logoUrl.startsWith('https://')) {
-    return logoUrl
-  }
-  // Si es una ruta relativa, construir la URL completa
-  return `${import.meta.env.VITE_API_URL || 'http://localhost:8080'}${logoUrl}`
 }
 
 // Lifecycle
