@@ -10,7 +10,7 @@ import VerifyEmailPage from '../views/VerifyEmailPage.vue'
 
 // Vistas del Dashboard
 import DashboardPage from '../views/DashboardPage.vue'
-import AppointmentsPage from '../views/Appointmentspage.vue'
+import AppointmentsPage from '../views/AppointmentsPage.vue'
 import CalendarPage from '../views/CalendarPage.vue'
 import ClientsPage from '../views/ClientsPage.vue'
 import ClientProfile360 from '../views/ClientProfile360.vue'
