@@ -10,6 +10,7 @@ import VerifyEmailPage from '../views/VerifyEmailPage.vue'
 
 // Vistas del Dashboard
 import DashboardPage from '../views/DashboardPage.vue'
+
 import AppointmentsPage from '../views/AppointmentsPage.vue'
 import CalendarPage from '../views/CalendarPage.vue'
 import ClientsPage from '../views/ClientsPage.vue'
@@ -34,19 +35,14 @@ import PublicPaymentPage from '../views/PublicPaymentPage.vue'
 // Vista de Documentación
 import DocsPage from '../views/DocsPage.vue'
 
-// Vista Landing
-import LandingPage from '../views/LandingPage.vue'
-
 // Vista 404
 import NotFoundPage from '../views/NotFoundPage.vue'
 
 const routes = [
-  // Landing Page
+  // Raíz → redirige al login (el guard redirigirá al dashboard si ya está autenticado)
   {
     path: '/',
-    name: 'Landing',
-    component: LandingPage,
-    meta: { layout: 'minimal', requiresAuth: false }
+    redirect: '/login'
   },
 
   // Ruta de documentación (pública)
