@@ -14,16 +14,19 @@
           </span>
           <p class="ml-3 font-medium text-white truncate">
             <span class="md:hidden">
-              ⏰ ¡Te quedan {{ diasRestantes }} días de prueba!
+              ⏰ ¡Te queda{{ diasRestantes === 1 ? '' : 'n' }} {{ diasRestantes }} día{{ diasRestantes === 1 ? '' : 's' }} de prueba!
             </span>
             <span class="hidden md:inline">
-              ⏰ Tu período de prueba termina en {{ diasRestantes }} día{{ diasRestantes > 1 ? 's' : '' }}. Registra tu tarjeta para continuar sin interrupciones.
+              ⏰ Tu período de prueba termina
+              <template v-if="diasRestantes === 1">mañana.</template>
+              <template v-else>en {{ diasRestantes }} días.</template>
+              Activa tu suscripción para continuar sin interrupciones.
             </span>
           </p>
         </div>
         <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
           <router-link
-            to="/pricing"
+            to="/planes"
             class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-orange-600 bg-white hover:bg-orange-50 transition-colors"
           >
             Activar Plan
@@ -48,43 +51,47 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useAuthStore } from '../stores/authStore'
+import { useSuscripcionStore } from '../stores/suscripcionStore'
 
-const authStore = useAuthStore()
-
+const suscripcionStore = useSuscripcionStore()
 const bannerCerrado = ref(false)
-const diasRestantes = ref(0)
-const fechaFinTrial = ref(null)
 
-// Calcular días restantes de trial
-const calcularDiasRestantes = () => {
-  if (!authStore.user?.trialEndsAt) {
-    return 0
+// Carga información de suscripción si aún no está disponible
+onMounted(async () => {
+  // Respetar si el usuario ya cerró el banner hoy
+  const cerradoHoy = localStorage.getItem('trial-banner-closed')
+  if (cerradoHoy === new Date().toDateString()) {
+    bannerCerrado.value = true
+    return
   }
 
-  fechaFinTrial.value = new Date(authStore.user.trialEndsAt)
-  const ahora = new Date()
-  const diferencia = fechaFinTrial.value - ahora
-  const dias = Math.ceil(diferencia / (1000 * 60 * 60 * 24))
+  // Cargar datos de suscripción si no están cargados
+  if (!suscripcionStore.info) {
+    try {
+      await suscripcionStore.cargarInfoSuscripcion()
+    } catch {
+      // Silencioso: si falla la carga no mostramos el banner
+    }
+  }
+})
 
-  return Math.max(0, dias)
-}
+// Días restantes de prueba (desde el store, siempre fresco del backend)
+const diasRestantes = computed(() => {
+  return suscripcionStore.info?.diasRestantesPrueba ?? 0
+})
 
 // Mostrar banner solo si:
 // 1. No está cerrado manualmente
-// 2. El usuario está en trial
-// 3. Quedan 2 días o menos
+// 2. El negocio está en período de prueba
+// 3. Quedan 2 días o menos (y al menos 1 día)
 const mostrarBanner = computed(() => {
   if (bannerCerrado.value) return false
-  if (!authStore.user) return false
-  if (authStore.user.trialUsed === false) return false // Ya usó trial
-  if (!authStore.user.trialEndsAt) return false
+  if (!suscripcionStore.info) return false
 
-  const dias = calcularDiasRestantes()
-  diasRestantes.value = dias
+  const enPrueba = suscripcionStore.info.enPeriodoPrueba
+  const dias = diasRestantes.value
 
-  // Mostrar solo cuando falten 2 días o menos
-  return dias > 0 && dias <= 2
+  return enPrueba && dias >= 1 && dias <= 2
 })
 
 const cerrarBanner = () => {
@@ -92,15 +99,4 @@ const cerrarBanner = () => {
   // Guardar en localStorage para que no vuelva a aparecer hoy
   localStorage.setItem('trial-banner-closed', new Date().toDateString())
 }
-
-onMounted(() => {
-  // Verificar si ya cerró el banner hoy
-  const cerradoHoy = localStorage.getItem('trial-banner-closed')
-  if (cerradoHoy === new Date().toDateString()) {
-    bannerCerrado.value = true
-  }
-
-  // Calcular días restantes inicialmente
-  diasRestantes.value = calcularDiasRestantes()
-})
 </script>

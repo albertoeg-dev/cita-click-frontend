@@ -1,0 +1,34 @@
+# robots.txt – Cita Click (https://citaclick.com.mx)
+# Última actualización: 2026-02
+
+User-agent: *
+
+# Páginas públicas: PERMITIDAS (landing, precios, login, registro, docs)
+Allow: /
+Allow: /pricing
+Allow: /login
+Allow: /register
+Allow: /docs
+
+# Páginas privadas: NO INDEXAR (requieren autenticación)
+Disallow: /dashboard
+Disallow: /agenda
+Disallow: /clientes
+Disallow: /servicios
+Disallow: /staff
+Disallow: /configuracion
+Disallow: /reportes
+Disallow: /planes
+Disallow: /pagos
+Disallow: /users
+Disallow: /plantilla-email
+Disallow: /perfil
+
+# Rutas de callback y confirmación (no tienen valor SEO)
+Disallow: /auth/
+Disallow: /payment-success
+Disallow: /payment-cancel
+Disallow: /stripe-return
+
+# Sitemap
+Sitemap: https://citaclick.com.mx/sitemap.xml

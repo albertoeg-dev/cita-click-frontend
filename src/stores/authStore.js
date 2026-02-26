@@ -4,13 +4,17 @@ import { authService } from '../services/authService'
 
 export const useAuthStore = defineStore('auth', () => {
   // STATE
+  // El token ya NO se guarda en el store ni en localStorage.
+  // La autenticación se maneja mediante cookie httpOnly gestionada por el backend.
   const user = ref(null)
-  const token = ref(localStorage.getItem('token') || null)
   const loading = ref(false)
   const error = ref(null)
+  // Indica si ya verificamos la sesión con el backend al menos una vez
+  const initialized = ref(false)
 
   // GETTERS
-  const isAuthenticated = computed(() => !!token.value)
+  // La autenticación se determina por la presencia del objeto user (verificado vía cookie)
+  const isAuthenticated = computed(() => !!user.value)
 
   // ACTIONS
   const register = async (payload) => {
@@ -19,14 +23,15 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const response = await authService.register(payload)
 
-      if (response.success && response.data?.token) {
-        token.value = response.data.token
+      if (response.success) {
+        // El token fue almacenado en cookie httpOnly por el backend
         user.value = {
-          email: response.data.email,
-          nombre: response.data.nombre,
+          email: response.data?.email,
+          nombre: response.data?.nombre,
+          negocioId: response.data?.negocioId,
         }
-        localStorage.setItem('token', token.value)
         localStorage.setItem('user', JSON.stringify(user.value))
+        initialized.value = true
         return response
       }
       throw new Error(response.message || 'Error en registro')
@@ -45,14 +50,15 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const response = await authService.login(email, password)
 
-      if (response.success && response.data?.token) {
-        token.value = response.data.token
+      if (response.success) {
+        // El token fue almacenado en cookie httpOnly por el backend
         user.value = {
-          email: response.data.email,
-          nombre: response.data.nombre,
+          email: response.data?.email,
+          nombre: response.data?.nombre,
+          negocioId: response.data?.negocioId,
         }
-        localStorage.setItem('token', token.value)
         localStorage.setItem('user', JSON.stringify(user.value))
+        initialized.value = true
         return response
       }
       throw new Error(response.message || 'Error en login')
@@ -71,15 +77,15 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const response = await authService.googleAuth(idToken, negocioData)
 
-      if (response.success && response.data?.token) {
-        token.value = response.data.token
+      if (response.success) {
+        // El token fue almacenado en cookie httpOnly por el backend
         user.value = {
-          email: response.data.email,
-          nombre: response.data.nombre,
-          negocioId: response.data.negocioId,
+          email: response.data?.email,
+          nombre: response.data?.nombre,
+          negocioId: response.data?.negocioId,
         }
-        localStorage.setItem('token', token.value)
         localStorage.setItem('user', JSON.stringify(user.value))
+        initialized.value = true
         return response
       }
       throw new Error(response.message || 'Error en autenticación con Google')
@@ -94,47 +100,127 @@ export const useAuthStore = defineStore('auth', () => {
 
   const logout = async () => {
     try {
-      // Intentar llamar al backend, pero no fallar si no funciona
+      // El backend invalida la cookie httpOnly
       await authService.logout()
-    } catch (error) {
-      // Error ignorado
+    } catch (e) {
+      // Error ignorado - limpiar estado de todas formas
     } finally {
-      // Siempre limpiar el estado local
-      token.value = null
       user.value = null
-      localStorage.removeItem('token')
+      initialized.value = false
       localStorage.removeItem('user')
     }
   }
 
-  const loadUserFromStorage = () => {
-    const storedUser = localStorage.getItem('user')
-    const storedToken = localStorage.getItem('token')
+  /**
+   * Verifica si existe una sesión activa consultando /auth/me.
+   * Debe llamarse una vez al inicio de la app (en el router guard).
+   * Si la cookie httpOnly es válida, puebla user.value con datos frescos.
+   */
+  const initSession = async () => {
+    if (initialized.value) return
 
-    if (storedUser && storedToken) {
+    // Cargar datos de localStorage para mostrar mientras se verifica con el backend
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
       try {
         user.value = JSON.parse(storedUser)
-      } catch (error) {
-        console.error('[AuthStore] Error al parsear usuario de localStorage:', error)
-        // Si hay error parseando, limpiar localStorage
+      } catch {
         localStorage.removeItem('user')
-        localStorage.removeItem('token')
-        token.value = null
-        user.value = null
       }
-    } else if (storedToken && !storedUser) {
-      // Token sin usuario, limpiar todo
-      localStorage.removeItem('token')
-      token.value = null
+    }
+
+    try {
+      const response = await authService.getCurrentUser()
+      if (response.success && response.data) {
+        const u = response.data
+        user.value = {
+          ...user.value,
+          id: u.id,
+          nombre: u.nombre,
+          apellidoPaterno: u.apellidoPaterno,
+          apellidoMaterno: u.apellidoMaterno,
+          email: u.email,
+          telefono: u.telefono,
+          rol: u.rol,
+          negocioId: u.negocioId,
+          authProvider: u.authProvider,
+        }
+        localStorage.setItem('user', JSON.stringify(user.value))
+      } else {
+        user.value = null
+        localStorage.removeItem('user')
+      }
+    } catch {
+      // Si /auth/me falla (cookie expirada o ausente), limpiar sesión local
+      user.value = null
+      localStorage.removeItem('user')
+    } finally {
+      initialized.value = true
+    }
+  }
+
+  /**
+   * Cargar perfil completo del usuario desde el backend y sincronizar el store.
+   */
+  const cargarPerfil = async () => {
+    try {
+      const response = await authService.getCurrentUser()
+      if (response.success && response.data) {
+        const u = response.data
+        user.value = {
+          ...user.value,
+          id: u.id,
+          nombre: u.nombre,
+          apellidoPaterno: u.apellidoPaterno,
+          apellidoMaterno: u.apellidoMaterno,
+          email: u.email,
+          telefono: u.telefono,
+          rol: u.rol,
+          negocioId: u.negocioId,
+          authProvider: u.authProvider,
+        }
+        localStorage.setItem('user', JSON.stringify(user.value))
+      }
+    } catch (err) {
+      console.error('[AuthStore] Error al cargar perfil:', err)
+    }
+  }
+
+  /**
+   * Actualizar perfil del usuario autenticado.
+   */
+  const actualizarPerfil = async (datos) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await authService.actualizarPerfil(datos)
+      if (response.success && response.data) {
+        const u = response.data
+        user.value = {
+          ...user.value,
+          nombre: u.nombre,
+          apellidoPaterno: u.apellidoPaterno,
+          apellidoMaterno: u.apellidoMaterno,
+          telefono: u.telefono,
+        }
+        localStorage.setItem('user', JSON.stringify(user.value))
+      }
+      return response
+    } catch (err) {
+      console.error('[AuthStore] Error al actualizar perfil:', err)
+      error.value = err.message || 'Error al actualizar perfil'
+      throw err
+    } finally {
+      loading.value = false
     }
   }
 
   return {
     // State
     user,
-    token,
     loading,
     error,
+    initialized,
 
     // Getters
     isAuthenticated,
@@ -144,6 +230,8 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     googleLogin,
     logout,
-    loadUserFromStorage,
+    initSession,
+    cargarPerfil,
+    actualizarPerfil,
   }
 })

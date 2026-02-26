@@ -2,9 +2,90 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!-- ====================================================
+         FAVICON
+         ==================================================== -->
+    <link rel="icon" type="image/x-icon" href="/Cita-Click-logo.ico" />
+    <link rel="shortcut icon" href="/Cita-Click-logo.ico" />
+
+    <!-- ====================================================
+         VIEWPORT & COMPATIBILIDAD
+         ==================================================== -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistema de Reservas</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- ====================================================
+         SEO BÁSICO
+         El <meta name="robots" content="index, follow"> le indica
+         explícitamente a Google que SÍ debe indexar esta página.
+         Esto sobreescribe cualquier header X-Robots-Tag que pueda
+         venir del servidor con valor "noindex".
+         ==================================================== -->
+    <title>Cita Click – Sistema de Reservas y Citas en Línea para Negocios en México</title>
+    <meta
+      name="description"
+      content="Cita Click es el sistema de reservas y agenda de citas en línea para negocios en México. Gestiona citas, clientes y pagos desde un solo lugar. Prueba gratis 7 días."
+    />
+    <meta name="keywords" content="sistema de reservas, citas en línea, agenda digital, software de citas, reservas online México, gestión de citas" />
+    <meta name="author" content="Cita Click" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://citaclick.com.mx/" />
+
+    <!-- ====================================================
+         OPEN GRAPH (Facebook, WhatsApp, LinkedIn)
+         ==================================================== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cita Click" />
+    <meta property="og:url" content="https://citaclick.com.mx/" />
+    <meta property="og:title" content="Cita Click – Reservas y Citas en Línea para tu Negocio" />
+    <meta
+      property="og:description"
+      content="Automatiza tu agenda, recibe pagos en línea y reduce cancelaciones. El sistema de citas para negocios mexicanos. Empieza gratis hoy."
+    />
+    <meta property="og:image" content="https://citaclick.com.mx/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_MX" />
+
+    <!-- ====================================================
+         TWITTER CARD
+         ==================================================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cita Click – Reservas y Citas en Línea para tu Negocio" />
+    <meta
+      name="twitter:description"
+      content="Automatiza tu agenda, recibe pagos en línea y reduce cancelaciones. Sistema de citas para negocios mexicanos."
+    />
+    <meta name="twitter:image" content="https://citaclick.com.mx/og-image.png" />
+
+    <!-- ====================================================
+         DATOS ESTRUCTURADOS (JSON-LD)
+         Le dice a Google exactamente qué es este sitio.
+         ==================================================== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Cita Click",
+      "url": "https://citaclick.com.mx",
+      "description": "Sistema de reservas y citas en línea para negocios en México. Gestiona citas, clientes y pagos desde un solo lugar.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "MXN",
+        "lowPrice": "0",
+        "offerCount": "3"
+      },
+      "inLanguage": "es-MX",
+      "author": {
+        "@type": "Organization",
+        "name": "Cita Click",
+        "url": "https://citaclick.com.mx"
+      }
+    }
+    </script>
 
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async></script>

@@ -5,6 +5,24 @@ import api from './api'
  */
 export const reportesService = {
   /**
+   * Extrae un mensaje legible cuando una respuesta blob falla.
+   * Cuando responseType='blob', Axios parsea los errores también como Blob,
+   * por lo que hay que leer el texto y parsear el JSON para obtener el mensaje.
+   */
+  async _parseBlobError(error) {
+    if (error.response?.data instanceof Blob) {
+      try {
+        const text = await error.response.data.text()
+        const json = JSON.parse(text)
+        return new Error(json.message || json.error || 'Error al descargar el archivo')
+      } catch {
+        return new Error(`Error ${error.response.status}: no se pudo descargar el archivo`)
+      }
+    }
+    return new Error(error.response?.data?.message || error.message || 'Error al descargar el archivo')
+  },
+
+  /**
    * Obtener reporte diario (JSON)
    * @param {string} fecha - Fecha en formato YYYY-MM-DD
    */
@@ -16,7 +34,7 @@ export const reportesService = {
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al obtener reporte diario:', error)
-      throw error.response?.data || error.message
+      throw new Error(error.response?.data?.message || error.message || 'Error al obtener el reporte diario')
     }
   },
 
@@ -32,7 +50,7 @@ export const reportesService = {
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al obtener reporte semanal:', error)
-      throw error.response?.data || error.message
+      throw new Error(error.response?.data?.message || error.message || 'Error al obtener el reporte semanal')
     }
   },
 
@@ -49,7 +67,7 @@ export const reportesService = {
       return response.data
     } catch (error) {
       console.error('[ReportesService] Error al obtener reporte mensual:', error)
-      throw error.response?.data || error.message
+      throw new Error(error.response?.data?.message || error.message || 'Error al obtener el reporte mensual')
     }
   },
 
@@ -65,8 +83,8 @@ export const reportesService = {
       })
       return response.data
     } catch (error) {
-      console.error('[ReportesService] Error al descargar PDF:', error)
-      throw error.response?.data || error.message
+      console.error('[ReportesService] Error al descargar PDF diario:', error)
+      throw await this._parseBlobError(error)
     }
   },
 
@@ -82,8 +100,8 @@ export const reportesService = {
       })
       return response.data
     } catch (error) {
-      console.error('[ReportesService] Error al descargar PDF:', error)
-      throw error.response?.data || error.message
+      console.error('[ReportesService] Error al descargar PDF semanal:', error)
+      throw await this._parseBlobError(error)
     }
   },
 
@@ -100,8 +118,8 @@ export const reportesService = {
       })
       return response.data
     } catch (error) {
-      console.error('[ReportesService] Error al descargar PDF:', error)
-      throw error.response?.data || error.message
+      console.error('[ReportesService] Error al descargar PDF mensual:', error)
+      throw await this._parseBlobError(error)
     }
   },
 
@@ -117,8 +135,8 @@ export const reportesService = {
       })
       return response.data
     } catch (error) {
-      console.error('[ReportesService] Error al descargar Excel:', error)
-      throw error.response?.data || error.message
+      console.error('[ReportesService] Error al descargar Excel diario:', error)
+      throw await this._parseBlobError(error)
     }
   },
 
@@ -134,8 +152,8 @@ export const reportesService = {
       })
       return response.data
     } catch (error) {
-      console.error('[ReportesService] Error al descargar Excel:', error)
-      throw error.response?.data || error.message
+      console.error('[ReportesService] Error al descargar Excel semanal:', error)
+      throw await this._parseBlobError(error)
     }
   },
 
@@ -152,8 +170,8 @@ export const reportesService = {
       })
       return response.data
     } catch (error) {
-      console.error('[ReportesService] Error al descargar Excel:', error)
-      throw error.response?.data || error.message
+      console.error('[ReportesService] Error al descargar Excel mensual:', error)
+      throw await this._parseBlobError(error)
     }
   },
 

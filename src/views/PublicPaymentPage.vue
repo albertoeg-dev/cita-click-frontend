@@ -188,9 +188,7 @@ let paymentElement = null
 // Inicializar Stripe
 const inicializarStripe = async () => {
   try {
-    // Cargar Stripe (usa tu clave pública)
-    // IMPORTANTE: Cambiar a clave de producción en producción
-    stripe = await loadStripe('pk_test_51QZLcNP7lLM2TT73VuiJgLCADlJJ4LvxiDKJ3GQJBB7FGkgQMYO8IYIKjMWQ7Tg2LXhMIgjfxFLqxIBUJlRjlpOl00Wyk5lE7g')
+    stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
 
     if (!stripe) {
       throw new Error('No se pudo cargar Stripe')
@@ -265,13 +263,8 @@ const cargarPago = async () => {
       clientSecret: clientSecret
     }
 
-    // Obtener detalles del pago desde el backend
-    const response = await api.get(`/v1/payments/${paymentId}`, {
-      // Esta llamada no requiere autenticación para permitir que el cliente final pague
-      headers: {
-        'X-Public-Payment': 'true'
-      }
-    })
+    // Obtener detalles del pago desde el endpoint público (sin autenticación JWT)
+    const response = await api.get(`/v1/payments/public/${paymentId}`)
 
     if (response.data.success) {
       const paymentData = response.data.data

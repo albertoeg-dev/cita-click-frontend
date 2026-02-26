@@ -12,9 +12,9 @@
         <!-- Header -->
         <div class="text-center mb-8">
           <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mx-auto flex items-center justify-center text-white font-bold text-2xl shadow-lg mb-4">
-            RP
+            CC
           </div>
-          <h1 class="text-3xl font-bold text-slate-900">Reservas Pro</h1>
+          <h1 class="text-3xl font-bold text-slate-900">Cita Click</h1>
           <p class="text-slate-600 text-sm mt-2">Gestiona tus citas y clientes</p>
         </div>
 
@@ -26,7 +26,7 @@
 
       <!-- Footer -->
       <p class="text-center text-slate-400 text-xs mt-8">
-        © 2025 Reservas Pro. Todos los derechos reservados.
+        © 2025 Cita Click. Todos los derechos reservados.
       </p>
     </div>
   </div>

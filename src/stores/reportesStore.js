@@ -136,9 +136,10 @@ export const useReportesStore = defineStore('reportes', () => {
   }
 
   // Alias methods to match ReportsPage.vue expectations
+  // Note: ReportsPage calls obtenerReporteMensual(año, mes) but cargarReporteMensual expects (mes, anio)
   const obtenerReporteDiario = cargarReporteDiario
   const obtenerReporteSemanal = cargarReporteSemanal
-  const obtenerReporteMensual = cargarReporteMensual
+  const obtenerReporteMensual = async (anio, mes) => cargarReporteMensual(mes, anio)
 
   const descargarReporteDiarioPDF = async (fecha) => {
     return await descargarPdf('diario', { fecha })

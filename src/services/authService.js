@@ -67,4 +67,17 @@ export const authService = {
       throw error.response?.data || error.message
     }
   },
+
+  /**
+   * Actualizar perfil del usuario autenticado
+   */
+  async actualizarPerfil(data) {
+    try {
+      const response = await api.put('/auth/perfil', data)
+      return response.data
+    } catch (error) {
+      const msg = error.response?.data?.message || error.message || 'Error al actualizar perfil'
+      throw new Error(msg)
+    }
+  },
 }

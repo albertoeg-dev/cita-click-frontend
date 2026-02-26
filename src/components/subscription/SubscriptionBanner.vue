@@ -95,10 +95,7 @@ const bannerMessage = computed(() => {
     return 'Completa el pago de tu suscripción para comenzar a usar el sistema.'
   }
 
-  // Período de prueba - Mostrar solo 1 día antes de que termine (día 6 de 7)
-  if (enPrueba && diasPrueba === 1) {
-    return 'Tu período de prueba termina mañana. Activa tu suscripción para continuar.'
-  }
+  // Nota: el aviso de trial lo maneja TrialExpiringBanner.vue para evitar duplicación visual.
 
   // Suscripción activa - Mostrar 5 días antes del cobro
   if (!enPrueba && diasVencimiento !== null && diasVencimiento >= 1 && diasVencimiento <= 5) {
@@ -135,10 +132,7 @@ const showBanner = computed(() => {
     return true
   }
 
-  // Período de prueba: mostrar solo 1 día antes (día 6 de 7)
-  if (enPrueba && diasPrueba === 1) {
-    return true
-  }
+  // Nota: el aviso de trial lo maneja TrialExpiringBanner.vue para evitar duplicación visual.
 
   // Suscripción activa: mostrar 5 días antes del cobro
   if (!enPrueba && diasVencimiento !== null && diasVencimiento >= 1 && diasVencimiento <= 5) {

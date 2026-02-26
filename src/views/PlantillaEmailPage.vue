@@ -167,7 +167,7 @@
               <iframe
                 ref="previewFrame"
                 :srcdoc="previewHtml"
-                class="w-full h-[600px] bg-gray-50"
+                class="w-full h-[850px] bg-gray-50"
                 sandbox="allow-same-origin"
               />
             </div>
@@ -186,7 +186,7 @@
       titulo="Restaurar Configuración"
       mensaje="¿Estás seguro de que deseas restaurar la configuración a los valores por defecto? Esta acción no se puede deshacer."
       textoConfirmar="Restaurar"
-      textoCancel ar="Cancelar"
+      textoCancelar="Cancelar"
       @confirm="restaurarPorDefecto"
       @cancel="mostrarModalRestaurar = false"
     />

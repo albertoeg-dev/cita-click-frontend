@@ -209,8 +209,7 @@ const startOnboarding = async () => {
       const createResponse = await stripeConnectService.createAccount({
         usuarioId: authStore.user.id,
         email: authStore.user.email,
-        country: 'MX',
-        accountType: 'STANDARD'
+        country: 'MX'
       });
 
       if (!createResponse.success) {

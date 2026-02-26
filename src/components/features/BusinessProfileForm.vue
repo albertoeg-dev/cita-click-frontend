@@ -138,6 +138,17 @@
           @blur="validateField('calle')"
         />
 
+        <!-- Código Postal -->
+        <Input
+          v-model="formData.direccion.codigoPostal"
+          type="text"
+          label="Código Postal"
+          placeholder="12345"
+          :error="errors.codigoPostal"
+          :disabled="loading"
+          @blur="validateField('codigoPostal')"
+        />
+
         <!-- Colonia -->
         <Input
           v-model="formData.direccion.colonia"
@@ -147,45 +158,23 @@
           :disabled="loading"
         />
 
-        <!-- Ciudad -->
+        <!-- Ciudad / Municipio -->
         <Input
           v-model="formData.direccion.ciudad"
           type="text"
-          label="Ciudad"
+          label="Municipio / Ciudad"
           placeholder="Ciudad de México"
           :error="errors.ciudad"
           :disabled="loading"
           @blur="validateField('ciudad')"
         />
 
-        <!-- Código Postal -->
-        <div>
-          <Input
-            v-model="formData.direccion.codigoPostal"
-            type="text"
-            label="Código Postal"
-            placeholder="12345"
-            :error="errors.codigoPostal"
-            :disabled="loading || buscandoCP"
-            help="5 dígitos - Se autocompletará la dirección"
-            @input="handleCodigoPostalInput"
-            @blur="validateField('codigoPostal')"
-          />
-          <div v-if="buscandoCP" class="mt-1 flex items-center gap-2 text-sm text-blue-600">
-            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Buscando información del código postal...
-          </div>
-        </div>
-
         <!-- Estado -->
         <Input
           v-model="formData.direccion.estado"
           type="text"
           label="Estado"
-          placeholder="CDMX"
+          placeholder="Ciudad de México"
           :disabled="loading"
         />
 
@@ -275,8 +264,6 @@ const errors = ref({
   codigoPostal: '',
 })
 
-const buscandoCP = ref(false)
-
 const isEditMode = computed(() => !!props.negocio)
 
 // Computed
@@ -307,61 +294,6 @@ const getDireccionCompleta = computed(() => {
 // Métodos
 const getTipoLabel = (tipo) => {
   return TIPOS_NEGOCIO_LABELS[tipo] || tipo
-}
-
-// Handle código postal input - buscar automáticamente
-const handleCodigoPostalInput = async (event) => {
-  const value = event.target.value
-  // Solo números
-  const onlyNumbers = value.replace(/\D/g, '').slice(0, 5)
-  formData.value.direccion.codigoPostal = onlyNumbers
-
-  // Si tiene 5 dígitos, buscar información
-  if (onlyNumbers.length === 5) {
-    await buscarCodigoPostal(onlyNumbers)
-  }
-}
-
-// Buscar información del código postal usando API gratuita
-const buscarCodigoPostal = async (cp) => {
-  buscandoCP.value = true
-
-  try {
-    // Usar API gratuita de SEPOMEX
-    const response = await fetch(`https://api.copomex.com/query/info_cp/${cp}?token=pruebas`)
-
-    if (!response.ok) {
-      throw new Error('No se pudo obtener información del código postal')
-    }
-
-    const data = await response.json()
-
-    if (data.error === false && data.response && data.response.length > 0) {
-      const info = data.response[0]
-
-      // Autocompletar campos
-      formData.value.direccion.estado = info.response?.estado || info.d_estado || ''
-      formData.value.direccion.ciudad = info.response?.municipio || info.d_mnpio || ''
-      formData.value.direccion.pais = 'México'
-
-      // Si hay colonias, tomar la primera
-      if (data.response.colonias && data.response.colonias.length > 0) {
-        formData.value.direccion.colonia = data.response.colonias[0]
-      } else if (info.d_asenta) {
-        formData.value.direccion.colonia = info.d_asenta
-      }
-
-    } else {
-      // Intentar con API alternativa
-      const responseSepomex = await fetch(`https://jobs.github.com/positions.json?description=&location=${cp}`)
-      // Esta API puede no funcionar, pero es un fallback
-    }
-  } catch (error) {
-    // Silencioso - no mostrar error al usuario, solo no autocompletar
-    console.warn('No se pudo autocompletar código postal:', error)
-  } finally {
-    buscandoCP.value = false
-  }
 }
 
 // Handle telefono input - solo números

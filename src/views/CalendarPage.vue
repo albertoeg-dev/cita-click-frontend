@@ -134,7 +134,7 @@
         <div class="grid grid-cols-8 gap-px bg-slate-200 border border-slate-200 rounded-t-lg overflow-hidden">
           <div class="bg-slate-100 p-2"></div>
           <div v-for="dia in diasSemana" :key="dia.fecha" class="bg-slate-100 p-2 text-center">
-            <div class="text-xs text-slate-600">{{ DIAS_SEMANA[dia.diaSemana].short }}</div>
+            <div class="text-xs text-slate-600">{{ DIAS_SEMANA[(dia.diaSemana + 6) % 7].short }}</div>
             <div :class="['text-sm font-semibold', dia.esHoy ? 'text-blue-600' : 'text-slate-900']">
               {{ dia.numero }}
             </div>
@@ -279,7 +279,7 @@
         </div>
 
         <!-- Acciones -->
-        <div class="flex gap-2 pt-4 border-t">
+        <div class="flex flex-wrap gap-2 pt-4 border-t">
           <button v-if="citaSeleccionada.estado === 'PENDIENTE'" @click="cambiarEstado(citaSeleccionada, 'CONFIRMADA')"
             class="btn btn-primary btn-sm">
             Confirmar Cita
@@ -288,13 +288,37 @@
             class="btn btn-success btn-sm">
             Completar Cita
           </button>
+          <!-- Recordatorio Email -->
+          <button
+            v-if="citaSeleccionada.estado !== 'CANCELADA' && citaSeleccionada.estado !== 'COMPLETADA'"
+            @click="enviarRecordatorioEmail(citaSeleccionada)"
+            :disabled="enviandoRecordatorio === citaSeleccionada.id || !citaSeleccionada.cliente?.email || !emailRecordatoriosHabilitado"
+            class="btn btn-secondary btn-sm flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+            :title="!emailRecordatoriosHabilitado ? 'Tu plan no incluye recordatorios por email' : (!citaSeleccionada.cliente?.email ? 'Cliente sin email' : 'Enviar recordatorio por Email')">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            {{ enviandoRecordatorio === citaSeleccionada.id ? 'Enviando...' : 'Email' }}
+          </button>
+          <!-- Solicitar Pago -->
+          <button
+            v-if="citaSeleccionada.estado !== 'CANCELADA'"
+            @click="abrirModalPago(citaSeleccionada)"
+            class="btn btn-secondary btn-sm flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Solicitar Pago
+          </button>
           <button v-if="citaSeleccionada.estado !== 'CANCELADA' && citaSeleccionada.estado !== 'COMPLETADA'"
             @click="abrirModalEditar" class="btn btn-secondary btn-sm">
             Editar
           </button>
           <button v-if="citaSeleccionada.estado !== 'CANCELADA'" @click="confirmarCancelar"
             class="btn btn-danger btn-sm">
-            Cancelar Cita
+            Cancelar
           </button>
           <button @click="cerrarModalDetalle" class="btn btn-secondary btn-sm ml-auto">
             Cerrar
@@ -335,12 +359,17 @@
       message="¿Estás seguro de que deseas cancelar esta cita?"
       description="Esta acción cambiará el estado de la cita a CANCELADA." confirm-text="Cancelar cita"
       @confirm="cancelarCita" @cancel="cerrarConfirmDialog" />
+
+    <!-- Modal de Pago -->
+    <PaymentModal :is-open="modalPagoAbierto" :cita="citaParaPago" @close="cerrarModalPago"
+      @success="manejarPagoExitoso" />
   </DashboardLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useCitasStore } from '../stores/citasStore'
+import { usePlanesStore } from '../stores/planesStore'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
 import AppointmentForm from '../components/features/AppointmentForm.vue'
@@ -349,6 +378,7 @@ import Select from '../components/common/Select.vue'
 import Badge from '../components/common/Badge.vue'
 import LoadingSpinner from '../components/common/LoadingSpinner.vue'
 import ConfirmDialog from '../components/common/ConfirmDialog.vue'
+import PaymentModal from '../components/payments/PaymentModal.vue'
 import {
   formatearNombreCompleto,
   formatearPrecio,
@@ -359,6 +389,7 @@ import {
 import { DIAS_SEMANA, MESES, ESTADOS_CITA_LABELS } from '../utils/constants'
 
 const citasStore = useCitasStore()
+const planesStore = usePlanesStore()
 const toast = useToast()
 
 // Referencias
@@ -389,6 +420,16 @@ const citaSeleccionada = ref(null)
 const diaSeleccionado = ref(null)
 const guardando = ref(false)
 
+// Estado para recordatorio y pago
+const enviandoRecordatorio = ref(null)
+const modalPagoAbierto = ref(false)
+const citaParaPago = ref(null)
+
+// Computed para verificar si el email está habilitado en el plan
+const emailRecordatoriosHabilitado = computed(() => {
+  return planesStore.limites?.emailRecordatoriosHabilitado ?? false
+})
+
 // Opciones de filtro
 const opcionesEstado = [
   { value: '', label: 'Todos los estados' },
@@ -402,7 +443,7 @@ const opcionesEstado = [
 const tituloVista = computed(() => {
   if (vistaActual.value === 'dia') {
     const fecha = new Date(añoActual.value, mesActual.value, diaActual.value)
-    const nombreDia = DIAS_SEMANA[fecha.getDay()].label
+    const nombreDia = DIAS_SEMANA[(fecha.getDay() + 6) % 7].label
     const nombreMes = obtenerNombreMes(mesActual.value)
     return `${nombreDia}, ${diaActual.value} de ${nombreMes} ${añoActual.value}`
   } else if (vistaActual.value === 'semana') {
@@ -422,7 +463,8 @@ const diasSemana = computed(() => {
   const fecha = new Date(añoActual.value, mesActual.value, diaActual.value)
   const diaSemana = fecha.getDay()
   const primerDiaSemana = new Date(fecha)
-  primerDiaSemana.setDate(fecha.getDate() - diaSemana)
+  // Semana empieza en Lunes: lunes(1)→0 días, domingo(0)→6 días
+  primerDiaSemana.setDate(fecha.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1))
 
   const dias = []
   const hoy = new Date()
@@ -462,9 +504,11 @@ const diasDelMes = computed(() => {
   const hoy = new Date()
   hoy.setHours(0, 0, 0, 0)
 
-  // Días del mes anterior para completar la primera semana
+  // Días del mes anterior para completar la primera semana (semana inicia en Lunes)
+  // Cuántos días del mes anterior mostrar: lun(1)→0, mar(2)→1, ..., dom(0)→6
+  const diasPrevios = (diaSemanaInicio + 6) % 7
   const diasMesAnterior = new Date(añoActual.value, mesActual.value, 0).getDate()
-  for (let i = diaSemanaInicio - 1; i >= 0; i--) {
+  for (let i = diasPrevios - 1; i >= 0; i--) {
     const dia = diasMesAnterior - i
     const fecha = new Date(añoActual.value, mesActual.value - 1, dia)
     dias.push({
@@ -801,6 +845,47 @@ const cerrarConfirmDialog = () => {
 const aplicarFiltro = () => {
 }
 
+// Enviar recordatorio por email
+const enviarRecordatorioEmail = async (cita) => {
+  if (!cita || !cita.cliente?.email) {
+    toast.error('Email no disponible', 'El cliente no tiene email registrado')
+    return
+  }
+  enviandoRecordatorio.value = cita.id
+  try {
+    await citasStore.enviarRecordatorioCita(cita.id, 'email')
+    toast.success('Recordatorio enviado', 'Se envió el recordatorio por email al cliente')
+  } catch (error) {
+    console.error('[CalendarPage] Error al enviar recordatorio:', error)
+    toast.error('Error al enviar recordatorio', error.message || 'No se pudo enviar el recordatorio')
+  } finally {
+    enviandoRecordatorio.value = null
+  }
+}
+
+// Funciones para modal de pago
+const abrirModalPago = (cita) => {
+  citaParaPago.value = {
+    ...cita,
+    clienteNombre: formatearNombreCompleto(cita.cliente?.nombre, cita.cliente?.apellidoPaterno, cita.cliente?.apellidoMaterno),
+    clienteEmail: cita.cliente?.email,
+    servicioNombre: cita.servicio?.nombre,
+    precioServicio: cita.servicio?.precio
+  }
+  modalPagoAbierto.value = true
+}
+
+const cerrarModalPago = () => {
+  modalPagoAbierto.value = false
+  citaParaPago.value = null
+}
+
+const manejarPagoExitoso = () => {
+  toast.success('Pago creado', 'La solicitud de pago ha sido enviada al cliente')
+  cerrarModalPago()
+  cargarCitas()
+}
+
 // Cargar citas
 const cargarCitas = async () => {
   try {
@@ -819,6 +904,9 @@ watch([mesActual, añoActual], () => {
 
 // Lifecycle
 onMounted(() => {
+  planesStore.cargarLimites().catch(err => {
+    console.error('[CalendarPage] Error al cargar límites del plan:', err)
+  })
   cargarCitas()
 })
 </script>

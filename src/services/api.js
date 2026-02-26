@@ -5,40 +5,24 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
 
 const api = axios.create({
   baseURL: API_URL,
+  withCredentials: true, // Enviar cookie httpOnly en cada petición
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
-// Interceptor de request - Agregar token a cada petición
-api.interceptors.request.use(
-  (config) => {
-    const authStore = useAuthStore()
-    
-    if (authStore.token) {
-      config.headers.Authorization = `Bearer ${authStore.token}`
-    }
-    
-    
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
 // Variable para evitar múltiples limpiezas de sesión simultáneas
 let isHandlingAuthError = false
 
-// Interceptor de response - Manejar errores
+// Interceptor de response - Manejar errores de autenticación
 api.interceptors.response.use(
   (response) => {
     return response
   },
   async (error) => {
-    // Manejar errores de autenticación (401, 403)
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      console.error(`[AUTH] Error ${error.response.status}: ${error.response.data?.message || 'No autorizado'}`)
+    // Manejar errores de autenticación (401)
+    if (error.response?.status === 401) {
+      console.error(`[AUTH] Error 401: ${error.response.data?.message || 'No autorizado'}`)
 
       // Evitar múltiples limpiezas simultáneas
       if (!isHandlingAuthError) {
@@ -46,15 +30,10 @@ api.interceptors.response.use(
 
         const authStore = useAuthStore()
 
-        // Solo limpiar sesión si hay token (evitar loops)
-        if (authStore.token) {
-
-          // Limpiar sesión de forma sincrónica
-          authStore.token = null
+        // Limpiar sesión local si el usuario estaba autenticado
+        if (authStore.user) {
           authStore.user = null
-          localStorage.removeItem('token')
           localStorage.removeItem('user')
-
         }
 
         // Reset después de 1 segundo
@@ -63,7 +42,6 @@ api.interceptors.response.use(
         }, 1000)
       }
 
-      // Rechazar inmediatamente para que no siga intentando
       return Promise.reject(error)
     }
 

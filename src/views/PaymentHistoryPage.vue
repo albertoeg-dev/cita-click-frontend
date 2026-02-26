@@ -214,7 +214,13 @@ const formatearFecha = (fecha) => {
 }
 
 const formatearPlan = (plan) => {
+  if (!plan) return '-'
   const planes = {
+    // Valores reales almacenados en DB (lowercase)
+    basico: 'Básico',
+    profesional: 'Profesional',
+    premium: 'Premium',
+    // Alias legacy
     starter: 'Básico',
     professional: 'Profesional',
     enterprise: 'Premium',
@@ -252,6 +258,11 @@ const formatearPeriodo = (inicio, fin) => {
 
 const getBadgeVariantPlan = (plan) => {
   const variants = {
+    // Valores reales almacenados en DB (lowercase)
+    basico: 'info',
+    profesional: 'warning',
+    premium: 'success',
+    // Alias legacy
     starter: 'info',
     professional: 'warning',
     enterprise: 'success',

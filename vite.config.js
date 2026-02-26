@@ -15,6 +15,11 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    headers: {
+      // Permite que el popup de Google OAuth se comunique con la app vía postMessage
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+      'Cross-Origin-Embedder-Policy': 'unsafe-none',
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:8080',

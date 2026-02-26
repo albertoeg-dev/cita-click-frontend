@@ -215,18 +215,9 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const suscripcionStore = useSuscripcionStore()
 
-  // Verificar token en localStorage primero
-  const storedToken = localStorage.getItem('token')
-
-  // Si no hay token en localStorage pero el store tiene uno, limpiar
-  if (!storedToken && authStore.token) {
-    authStore.token = null
-    authStore.user = null
-  }
-
-  // Cargar usuario del localStorage si existe
-  if (!authStore.user && authStore.token) {
-    authStore.loadUserFromStorage()
+  // Inicializar sesión una sola vez: verifica si la cookie httpOnly sigue siendo válida
+  if (!authStore.initialized) {
+    await authStore.initSession()
   }
 
   const requiresAuth = to.meta.requiresAuth !== false
