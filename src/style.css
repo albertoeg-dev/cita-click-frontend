@@ -54,7 +54,7 @@ h3 { @apply text-2xl; }
 .btn-lg { @apply px-6 py-3 text-lg; }
 
 .card {
-  @apply bg-white rounded-xl shadow-sm border border-slate-200 p-6;
+  @apply bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6;
 }
 
 .card-hover {

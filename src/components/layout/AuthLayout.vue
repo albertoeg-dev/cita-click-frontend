@@ -8,7 +8,7 @@
 
     <div class="w-full max-w-md relative z-10">
       <!-- Card principal -->
-      <div class="bg-white rounded-2xl shadow-2xl p-8 border border-slate-200">
+      <div class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border border-slate-200">
         <!-- Header -->
         <div class="text-center mb-8">
           <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mx-auto flex items-center justify-center text-white font-bold text-2xl shadow-lg mb-4">
