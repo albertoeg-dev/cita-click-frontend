@@ -10,12 +10,16 @@ export const usePlanesStore = defineStore('planes', () => {
   const error = ref(null)
 
   // Computed
+  // Solo mostrar aviso de límite cuando al menos 3 métricas estén en estado de alerta
   const tieneAlerta = computed(() => {
     if (!uso.value) return false
-    return uso.value.alertaUsuarios ||
-           uso.value.alertaClientes ||
-           uso.value.alertaCitasMes ||
-           uso.value.alertaServicios
+    const count = [
+      uso.value.alertaUsuarios,
+      uso.value.alertaClientes,
+      uso.value.alertaCitasMes,
+      uso.value.alertaServicios
+    ].filter(Boolean).length
+    return count >= 3
   })
 
   const alertas = computed(() => {

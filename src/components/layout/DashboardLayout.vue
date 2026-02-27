@@ -98,21 +98,21 @@
               <span :class="sidebarCollapsed ? 'lg:hidden' : ''">Servicios</span>
             </router-link>
 
-            <router-link to="/users" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
+            <router-link v-if="showUsuarios" to="/users" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
               <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
               </svg>
               <span :class="sidebarCollapsed ? 'lg:hidden' : ''">Usuarios</span>
             </router-link>
 
-            <router-link to="/reports" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
+            <router-link v-if="showReportes" to="/reports" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
               <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path>
               </svg>
               <span :class="sidebarCollapsed ? 'lg:hidden' : ''">Reportes</span>
             </router-link>
 
-            <router-link to="/plantilla-email" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
+            <router-link v-if="showPlantillaEmail" to="/plantilla-email" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
               <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
@@ -149,19 +149,19 @@
               <span :class="sidebarCollapsed ? 'lg:hidden' : ''">Integraciones</span>
             </router-link>
 
-            <!-- Divider -->
-            <div class="border-t border-slate-700 my-2"></div>
-
-            <!-- Documentación Link -->
-            <router-link to="/docs" class="nav-link bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
-              <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-              </svg>
-              <span :class="['flex items-center gap-2', sidebarCollapsed ? 'lg:hidden' : '']">
-                Ayuda
-                <span class="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">Docs</span>
-              </span>
-            </router-link>
+            <!-- Ayuda/Docs: oculto temporalmente hasta que la documentación esté completa -->
+            <template v-if="false">
+              <div class="border-t border-slate-700 my-2"></div>
+              <router-link to="/docs" class="nav-link bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
+                <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
+                <span :class="['flex items-center gap-2', sidebarCollapsed ? 'lg:hidden' : '']">
+                  Ayuda
+                  <span class="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">Docs</span>
+                </span>
+              </router-link>
+            </template>
           </nav>
         </div>
       </div>
@@ -298,10 +298,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/authStore'
 import { useBusinessStore } from '../../stores/businessStore'
+import { usePlanesStore } from '../../stores/planesStore'
 import TrialExpiringBanner from '../TrialExpiringBanner.vue'
 import SubscriptionBanner from '../subscription/SubscriptionBanner.vue'
 
@@ -309,8 +310,25 @@ const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 const businessStore = useBusinessStore()
+const planesStore = usePlanesStore()
 const isUserMenuOpen = ref(false)
 const mobileMenuOpen = ref(false)
+
+// Visibilidad del sidebar según plan del usuario
+// Por defecto true mientras los límites se cargan, para evitar parpadeos de UI
+const showUsuarios = computed(() => {
+  if (!planesStore.limites) return true
+  const max = planesStore.limites.maxUsuarios
+  return max === -1 || max > 1
+})
+const showReportes = computed(() => {
+  if (!planesStore.limites) return true
+  return !!planesStore.limites.reportesAvanzadosHabilitado
+})
+const showPlantillaEmail = computed(() => {
+  if (!planesStore.limites) return true
+  return !!planesStore.limites.emailRecordatoriosHabilitado
+})
 
 // Sidebar collapsed state with localStorage persistence
 const sidebarCollapsed = ref(false)
@@ -327,6 +345,10 @@ onMounted(() => {
   const savedState = localStorage.getItem('sidebarCollapsed')
   if (savedState !== null) {
     sidebarCollapsed.value = savedState === 'true'
+  }
+  // Cargar límites del plan para controlar visibilidad del sidebar
+  if (!planesStore.limites) {
+    planesStore.cargarLimites().catch(() => {})
   }
 })
 

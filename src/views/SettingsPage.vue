@@ -126,8 +126,18 @@
             <!-- Teléfono -->
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-1">Teléfono</label>
-              <input v-model="perfilForm.telefono" type="tel"
-                class="input w-full" placeholder="+52 55 1234 5678" />
+              <input
+                v-model="perfilForm.telefono"
+                type="tel"
+                inputmode="numeric"
+                maxlength="10"
+                class="input w-full"
+                :class="telefonoError ? 'border-red-400 focus:ring-red-500' : ''"
+                placeholder="10 dígitos (ej: 5512345678)"
+                @input="handleTelefonoInput"
+              />
+              <p v-if="telefonoError" class="text-red-600 text-sm mt-1">{{ telefonoError }}</p>
+              <p v-else class="text-xs text-slate-400 mt-1">Solo números, 10 dígitos</p>
             </div>
 
             <!-- Cambio de contraseña (solo usuarios locales) -->
@@ -170,7 +180,15 @@
 
           <!-- Avatar e identificación -->
           <div class="card text-center">
-            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600
+            <!-- Foto de perfil Google (si está disponible) -->
+            <img
+              v-if="esUsuarioGoogle && authStore.user?.photoURL"
+              :src="authStore.user.photoURL"
+              alt="Foto de perfil"
+              class="w-20 h-20 rounded-full mx-auto mb-4 shadow-md object-cover"
+            />
+            <!-- Avatar con letra inicial (usuarios locales o Google sin foto) -->
+            <div v-else class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600
                         flex items-center justify-center mx-auto mb-4 shadow-md">
               <span class="text-3xl font-bold text-white select-none">
                 {{ (perfilForm.nombre || authStore.user?.nombre || '?').charAt(0).toUpperCase() }}
@@ -300,6 +318,7 @@ const activeTab = ref('user')
 const guardandoPerfil = ref(false)
 const guardandoUsuario = ref(false)
 const cargandoPerfil = ref(false)
+const telefonoError = ref('')
 
 // Computed
 const esUsuarioGoogle = computed(() => {
@@ -331,7 +350,25 @@ const resetPerfilForm = () => {
   }
 }
 
+// Teléfono: filtrar input (solo dígitos, máximo 10)
+const handleTelefonoInput = (e) => {
+  const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
+  perfilForm.value.telefono = digits
+  telefonoError.value = ''
+}
+
+// Teléfono: validar antes de guardar
+const validarTelefono = () => {
+  if (!perfilForm.value.telefono) return true // es opcional
+  if (!/^\d{10}$/.test(perfilForm.value.telefono)) {
+    telefonoError.value = 'El teléfono debe tener exactamente 10 dígitos (solo números)'
+    return false
+  }
+  return true
+}
+
 const guardarPerfilUsuario = async () => {
+  if (!validarTelefono()) return
   guardandoUsuario.value = true
   try {
     const datos = {

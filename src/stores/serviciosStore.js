@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { serviciosService } from '../services/serviciosService'
+import { useAuthStore } from './authStore'
 
 export const useServiciosStore = defineStore('servicios', () => {
   // STATE
@@ -20,9 +21,9 @@ export const useServiciosStore = defineStore('servicios', () => {
 
   // ACTIONS
   const cargarServicios = async (activos = null) => {
-    // Verificar si hay token antes de intentar cargar
-    const token = localStorage.getItem('token')
-    if (!token) {
+    // Verificar si el usuario está autenticado (la app usa cookies httpOnly, no localStorage)
+    const authStore = useAuthStore()
+    if (!authStore.user) {
       loading.value = false
       return
     }

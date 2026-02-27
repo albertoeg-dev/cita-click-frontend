@@ -78,11 +78,21 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await authService.googleAuth(idToken, negocioData)
 
       if (response.success) {
+        // Extraer foto de perfil del JWT de Google (campo 'picture' en el payload)
+        let photoURL = null
+        try {
+          const base64 = idToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+          const payload = JSON.parse(atob(base64))
+          photoURL = payload.picture || null
+        } catch {}
+
         // El token fue almacenado en cookie httpOnly por el backend
         user.value = {
           email: response.data?.email,
           nombre: response.data?.nombre,
           negocioId: response.data?.negocioId,
+          authProvider: 'google',
+          photoURL,
         }
         localStorage.setItem('user', JSON.stringify(user.value))
         initialized.value = true
