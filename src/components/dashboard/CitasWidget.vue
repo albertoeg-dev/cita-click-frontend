@@ -22,7 +22,7 @@
       </div>
 
       <!-- Semana y hoy -->
-      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
         <div>
           <p class="text-xs text-gray-600">Esta semana</p>
           <p class="text-2xl font-semibold text-gray-900">{{ citas.totalSemana }}</p>
@@ -36,7 +36,7 @@
       <!-- Estadísticas de demanda -->
       <div v-if="citas.diaMayorDemanda || citas.horaMayorDemanda" class="pt-4 border-t border-gray-200">
         <p class="text-xs font-semibold text-gray-700 mb-2">Mayor demanda</p>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div v-if="citas.diaMayorDemanda">
             <p class="text-xs text-gray-600">Día</p>
             <p class="text-sm font-medium text-indigo-600">{{ citas.diaMayorDemanda }}</p>

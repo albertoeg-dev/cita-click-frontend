@@ -153,7 +153,7 @@
           <label class="block text-sm font-medium text-gray-700 mb-3">
             Horario de atención
           </label>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <TimePicker
               v-model="formData.horaInicio"
               label="Apertura"

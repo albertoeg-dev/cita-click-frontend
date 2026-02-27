@@ -214,7 +214,7 @@
     </div>
 
     <!-- Resumen por estado -->
-    <div v-if="citasStore.citas.length > 0" class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div v-if="citasStore.citas.length > 0" class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
       <div class="card bg-yellow-50 border-yellow-200">
         <p class="text-xs text-yellow-900 font-medium">Pendientes</p>
         <p class="text-2xl font-bold text-yellow-900">{{ citasStore.citasPendientes.length }}</p>

@@ -47,7 +47,7 @@
       </div>
 
       <!-- Estadísticas resumidas -->
-      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
         <div>
           <p class="text-xs text-gray-600">Total Citas (7 días)</p>
           <p class="text-xl font-bold text-indigo-600">{{ totalCitas }}</p>

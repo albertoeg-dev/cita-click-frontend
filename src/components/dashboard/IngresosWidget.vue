@@ -48,7 +48,7 @@
       </div>
 
       <!-- Ingreso semanal y diario -->
-      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
         <div>
           <p class="text-xs text-gray-600">Esta semana</p>
           <p class="text-lg font-semibold text-gray-900">{{ formatearMoneda(ingresos.ingresoSemanal) }}</p>
