@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
+import api from '../services/api'
 
 export const useSuscripcionStore = defineStore('suscripcion', () => {
   // Estado
@@ -38,16 +36,7 @@ export const useSuscripcionStore = defineStore('suscripcion', () => {
     error.value = null
 
     try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        throw new Error('No hay token de autenticación')
-      }
-
-      const response = await axios.get(`${API_BASE}/suscripcion/info`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      const response = await api.get('/suscripcion/info')
 
       info.value = response.data
       return response.data
@@ -65,23 +54,10 @@ export const useSuscripcionStore = defineStore('suscripcion', () => {
     error.value = null
 
     try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        throw new Error('No hay token de autenticación')
-      }
-
-      const response = await axios.post(
-        `${API_BASE}/suscripcion/activar`,
-        {
-          transaccionId,
-          metodoPago
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      )
+      const response = await api.post('/suscripcion/activar', {
+        transaccionId,
+        metodoPago
+      })
 
       // Recargar información después de activar
       await cargarInfoSuscripcion()
