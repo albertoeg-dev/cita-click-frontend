@@ -41,7 +41,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, useSlots } from 'vue'
+
+const slots = useSlots()
 
 const props = defineProps({
   modelValue: {
@@ -103,7 +105,8 @@ const emit = defineEmits(['update:modelValue', 'blur'])
 const showError = ref(false)
 
 const inputClasses = computed(() => {
-  const baseClasses = 'block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors'
+  const leftPadding = slots.icon ? 'pl-10' : 'pl-3'
+  const baseClasses = `block w-full ${leftPadding} pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors`
   const stateClasses = props.error && showError.value
     ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500'
     : 'border-gray-300 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500'

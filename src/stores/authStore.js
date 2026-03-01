@@ -79,10 +79,12 @@ export const useAuthStore = defineStore('auth', () => {
 
       if (response.success) {
         // Extraer foto de perfil del JWT de Google (campo 'picture' en el payload)
+        // El JWT usa base64url: reemplazar chars y agregar padding necesario para atob()
         let photoURL = null
         try {
-          const base64 = idToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
-          const payload = JSON.parse(atob(base64))
+          const b64 = idToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+          const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4)
+          const payload = JSON.parse(atob(padded))
           photoURL = payload.picture || null
         } catch {}
 

@@ -142,7 +142,7 @@
               <span :class="sidebarCollapsed ? 'lg:hidden' : ''">Configuración</span>
             </router-link>
 
-            <router-link to="/integrations" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
+            <router-link v-if="showIntegraciones" to="/integrations" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
               <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z"></path>
               </svg>
@@ -328,6 +328,10 @@ const showReportes = computed(() => {
 const showPlantillaEmail = computed(() => {
   if (!planesStore.limites) return true
   return !!planesStore.limites.emailRecordatoriosHabilitado
+})
+const showIntegraciones = computed(() => {
+  if (!planesStore.limites) return true
+  return !!planesStore.limites.reportesAvanzadosHabilitado
 })
 
 // Sidebar collapsed state with localStorage persistence
