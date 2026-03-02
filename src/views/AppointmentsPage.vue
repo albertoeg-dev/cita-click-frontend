@@ -150,7 +150,10 @@
 
               <!-- Recordatorios -->
               <div v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'" class="px-4 py-2">
-                <p class="text-xs font-semibold text-gray-500 uppercase">Recordar por</p>
+                <div class="flex items-center gap-1.5">
+                  <p class="text-xs font-semibold text-gray-500 uppercase">Recordar por</p>
+                  <span v-if="!emailRecordatoriosHabilitado" class="text-xs text-amber-500 font-medium">· Plan Profesional+</span>
+                </div>
               </div>
 
               <button v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
@@ -178,14 +181,17 @@
               <!-- Separador -->
               <div class="border-t border-gray-200 my-1"></div>
 
-              <!-- Solicitar Pago -->
-              <button v-if="cita.estado !== 'CANCELADA'" @click="abrirModalPago(cita); menuAbierto = null"
-                class="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 flex items-center gap-2">
+              <!-- Solicitar Pago (solo Plan Premium) -->
+              <button v-if="cita.estado !== 'CANCELADA'" @click="solicitarPago(cita)"
+                class="w-full text-left px-4 py-2 text-sm flex items-center gap-2"
+                :class="pagoOnlineHabilitado ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:bg-gray-50'"
+                :title="!pagoOnlineHabilitado ? 'Disponible en Plan Premium' : 'Solicitar pago al cliente'">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 Solicitar Pago
+                <span v-if="!pagoOnlineHabilitado" class="ml-auto text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-medium">Premium</span>
               </button>
 
               <!-- Editar -->
@@ -415,6 +421,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useCitasStore } from '../stores/citasStore'
 import { usePlanesStore } from '../stores/planesStore'
 import { useToast } from '../composables/useToast'
@@ -431,6 +438,7 @@ import PaymentModal from '../components/payments/PaymentModal.vue'
 import { formatearNombreCompleto, formatearPrecio, formatearDuracion, formatearFechaHora } from '../utils/formatters'
 import { ESTADOS_CITA_LABELS } from '../utils/constants'
 
+const router = useRouter()
 const citasStore = useCitasStore()
 const planesStore = usePlanesStore()
 const toast = useToast()
@@ -478,6 +486,11 @@ const filtros = ref({
 // Computed property para verificar si el email está habilitado en el plan
 const emailRecordatoriosHabilitado = computed(() => {
   return planesStore.limites?.emailRecordatoriosHabilitado ?? false
+})
+
+// Computed property: pagos online solo disponibles en plan Premium
+const pagoOnlineHabilitado = computed(() => {
+  return planesStore.limites?.tipoPlan?.toUpperCase() === 'PREMIUM'
 })
 
 const opcionesEstado = [
@@ -543,6 +556,16 @@ const cerrarModal = () => {
   modoEdicion.value = false
   citaSeleccionada.value = null
   guardando.value = false
+}
+
+// Solicitar pago: solo disponible para plan Premium
+const solicitarPago = (cita) => {
+  menuAbierto.value = null
+  if (!pagoOnlineHabilitado.value) {
+    router.push({ path: '/planes', query: { upgrade: 'premium', from: '/appointments' } })
+    return
+  }
+  abrirModalPago(cita)
 }
 
 // Funciones para modal de pago
