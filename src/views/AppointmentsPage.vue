@@ -233,12 +233,15 @@
       </div>
     </div>
 
-    <!-- Modal Crear/Editar -->
-    <Modal v-model="modalAbierto" :title="modoEdicion ? 'Editar Cita' : 'Crear Nueva Cita'" size="2xl"
-      :closable="!guardando">
+    <!-- Panel lateral Crear/Editar Cita -->
+    <SlidePanel
+      v-model="modalAbierto"
+      :title="modoEdicion ? 'Editar Cita' : 'Crear Nueva Cita'"
+      :closable="!guardando"
+    >
       <AppointmentForm ref="appointmentFormRef" :cita="citaSeleccionada" :loading="guardando" @submit="guardarCita"
         @cancel="cerrarModal" />
-    </Modal>
+    </SlidePanel>
 
     <!-- Confirm Dialog -->
     <ConfirmDialog ref="confirmDialogRef" title="Cancelar cita"
@@ -250,9 +253,12 @@
     <PaymentModal :is-open="modalPagoAbierto" :cita="citaParaPago" @close="cerrarModalPago"
       @success="manejarPagoExitoso" />
 
-    <!-- Modal Confirmación WhatsApp/SMS -->
-    <Modal v-model="modalConfirmacionAbierto" title="Enviar Confirmación al Cliente" size="md"
-      :closable="!enviandoConfirmacion">
+    <!-- Panel lateral Confirmación WhatsApp/SMS -->
+    <SlidePanel
+      v-model="modalConfirmacionAbierto"
+      title="Enviar Confirmación al Cliente"
+      :closable="!enviandoConfirmacion"
+    >
       <div v-if="citaParaConfirmar" class="space-y-4">
         <!-- Información de la cita -->
         <div class="bg-gray-50 p-4 rounded-lg">
@@ -345,10 +351,14 @@
           </button>
         </div>
       </div>
-    </Modal>
+    </SlidePanel>
 
-    <!-- Modal Confirmar Cita con Pago -->
-    <Modal v-model="modalConfirmarCitaAbierto" title="Confirmar Cita" size="md" :closable="!confirmandoCita">
+    <!-- Panel lateral Confirmar Cita con Pago -->
+    <SlidePanel
+      v-model="modalConfirmarCitaAbierto"
+      title="Confirmar Cita"
+      :closable="!confirmandoCita"
+    >
       <div v-if="citaAConfirmar" class="space-y-4">
         <!-- Información de la cita -->
         <div class="bg-gray-50 p-4 rounded-lg">
@@ -409,7 +419,7 @@
           </button>
         </div>
       </div>
-    </Modal>
+    </SlidePanel>
   </DashboardLayout>
 </template>
 
@@ -420,7 +430,7 @@ import { usePlanesStore } from '../stores/planesStore'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
 import AppointmentForm from '../components/features/AppointmentForm.vue'
-import Modal from '../components/common/Modal.vue'
+import SlidePanel from '../components/common/SlidePanel.vue'
 import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import DatePicker from '../components/common/DatePicker.vue'
 import Select from '../components/common/Select.vue'

@@ -159,11 +159,10 @@
       </div>
     </div>
 
-    <!-- Modal Crear/Editar -->
-    <Modal
+    <!-- Panel lateral Crear/Editar -->
+    <SlidePanel
       v-model="modalAbierto"
       :title="modoEdicion ? 'Editar Servicio' : 'Crear Nuevo Servicio'"
-      size="lg"
       :closable="!guardando"
     >
       <ServiceForm
@@ -173,7 +172,7 @@
         @submit="guardarServicio"
         @cancel="cerrarModal"
       />
-    </Modal>
+    </SlidePanel>
 
     <!-- Confirm Dialog -->
     <ConfirmDialog
@@ -194,7 +193,7 @@ import { useServiciosStore } from '../stores/serviciosStore'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
 import ServiceForm from '../components/features/ServiceForm.vue'
-import Modal from '../components/common/Modal.vue'
+import SlidePanel from '../components/common/SlidePanel.vue'
 import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import Input from '../components/common/Input.vue'
 import Select from '../components/common/Select.vue'

@@ -198,11 +198,10 @@
       </div>
     </div>
 
-    <!-- Modal Crear/Editar -->
-    <Modal
+    <!-- Panel lateral Crear/Editar -->
+    <SlidePanel
       v-model="modalAbierto"
       :title="modoEdicion ? 'Editar Cliente' : 'Crear Nuevo Cliente'"
-      size="lg"
       :closable="!guardando"
     >
       <ClientForm
@@ -212,7 +211,7 @@
         @submit="guardarCliente"
         @cancel="cerrarModal"
       />
-    </Modal>
+    </SlidePanel>
 
     <!-- Confirm Dialog -->
     <ConfirmDialog
@@ -234,7 +233,7 @@ import { useClientesStore } from '../stores/clientesStore'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
 import ClientForm from '../components/features/ClientForm.vue'
-import Modal from '../components/common/Modal.vue'
+import SlidePanel from '../components/common/SlidePanel.vue'
 import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import Input from '../components/common/Input.vue'
 import LoadingSpinner from '../components/common/LoadingSpinner.vue'
