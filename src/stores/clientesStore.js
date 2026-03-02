@@ -12,13 +12,6 @@ export const useClientesStore = defineStore('clientes', () => {
 
   // ACTIONS
   const cargarClientes = async (search = null) => {
-    // Verificar si hay token antes de intentar cargar
-    const token = localStorage.getItem('token')
-    if (!token) {
-      loading.value = false
-      return
-    }
-
     loading.value = true
     error.value = null
     try {
