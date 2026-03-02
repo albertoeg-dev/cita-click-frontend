@@ -219,7 +219,13 @@
               @click="isUserMenuOpen = !isUserMenuOpen"
               class="flex items-center gap-2 sm:gap-3 hover:bg-slate-100 rounded-lg px-2 sm:px-3 py-2 transition-all"
             >
-              <div class="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
+              <img
+                v-if="authStore.user?.photoURL"
+                :src="authStore.user.photoURL"
+                :alt="authStore.user?.nombre"
+                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover shadow-md"
+              />
+              <div v-else class="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
                 {{ userInitials }}
               </div>
               <div class="text-left hidden md:block">
@@ -331,7 +337,7 @@ const showPlantillaEmail = computed(() => {
 })
 const showIntegraciones = computed(() => {
   if (!planesStore.limites) return true
-  return !!planesStore.limites.reportesAvanzadosHabilitado
+  return planesStore.limites.nombrePlan?.toUpperCase() === 'PREMIUM'
 })
 
 // Sidebar collapsed state with localStorage persistence
