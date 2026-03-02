@@ -45,7 +45,7 @@
           <slot />
         </div>
 
-        <!-- Footer slot (optional) -->
+        <!-- Footer slot (opcional) -->
         <div
           v-if="$slots.footer"
           class="flex-shrink-0 border-t border-slate-200 px-5 sm:px-6 py-4 bg-slate-50"
@@ -88,15 +88,10 @@ const handleBackdropClick = () => {
   handleClose()
 }
 
-// Lock body scroll when panel is open
 watch(
   () => props.modelValue,
   (isOpen) => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : ''
   },
   { immediate: true }
 )

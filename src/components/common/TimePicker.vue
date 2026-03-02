@@ -1,26 +1,49 @@
 <template>
   <div class="w-full">
-    <label v-if="label" :for="id" class="block text-sm font-medium text-gray-700 mb-1">
+    <label v-if="label" class="block text-sm font-medium text-gray-700 mb-2">
       {{ label }}
       <span v-if="required" class="text-red-500">*</span>
     </label>
 
-    <input
-      :id="id"
-      type="time"
-      :value="modelValue"
-      @input="handleInput"
-      @blur="handleBlur"
-      :min="min"
-      :max="max"
-      :step="step"
-      :disabled="disabled"
-      :required="required"
-      :class="inputClasses"
-    />
+    <!-- Dos selects: Horas y Minutos -->
+    <div class="flex items-center gap-1">
+      <!-- Select Horas -->
+      <select
+        :value="selectedHour"
+        @change="onHourChange"
+        :disabled="disabled"
+        class="flex-1 border rounded-lg px-3 py-2.5 text-sm font-medium text-gray-800 bg-white appearance-none cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        :class="hasError ? 'border-red-400' : 'border-gray-300 hover:border-gray-400'"
+      >
+        <option value="" disabled>HH</option>
+        <option
+          v-for="h in hours"
+          :key="h.value"
+          :value="h.value"
+        >{{ h.label }}</option>
+      </select>
+
+      <span class="text-lg font-bold text-gray-400 select-none">:</span>
+
+      <!-- Select Minutos -->
+      <select
+        :value="selectedMinute"
+        @change="onMinuteChange"
+        :disabled="disabled"
+        class="flex-1 border rounded-lg px-3 py-2.5 text-sm font-medium text-gray-800 bg-white appearance-none cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        :class="hasError ? 'border-red-400' : 'border-gray-300 hover:border-gray-400'"
+      >
+        <option value="" disabled>MM</option>
+        <option
+          v-for="m in minutes"
+          :key="m.value"
+          :value="m.value"
+        >{{ m.label }}</option>
+      </select>
+    </div>
 
     <!-- Error message -->
-    <p v-if="error && showError" class="mt-1 text-sm text-red-600">
+    <p v-if="hasError" class="mt-1 text-sm text-red-600">
       {{ error }}
     </p>
 
@@ -32,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, watch, ref } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -59,18 +82,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  min: {
-    type: String,
-    default: undefined,
-  },
-  max: {
-    type: String,
-    default: undefined,
-  },
-  step: {
-    type: Number,
-    default: 60, // 60 segundos = 1 minuto
-  },
+  // Compatibilidad con props anteriores
+  min: { type: String, default: '00:00' },
+  max: { type: String, default: '23:59' },
+  step: { type: Number, default: 5 },
   id: {
     type: String,
     default: () => `timepicker-${Math.random().toString(36).substr(2, 9)}`,
@@ -79,28 +94,55 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'blur', 'change'])
 
-const showError = ref(false)
+// Opciones de horas 00–23
+const hours = Array.from({ length: 24 }, (_, i) => ({
+  value: String(i).padStart(2, '0'),
+  label: String(i).padStart(2, '0'),
+}))
 
-const inputClasses = computed(() => {
-  const baseClasses = 'block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors'
-  const stateClasses = props.error && showError.value
-    ? 'border-red-300 text-red-900 focus:ring-red-500 focus:border-red-500'
-    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
-  const disabledClasses = props.disabled
-    ? 'bg-gray-100 cursor-not-allowed'
-    : 'bg-white'
+// Opciones de minutos cada 5 min: 00, 05, 10 … 55
+const minutes = Array.from({ length: 12 }, (_, i) => ({
+  value: String(i * 5).padStart(2, '0'),
+  label: String(i * 5).padStart(2, '0'),
+}))
 
-  return `${baseClasses} ${stateClasses} ${disabledClasses}`
-})
-
-const handleInput = (event) => {
-  const value = event.target.value
-  emit('update:modelValue', value)
-  emit('change', value)
+// Parsear modelValue → partes separadas
+const parseValue = (val) => {
+  if (!val) return { h: '', m: '' }
+  const parts = val.split(':')
+  const h = parts[0]?.padStart(2, '0') ?? ''
+  // Redondear minutos al múltiplo de 5 más cercano
+  const rawM = parseInt(parts[1] ?? '0')
+  const roundedM = !isNaN(rawM) ? Math.round(rawM / 5) * 5 : 0
+  const m = String(Math.min(roundedM, 55)).padStart(2, '0')
+  return { h, m }
 }
 
-const handleBlur = (event) => {
-  showError.value = true
-  emit('blur', event)
+const selectedHour = ref(parseValue(props.modelValue).h)
+const selectedMinute = ref(parseValue(props.modelValue).m)
+
+watch(() => props.modelValue, (val) => {
+  const { h, m } = parseValue(val)
+  selectedHour.value = h
+  selectedMinute.value = m
+})
+
+const hasError = computed(() => !!props.error)
+
+const emitValue = () => {
+  if (!selectedHour.value || selectedMinute.value === '') return
+  const val = `${selectedHour.value}:${selectedMinute.value}`
+  emit('update:modelValue', val)
+  emit('change', val)
+}
+
+const onHourChange = (e) => {
+  selectedHour.value = e.target.value
+  emitValue()
+}
+
+const onMinuteChange = (e) => {
+  selectedMinute.value = e.target.value
+  emitValue()
 }
 </script>
