@@ -99,11 +99,10 @@
       </div>
     </div>
 
-    <!-- Modal Crear/Editar - Interfaz mejorada -->
-    <Modal
+    <!-- SlidePanel Crear/Editar -->
+    <SlidePanel
       v-model="modalAbierto"
       :title="modoEdicion ? 'Editar Horario' : 'Configurar Horarios'"
-      size="lg"
       :closable="!guardando"
     >
       <form @submit.prevent="handleSubmit" class="space-y-6">
@@ -221,7 +220,7 @@
           </button>
         </div>
       </form>
-    </Modal>
+    </SlidePanel>
 
     <!-- Confirm Dialog -->
     <ConfirmDialog
@@ -240,7 +239,7 @@
 import { ref, computed } from 'vue'
 import TimePicker from '../common/TimePicker.vue'
 import Badge from '../common/Badge.vue'
-import Modal from '../common/Modal.vue'
+import SlidePanel from '../common/SlidePanel.vue'
 import ConfirmDialog from '../common/ConfirmDialog.vue'
 import LoadingSpinner from '../common/LoadingSpinner.vue'
 import EmptyState from '../common/EmptyState.vue'
