@@ -25,20 +25,13 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">
             Buscar servicio
           </label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input
-              v-model="filtros.busqueda"
-              type="text"
-              placeholder="Buscar por nombre o descripción..."
-              @input="aplicarFiltros"
-              class="block w-full pl-11 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-            />
-          </div>
+          <input
+            v-model="filtros.busqueda"
+            type="text"
+            placeholder="Buscar por nombre o descripción..."
+            @input="aplicarFiltros"
+            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          />
         </div>
         <div class="md:col-span-4">
           <Select

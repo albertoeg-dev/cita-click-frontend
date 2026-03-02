@@ -80,17 +80,15 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">
             Email de Contacto
           </label>
-          <div class="relative">
-            <input
-              v-model="formData.email"
-              type="email"
-              placeholder="contacto@tunegocio.com"
-              :disabled="loading"
-              @blur="validateField('email')"
-              class="block w-full pl-11 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              :class="errors.email ? 'border-red-300' : 'border-gray-300'"
-            />
-          </div>
+          <input
+            v-model="formData.email"
+            type="email"
+            placeholder="contacto@tunegocio.com"
+            :disabled="loading"
+            @blur="validateField('email')"
+            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            :class="errors.email ? 'border-red-300' : 'border-gray-300'"
+          />
           <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
         </div>
 
@@ -99,24 +97,17 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">
             Teléfono de Contacto <span class="text-red-500">*</span>
           </label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-            </div>
-            <input
-              v-model="formData.telefono"
-              type="tel"
-              placeholder="5512345678"
-              maxlength="10"
-              :disabled="loading"
-              @input="handleTelefonoInput"
-              @blur="validateField('telefono')"
-              class="block w-full pl-11 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              :class="errors.telefono ? 'border-red-300' : 'border-gray-300'"
-            />
-          </div>
+          <input
+            v-model="formData.telefono"
+            type="tel"
+            placeholder="5512345678"
+            maxlength="10"
+            :disabled="loading"
+            @input="handleTelefonoInput"
+            @blur="validateField('telefono')"
+            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            :class="errors.telefono ? 'border-red-300' : 'border-gray-300'"
+          />
           <p v-if="errors.telefono" class="mt-1 text-sm text-red-600">{{ errors.telefono }}</p>
           <p v-else class="mt-1 text-xs text-gray-500">Formato: 10 dígitos sin espacios ni guiones</p>
         </div>
