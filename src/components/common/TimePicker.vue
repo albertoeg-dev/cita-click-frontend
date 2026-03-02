@@ -5,96 +5,41 @@
       <span v-if="required" class="text-red-500">*</span>
     </label>
 
-    <!-- Spinner HH : MM -->
-    <div
-      class="inline-flex items-center gap-1 border rounded-lg px-3 py-2 bg-white transition-colors"
-      :class="hasError ? 'border-red-400 ring-1 ring-red-400' : 'border-gray-300 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500'"
-    >
-      <!-- Horas -->
-      <div class="flex flex-col items-center">
-        <button
-          type="button"
-          @click="changeHours(1)"
-          :disabled="disabled"
-          tabindex="-1"
-          class="w-7 h-6 flex items-center justify-center rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors disabled:opacity-40"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
-          </svg>
-        </button>
-        <input
-          ref="hoursRef"
-          type="text"
-          inputmode="numeric"
-          :value="hoursDisplay"
-          @input="onHoursInput"
-          @blur="normalizeHours"
-          @keydown="onHoursKeydown"
-          :disabled="disabled"
-          maxlength="2"
-          placeholder="HH"
-          class="w-9 text-center text-lg font-semibold text-gray-800 bg-transparent border-none outline-none leading-tight py-0.5"
-        />
-        <button
-          type="button"
-          @click="changeHours(-1)"
-          :disabled="disabled"
-          tabindex="-1"
-          class="w-7 h-6 flex items-center justify-center rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors disabled:opacity-40"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-      </div>
+    <!-- Dos selects: Horas y Minutos -->
+    <div class="flex items-center gap-1">
+      <!-- Select Horas -->
+      <select
+        :value="selectedHour"
+        @change="onHourChange"
+        :disabled="disabled"
+        class="flex-1 border rounded-lg px-3 py-2.5 text-sm font-medium text-gray-800 bg-white appearance-none cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        :class="hasError ? 'border-red-400' : 'border-gray-300 hover:border-gray-400'"
+      >
+        <option value="" disabled>HH</option>
+        <option
+          v-for="h in hours"
+          :key="h.value"
+          :value="h.value"
+        >{{ h.label }}</option>
+      </select>
 
-      <!-- Separador -->
-      <span class="text-xl font-bold text-gray-500 select-none -mt-0.5">:</span>
+      <span class="text-lg font-bold text-gray-400 select-none">:</span>
 
-      <!-- Minutos -->
-      <div class="flex flex-col items-center">
-        <button
-          type="button"
-          @click="changeMinutes(5)"
-          :disabled="disabled"
-          tabindex="-1"
-          class="w-7 h-6 flex items-center justify-center rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors disabled:opacity-40"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
-          </svg>
-        </button>
-        <input
-          ref="minutesRef"
-          type="text"
-          inputmode="numeric"
-          :value="minutesDisplay"
-          @input="onMinutesInput"
-          @blur="normalizeMinutes"
-          @keydown="onMinutesKeydown"
-          :disabled="disabled"
-          maxlength="2"
-          placeholder="MM"
-          class="w-9 text-center text-lg font-semibold text-gray-800 bg-transparent border-none outline-none leading-tight py-0.5"
-        />
-        <button
-          type="button"
-          @click="changeMinutes(-5)"
-          :disabled="disabled"
-          tabindex="-1"
-          class="w-7 h-6 flex items-center justify-center rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors disabled:opacity-40"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Indicador AM/PM -->
-      <span class="text-xs font-semibold text-gray-400 ml-1 select-none self-center w-6 text-center">
-        {{ period }}
-      </span>
+      <!-- Select Minutos -->
+      <select
+        :value="selectedMinute"
+        @change="onMinuteChange"
+        :disabled="disabled"
+        class="flex-1 border rounded-lg px-3 py-2.5 text-sm font-medium text-gray-800 bg-white appearance-none cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        :class="hasError ? 'border-red-400' : 'border-gray-300 hover:border-gray-400'"
+      >
+        <option value="" disabled>MM</option>
+        <option
+          v-for="m in minutes"
+          :key="m.value"
+          :value="m.value"
+        >{{ m.label }}</option>
+      </select>
     </div>
 
     <!-- Error message -->
@@ -110,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { computed, watch, ref } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -137,10 +82,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  // Mantenidos para compatibilidad
+  // Compatibilidad con props anteriores
   min: { type: String, default: '00:00' },
   max: { type: String, default: '23:59' },
-  step: { type: Number, default: 30 },
+  step: { type: Number, default: 5 },
   id: {
     type: String,
     default: () => `timepicker-${Math.random().toString(36).substr(2, 9)}`,
@@ -149,115 +94,55 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'blur', 'change'])
 
-const hoursRef = ref(null)
-const minutesRef = ref(null)
+// Opciones de horas 00–23
+const hours = Array.from({ length: 24 }, (_, i) => ({
+  value: String(i).padStart(2, '0'),
+  label: String(i).padStart(2, '0'),
+}))
 
+// Opciones de minutos cada 5 min: 00, 05, 10 … 55
+const minutes = Array.from({ length: 12 }, (_, i) => ({
+  value: String(i * 5).padStart(2, '0'),
+  label: String(i * 5).padStart(2, '0'),
+}))
+
+// Parsear modelValue → partes separadas
 const parseValue = (val) => {
-  if (!val) return { h: null, m: null }
+  if (!val) return { h: '', m: '' }
   const parts = val.split(':')
-  const h = parseInt(parts[0])
-  const m = parseInt(parts[1])
-  return {
-    h: !isNaN(h) && h >= 0 && h <= 23 ? h : null,
-    m: !isNaN(m) && m >= 0 && m <= 59 ? m : null,
-  }
+  const h = parts[0]?.padStart(2, '0') ?? ''
+  // Redondear minutos al múltiplo de 5 más cercano
+  const rawM = parseInt(parts[1] ?? '0')
+  const roundedM = !isNaN(rawM) ? Math.round(rawM / 5) * 5 : 0
+  const m = String(Math.min(roundedM, 55)).padStart(2, '0')
+  return { h, m }
 }
 
-const internalH = ref(parseValue(props.modelValue).h)
-const internalM = ref(parseValue(props.modelValue).m)
+const selectedHour = ref(parseValue(props.modelValue).h)
+const selectedMinute = ref(parseValue(props.modelValue).m)
 
 watch(() => props.modelValue, (val) => {
   const { h, m } = parseValue(val)
-  internalH.value = h
-  internalM.value = m
-})
-
-const hoursDisplay = computed(() =>
-  internalH.value !== null ? String(internalH.value).padStart(2, '0') : ''
-)
-
-const minutesDisplay = computed(() =>
-  internalM.value !== null ? String(internalM.value).padStart(2, '0') : ''
-)
-
-const period = computed(() => {
-  if (internalH.value === null) return '--'
-  return internalH.value < 12 ? 'AM' : 'PM'
+  selectedHour.value = h
+  selectedMinute.value = m
 })
 
 const hasError = computed(() => !!props.error)
 
 const emitValue = () => {
-  if (internalH.value === null && internalM.value === null) {
-    emit('update:modelValue', '')
-    emit('change', '')
-    return
-  }
-  const h = internalH.value ?? 0
-  const m = internalM.value ?? 0
-  const val = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+  if (!selectedHour.value || selectedMinute.value === '') return
+  const val = `${selectedHour.value}:${selectedMinute.value}`
   emit('update:modelValue', val)
   emit('change', val)
 }
 
-// --- Horas ---
-const changeHours = (delta) => {
-  const current = internalH.value ?? 0
-  internalH.value = ((current + delta) % 24 + 24) % 24
+const onHourChange = (e) => {
+  selectedHour.value = e.target.value
   emitValue()
 }
 
-const onHoursInput = (e) => {
-  const raw = e.target.value.replace(/\D/g, '').slice(0, 2)
-  e.target.value = raw
-  if (raw === '') {
-    internalH.value = null
-    return
-  }
-  const n = Number(raw)
-  if (n >= 0 && n <= 23) internalH.value = n
-  // Saltar a minutos al escribir 2 dígitos
-  if (raw.length === 2) minutesRef.value?.focus()
-}
-
-const normalizeHours = () => {
-  if (internalH.value === null) internalH.value = 0
+const onMinuteChange = (e) => {
+  selectedMinute.value = e.target.value
   emitValue()
-  emit('blur')
-}
-
-const onHoursKeydown = (e) => {
-  if (e.key === 'ArrowUp') { e.preventDefault(); changeHours(1) }
-  if (e.key === 'ArrowDown') { e.preventDefault(); changeHours(-1) }
-  if (e.key === ':' || e.key === 'Tab') minutesRef.value?.focus()
-}
-
-// --- Minutos ---
-const changeMinutes = (delta) => {
-  const current = internalM.value ?? 0
-  internalM.value = ((current + delta) % 60 + 60) % 60
-  emitValue()
-}
-
-const onMinutesInput = (e) => {
-  const raw = e.target.value.replace(/\D/g, '').slice(0, 2)
-  e.target.value = raw
-  if (raw === '') {
-    internalM.value = null
-    return
-  }
-  const n = Number(raw)
-  if (n >= 0 && n <= 59) internalM.value = n
-}
-
-const normalizeMinutes = () => {
-  if (internalM.value === null) internalM.value = 0
-  emitValue()
-  emit('blur')
-}
-
-const onMinutesKeydown = (e) => {
-  if (e.key === 'ArrowUp') { e.preventDefault(); changeMinutes(5) }
-  if (e.key === 'ArrowDown') { e.preventDefault(); changeMinutes(-5) }
 }
 </script>
