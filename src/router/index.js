@@ -233,6 +233,27 @@ router.beforeEach(async (to, from, next) => {
     return next('/dashboard')
   }
 
+  // Verificar si la suscripción está bloqueada (trial vencido o cuenta suspendida)
+  if (isAuthenticated && to.meta.requiresAuth !== false) {
+    // Rutas permitidas aunque la cuenta esté bloqueada (para poder pagar/renovar)
+    const rutasPermitidas = ['/planes', '/pricing', '/subscription', '/payment', '/settings']
+    const estaEnRutaPermitida = rutasPermitidas.some(ruta => to.path.startsWith(ruta))
+
+    if (!estaEnRutaPermitida) {
+      if (!suscripcionStore.info) {
+        try {
+          await suscripcionStore.cargarInfoSuscripcion()
+        } catch (error) {
+          console.error('[Router] Error al cargar suscripción para verificar bloqueo:', error)
+        }
+      }
+
+      if (suscripcionStore.estaBloqueado) {
+        return next({ path: '/planes', query: { blocked: 'true', from: to.path } })
+      }
+    }
+  }
+
   // Verificar restricciones de plan (requiresPlan)
   if (to.meta.requiresPlan && isAuthenticated) {
     // Cargar info de suscripción si no está cargada

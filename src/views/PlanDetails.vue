@@ -4,6 +4,30 @@
       💳 Plan y Facturación
     </template>
 
+    <!-- Cuenta Bloqueada Notice (trial vencido o suscripción expirada) -->
+    <div v-if="cuentaBloqueada" class="mb-6">
+      <div class="bg-red-50 border border-red-200 rounded-xl p-5">
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-base font-semibold text-red-800 mb-1">
+              Tu acceso ha sido suspendido
+            </h3>
+            <p class="text-sm text-red-700 leading-relaxed">
+              Tu periodo de prueba gratuita o suscripción ha vencido. Para continuar usando
+              Cita Click y acceder a todas tus citas, clientes y configuraciones,
+              <strong>selecciona un plan a continuación</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Upgrade Notice (cuando viene de una restricción) -->
     <div v-if="upgradeRequired" class="mb-6">
       <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-md">
@@ -373,11 +397,18 @@ import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import DashboardLayout from '@/components/layout/DashboardLayout.vue'
 import { usePlanesStore } from '@/stores/planesStore'
+import { useSuscripcionStore } from '@/stores/suscripcionStore'
 
 const route = useRoute()
 const planesStore = usePlanesStore()
+const suscripcionStore = useSuscripcionStore()
 
-// Detectar si viene de una restricción
+// Detectar si la cuenta está bloqueada (trial o suscripción vencida)
+const cuentaBloqueada = computed(() => {
+  return !!route.query.blocked || suscripcionStore.estaBloqueado
+})
+
+// Detectar si viene de una restricción de plan
 const upgradeRequired = computed(() => {
   return !!route.query.upgrade
 })
