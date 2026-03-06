@@ -332,8 +332,9 @@ const showReportes = computed(() => {
   return !!planesStore.limites.reportesAvanzadosHabilitado
 })
 const showPlantillaEmail = computed(() => {
+  // Plantillas Email es exclusivo del plan Premium
   if (!planesStore.limites) return true
-  return !!planesStore.limites.emailRecordatoriosHabilitado
+  return planesStore.limites.nombrePlan?.toUpperCase() === 'PREMIUM'
 })
 const showIntegraciones = computed(() => {
   if (!planesStore.limites) return true

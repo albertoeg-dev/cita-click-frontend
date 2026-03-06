@@ -272,10 +272,9 @@
                 </div>
               </div>
             </div>
-          </div>
 
-            <!-- Botón cancelar suscripción -->
-            <div v-if="!suscripcionStore.info?.enPeriodoPrueba && suscripcionStore.info?.estadoPago === 'activo'" class="pt-4 border-t border-gray-200">
+            <!-- Botón cancelar suscripción (dentro de v-if planesStore.limites) -->
+            <div v-if="suscripcionStore.info?.cuentaActiva && suscripcionStore.info?.estadoPago === 'activo' && !suscripcionStore.info?.enPeriodoPrueba" class="pt-4 border-t border-gray-200">
               <button
                 @click="mostrarModalCancelar = true"
                 class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-red-600 border border-red-200 hover:bg-red-50 rounded-lg transition-colors"
@@ -503,6 +502,10 @@ const planNombreNormalizado = computed(() => {
 
 onMounted(() => {
   planesStore.cargarTodo()
+  // Asegurar que la info de suscripción esté cargada para el botón de cancelación
+  if (!suscripcionStore.info) {
+    suscripcionStore.cargarInfoSuscripcion().catch(() => {})
+  }
 })
 
 const formatearPeriodo = (periodo) => {
