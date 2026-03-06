@@ -53,6 +53,8 @@
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/authStore'
+import { useSuscripcionStore } from '../../stores/suscripcionStore'
+import { useOnboardingStore } from '../../stores/onboardingStore'
 
 const props = defineProps({
   mode: {
@@ -70,6 +72,8 @@ const emit = defineEmits(['success', 'error'])
 
 const router = useRouter()
 const authStore = useAuthStore()
+const suscripcionStore = useSuscripcionStore()
+const onboardingStore = useOnboardingStore()
 const googleButtonContainer = ref(null)
 const googleButtonRendered = ref(false)
 const gsiLoadError = ref(false)
@@ -172,8 +176,16 @@ const handleGoogleCallback = async (response) => {
 
     emit('success')
 
-    // Redirigir al dashboard
-    router.push('/dashboard')
+    // Verificar estado de onboarding antes de redirigir
+    try {
+      await suscripcionStore.cargarInfoSuscripcion()
+    } catch {}
+
+    if (!onboardingStore.onboardingCompleto) {
+      router.push('/onboarding')
+    } else {
+      router.push('/dashboard')
+    }
   } catch (error) {
     console.error('[GoogleLoginButton] Error en callback de Google:', error)
 

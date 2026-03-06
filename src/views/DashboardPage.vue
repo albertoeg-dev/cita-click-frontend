@@ -18,8 +18,8 @@
     </div>
 
     <div v-else>
-      <!-- Onboarding Checklist (solo si no está todo completo) -->
-      <OnboardingChecklist v-if="!checklistCerrado && !todasTareasCompletadas" @close="cerrarChecklist" class="mb-6" />
+      <!-- Guía de configuración (bienvenida + pasos) -->
+      <DashboardSetupGuide v-if="!setupGuideCerrado && !todasTareasCompletadas" @close="cerrarSetupGuide" />
 
       <!-- Acciones Rápidas (movido al inicio) 
       <div class="card bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-600 mb-6">
@@ -272,7 +272,7 @@ import IngresosWidget from '../components/dashboard/IngresosWidget.vue'
 import CitasWidget from '../components/dashboard/CitasWidget.vue'
 import ServiciosWidget from '../components/dashboard/ServiciosWidget.vue'
 import TendenciaGrafica from '../components/dashboard/TendenciaGrafica.vue'
-import OnboardingChecklist from '../components/dashboard/OnboardingChecklist.vue'
+import DashboardSetupGuide from '../components/dashboard/DashboardSetupGuide.vue'
 import { formatearNombreCompleto, formatearPrecio, formatearFechaHora } from '../utils/formatters'
 import { ESTADOS_CITA_LABELS } from '../utils/constants'
 import { useBusinessStore } from '../stores/businessStore'
@@ -297,7 +297,7 @@ const {
 } = useDashboardMetricas()
 
 const loading = ref(true)
-const checklistCerrado = ref(false)
+const setupGuideCerrado = ref(false)
 
 // Computed
 const citasHoy = computed(() => {
@@ -369,9 +369,8 @@ const todasTareasCompletadas = computed(() => {
 })
 
 // Métodos
-const cerrarChecklist = () => {
-  checklistCerrado.value = true
-  localStorage.setItem('dashboard_checklist_cerrado', 'true')
+const cerrarSetupGuide = () => {
+  setupGuideCerrado.value = true
 }
 
 const mostrarNotificacionUpgradeFn = () => {
@@ -451,9 +450,9 @@ onMounted(async () => {
   await cargarDatos()
 
   // Cargar preferencias de localStorage
-  const checklistCerradoStorage = localStorage.getItem('dashboard_checklist_cerrado')
-  if (checklistCerradoStorage === 'true') {
-    checklistCerrado.value = true
+  const setupGuideCerradoStorage = localStorage.getItem('dashboard_setup_guide_cerrado')
+  if (setupGuideCerradoStorage === 'true' && todasTareasCompletadas.value) {
+    setupGuideCerrado.value = true
   }
 
   // Mostrar notificación de upgrade si es plan gratuito
