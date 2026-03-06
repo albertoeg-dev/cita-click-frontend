@@ -78,6 +78,24 @@ export const useSuscripcionStore = defineStore('suscripcion', () => {
     }
   }
 
+  async function cancelarSuscripcion() {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await api.post('/suscripcion/cancelar')
+      // Recargar información para reflejar el nuevo estado
+      await cargarInfoSuscripcion()
+      return response.data
+    } catch (err) {
+      console.error('Error cancelando suscripción:', err)
+      error.value = err.response?.data?.message || err.message || 'Error al cancelar la suscripción'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   function limpiarError() {
     error.value = null
   }
@@ -103,6 +121,7 @@ export const useSuscripcionStore = defineStore('suscripcion', () => {
     // Acciones
     cargarInfoSuscripcion,
     activarSuscripcion,
+    cancelarSuscripcion,
     limpiarError,
     resetear
   }
