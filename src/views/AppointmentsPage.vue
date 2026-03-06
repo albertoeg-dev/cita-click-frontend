@@ -14,7 +14,7 @@
     </template>
 
     <template #headerActions>
-      <button @click="abrirModalCrear" class="btn btn-primary btn-sm">
+      <button @click="abrirModalCrear" data-tour="agregar-cita" class="btn btn-primary btn-sm">
         + Nueva Cita
       </button>
     </template>

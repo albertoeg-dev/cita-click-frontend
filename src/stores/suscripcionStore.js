@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../services/api'
+import { useOnboardingStore } from './onboardingStore'
 
 export const useSuscripcionStore = defineStore('suscripcion', () => {
   // Estado
@@ -39,6 +40,11 @@ export const useSuscripcionStore = defineStore('suscripcion', () => {
       const response = await api.get('/suscripcion/info')
 
       info.value = response.data
+
+      // Sincronizar estado de onboarding con el store dedicado
+      const onboardingStore = useOnboardingStore()
+      onboardingStore.sincronizarDesdeInfo(response.data)
+
       return response.data
     } catch (err) {
       console.error('Error cargando información de suscripción:', err)

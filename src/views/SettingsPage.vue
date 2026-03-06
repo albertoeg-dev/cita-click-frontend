@@ -49,6 +49,7 @@
         <!-- Horarios -->
         <button
           @click="activeTab = 'hours'"
+          data-tour="configurar-horarios"
           :class="[
             'px-4 py-3 font-medium transition-all border-b-2 -mb-px flex items-center gap-2 whitespace-nowrap',
             activeTab === 'hours'

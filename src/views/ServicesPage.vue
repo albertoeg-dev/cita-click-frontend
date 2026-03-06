@@ -13,7 +13,7 @@
     </template>
 
     <template #headerActions>
-      <button @click="abrirModalCrear" class="btn btn-primary btn-sm">
+      <button @click="abrirModalCrear" data-tour="agregar-servicio" class="btn btn-primary btn-sm">
         + Nuevo Servicio
       </button>
     </template>
