@@ -76,42 +76,44 @@ export function usePlanFeatures() {
   })
 
   /**
-   * Computed que retorna el código del plan (basico, profesional, premium)
+   * Computed que retorna el código del plan (base, completo)
    */
   const tipoPlan = computed(() => {
-    return planesStore.limites?.tipoPlan?.toLowerCase() || 'basico'
+    return planesStore.limites?.tipoPlan?.toLowerCase() || 'base'
   })
 
   /**
    * Funcionalidades disponibles por plan (definición local para UI)
-   * ACTUALIZADO 2026-01-12: Nuevos planes BASICO, PROFESIONAL, PREMIUM
+   * Planes activos: BASE, COMPLETO
+   * Los módulos adicionales se gestionan por separado en el marketplace
    */
   const funcionalidadesPorPlan = {
-    BASICO: {
+    BASE: {
       sms_whatsapp: false,
       reportes_avanzados: false,
-      soporte_prioritario: false
+      soporte_prioritario: false,
+      cobros_online: false
     },
-    PROFESIONAL: {
-      sms_whatsapp: false,  // Disponible Q2 2026
+    COMPLETO: {
+      sms_whatsapp: true,
       reportes_avanzados: true,
-      soporte_prioritario: false
+      soporte_prioritario: true,
+      cobros_online: true
     },
-    PREMIUM: {
-      sms_whatsapp: false,  // Disponible Q2 2026
-      reportes_avanzados: true,
-      soporte_prioritario: true
-    }
+    // Aliases legacy
+    BASICO:      { sms_whatsapp: false, reportes_avanzados: false, soporte_prioritario: false, cobros_online: false },
+    PROFESIONAL: { sms_whatsapp: false, reportes_avanzados: false, soporte_prioritario: false, cobros_online: false },
+    PREMIUM:     { sms_whatsapp: true,  reportes_avanzados: true,  soporte_prioritario: true,  cobros_online: true  }
   }
 
   /**
    * Mensajes descriptivos para funcionalidades bloqueadas
-   * ACTUALIZADO 2026-01-12: Mensajes para nuevos planes
    */
   const mensajesFuncionalidades = {
-    sms_whatsapp: 'Las notificaciones por WhatsApp y SMS estarán disponibles en el plan Premium a partir de Q2 2026',
-    reportes_avanzados: 'Los reportes avanzados con exportación a PDF y Excel están disponibles en los planes Profesional y Premium',
-    soporte_prioritario: 'El soporte prioritario con respuesta en menos de 6 horas está disponible solo en el plan Premium'
+    sms_whatsapp: 'Las notificaciones por WhatsApp y SMS están disponibles en el Bundle Completo o como módulo adicional',
+    reportes_avanzados: 'Los reportes avanzados con exportación a PDF y Excel están disponibles en el Bundle Completo o como módulo adicional',
+    soporte_prioritario: 'El soporte prioritario está disponible en el Bundle Completo',
+    cobros_online: 'Los cobros en línea con Stripe Connect están disponibles en el Bundle Completo o como módulo adicional'
   }
 
   /**
