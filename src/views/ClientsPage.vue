@@ -13,7 +13,7 @@
     </template>
 
     <template #headerActions>
-      <button @click="abrirModalCrear" class="btn btn-primary btn-sm">
+      <button @click="abrirModalCrear" data-tour="agregar-cliente" class="btn btn-primary btn-sm">
         + Nuevo Cliente
       </button>
     </template>
@@ -28,13 +28,7 @@
             label="Buscar cliente"
             placeholder="Nombre, apellidos, email o teléfono..."
             @input="buscarClientes"
-          >
-            <template #icon>
-              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </template>
-          </Input>
+          />
         </div>
         <button
           @click="toggleFiltroCumpleaños"
@@ -198,11 +192,10 @@
       </div>
     </div>
 
-    <!-- Modal Crear/Editar -->
-    <Modal
+    <!-- Panel lateral Crear/Editar -->
+    <SlidePanel
       v-model="modalAbierto"
       :title="modoEdicion ? 'Editar Cliente' : 'Crear Nuevo Cliente'"
-      size="lg"
       :closable="!guardando"
     >
       <ClientForm
@@ -212,7 +205,7 @@
         @submit="guardarCliente"
         @cancel="cerrarModal"
       />
-    </Modal>
+    </SlidePanel>
 
     <!-- Confirm Dialog -->
     <ConfirmDialog
@@ -234,7 +227,7 @@ import { useClientesStore } from '../stores/clientesStore'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
 import ClientForm from '../components/features/ClientForm.vue'
-import Modal from '../components/common/Modal.vue'
+import SlidePanel from '../components/common/SlidePanel.vue'
 import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import Input from '../components/common/Input.vue'
 import LoadingSpinner from '../components/common/LoadingSpinner.vue'

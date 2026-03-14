@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../services/api'
+import { useOnboardingStore } from './onboardingStore'
 
 export const useSuscripcionStore = defineStore('suscripcion', () => {
   // Estado
@@ -39,6 +40,11 @@ export const useSuscripcionStore = defineStore('suscripcion', () => {
       const response = await api.get('/suscripcion/info')
 
       info.value = response.data
+
+      // Sincronizar estado de onboarding con el store dedicado
+      const onboardingStore = useOnboardingStore()
+      onboardingStore.sincronizarDesdeInfo(response.data)
+
       return response.data
     } catch (err) {
       console.error('Error cargando información de suscripción:', err)
@@ -72,6 +78,24 @@ export const useSuscripcionStore = defineStore('suscripcion', () => {
     }
   }
 
+  async function cancelarSuscripcion() {
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await api.post('/suscripcion/cancelar')
+      // Recargar información para reflejar el nuevo estado
+      await cargarInfoSuscripcion()
+      return response.data
+    } catch (err) {
+      console.error('Error cancelando suscripción:', err)
+      error.value = err.response?.data?.message || err.message || 'Error al cancelar la suscripción'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   function limpiarError() {
     error.value = null
   }
@@ -97,6 +121,7 @@ export const useSuscripcionStore = defineStore('suscripcion', () => {
     // Acciones
     cargarInfoSuscripcion,
     activarSuscripcion,
+    cancelarSuscripcion,
     limpiarError,
     resetear
   }

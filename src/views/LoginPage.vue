@@ -71,12 +71,16 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
+import { useSuscripcionStore } from '../stores/suscripcionStore'
+import { useOnboardingStore } from '../stores/onboardingStore'
 import AuthLayout from '../components/layout/AuthLayout.vue'
 import Alert from '../components/common/Alert.vue'
 import GoogleLoginButton from '../components/common/GoogleLoginButton.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const suscripcionStore = useSuscripcionStore()
+const onboardingStore = useOnboardingStore()
 
 const email = ref('')
 const password = ref('')
@@ -94,7 +98,14 @@ const handleLogin = async () => {
 
   try {
     await authStore.login(email.value, password.value)
-    router.push('/dashboard')
+
+    // Verificar onboarding antes de redirigir
+    try { await suscripcionStore.cargarInfoSuscripcion() } catch {}
+    if (!onboardingStore.onboardingCompleto) {
+      router.push('/onboarding')
+    } else {
+      router.push('/dashboard')
+    }
   } catch (err) {
     error.value = err.mensaje || 'Error al iniciar sesión'
   } finally {

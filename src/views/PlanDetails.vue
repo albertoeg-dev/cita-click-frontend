@@ -4,6 +4,30 @@
       💳 Plan y Facturación
     </template>
 
+    <!-- Cuenta Bloqueada Notice (trial vencido o suscripción expirada) -->
+    <div v-if="cuentaBloqueada" class="mb-6">
+      <div class="bg-red-50 border border-red-200 rounded-xl p-5">
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-base font-semibold text-red-800 mb-1">
+              Tu acceso ha sido suspendido
+            </h3>
+            <p class="text-sm text-red-700 leading-relaxed">
+              Tu periodo de prueba gratuita o suscripción ha vencido. Para continuar usando
+              Cita Click y acceder a todas tus citas, clientes y configuraciones,
+              <strong>selecciona un plan a continuación</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Upgrade Notice (cuando viene de una restricción) -->
     <div v-if="upgradeRequired" class="mb-6">
       <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-md">
@@ -40,6 +64,57 @@
         Cambiar o Actualizar Plan
       </router-link>
     </div>
+
+    <!-- Modal de confirmación de cancelación -->
+    <Teleport to="body">
+      <div v-if="mostrarModalCancelar" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50" @click="mostrarModalCancelar = false"></div>
+        <div class="relative bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-bold text-slate-900 mb-1">¿Cancelar suscripción?</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">
+                Tu suscripción se cancelará al final del período de facturación actual.
+                <span v-if="suscripcionStore.info?.fechaProximoPago" class="font-semibold text-slate-800">
+                  Tendrás acceso hasta el {{ formatearFecha(suscripcionStore.info.fechaProximoPago) }}.
+                </span>
+                Después de esa fecha perderás acceso al sistema.
+              </p>
+            </div>
+          </div>
+
+          <div v-if="errorCancelacion" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p class="text-sm text-red-700">{{ errorCancelacion }}</p>
+          </div>
+
+          <div class="mt-6 flex justify-end gap-3">
+            <button
+              @click="mostrarModalCancelar = false"
+              :disabled="cancelando"
+              class="px-5 py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+            >
+              Conservar plan
+            </button>
+            <button
+              @click="confirmarCancelacion"
+              :disabled="cancelando"
+              class="px-5 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 disabled:opacity-60 rounded-lg transition-colors flex items-center gap-2"
+            >
+              <svg v-if="cancelando" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              {{ cancelando ? 'Cancelando...' : 'Sí, cancelar suscripción' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- Loading -->
     <div v-if="planesStore.loading" class="text-center py-12">
@@ -196,6 +271,19 @@
                   <span class="text-gray-900">Multi-sucursal</span>
                 </div>
               </div>
+            </div>
+
+            <!-- Botón cancelar suscripción (dentro de v-if planesStore.limites) -->
+            <div v-if="suscripcionStore.info?.cuentaActiva && suscripcionStore.info?.estadoPago === 'activo' && !suscripcionStore.info?.enPeriodoPrueba" class="pt-4 border-t border-gray-200">
+              <button
+                @click="mostrarModalCancelar = true"
+                class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-red-600 border border-red-200 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Cancelar suscripción
+              </button>
             </div>
           </div>
         </div>
@@ -369,15 +457,26 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import DashboardLayout from '@/components/layout/DashboardLayout.vue'
 import { usePlanesStore } from '@/stores/planesStore'
+import { useSuscripcionStore } from '@/stores/suscripcionStore'
 
 const route = useRoute()
 const planesStore = usePlanesStore()
+const suscripcionStore = useSuscripcionStore()
 
-// Detectar si viene de una restricción
+const mostrarModalCancelar = ref(false)
+const cancelando = ref(false)
+const errorCancelacion = ref('')
+
+// Detectar si la cuenta está bloqueada (trial o suscripción vencida)
+const cuentaBloqueada = computed(() => {
+  return !!route.query.blocked || suscripcionStore.estaBloqueado
+})
+
+// Detectar si viene de una restricción de plan
 const upgradeRequired = computed(() => {
   return !!route.query.upgrade
 })
@@ -403,6 +502,10 @@ const planNombreNormalizado = computed(() => {
 
 onMounted(() => {
   planesStore.cargarTodo()
+  // Asegurar que la info de suscripción esté cargada para el botón de cancelación
+  if (!suscripcionStore.info) {
+    suscripcionStore.cargarInfoSuscripcion().catch(() => {})
+  }
 })
 
 const formatearPeriodo = (periodo) => {
@@ -410,5 +513,25 @@ const formatearPeriodo = (periodo) => {
   const [year, month] = periodo.split('-')
   const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
   return `${meses[parseInt(month) - 1]} ${year}`
+}
+
+const formatearFecha = (fecha) => {
+  if (!fecha) return ''
+  const d = new Date(fecha)
+  const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+  return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`
+}
+
+const confirmarCancelacion = async () => {
+  cancelando.value = true
+  errorCancelacion.value = ''
+  try {
+    await suscripcionStore.cancelarSuscripcion()
+    mostrarModalCancelar.value = false
+  } catch (err) {
+    errorCancelacion.value = err.response?.data?.message || err.message || 'Error al cancelar la suscripción'
+  } finally {
+    cancelando.value = false
+  }
 }
 </script>

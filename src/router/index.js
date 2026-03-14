@@ -2,12 +2,16 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 import { useSuscripcionStore } from '../stores/suscripcionStore'
 import { usePlanesStore } from '../stores/planesStore'
+import { useOnboardingStore } from '../stores/onboardingStore'
 import { useModulosStore } from '../stores/modulosStore'
 
 // Vistas de Autenticación
 import LoginPage from '../views/LoginPage.vue'
 import RegisterPage from '../views/RegisterPage.vue'
 import VerifyEmailPage from '../views/VerifyEmailPage.vue'
+
+// Vista de Onboarding
+import OnboardingPage from '../views/OnboardingPage.vue'
 
 // Vistas del Dashboard
 import DashboardPage from '../views/DashboardPage.vue'
@@ -72,6 +76,12 @@ const routes = [
     name: 'VerifyEmail',
     component: VerifyEmailPage,
     meta: { layout: 'auth', requiresAuth: false },
+  },
+  {
+    path: '/onboarding',
+    name: 'Onboarding',
+    component: OnboardingPage,
+    meta: { layout: 'auth', requiresAuth: true },
   },
 
   // Rutas del dashboard
@@ -231,7 +241,52 @@ router.beforeEach(async (to, from, next) => {
 
   // Si está en login/register y ya está autenticado
   if ((to.path === '/login' || to.path === '/register') && isAuthenticated) {
+    // Verificar onboarding antes de redirigir al dashboard
+    if (!suscripcionStore.info) {
+      try { await suscripcionStore.cargarInfoSuscripcion() } catch {}
+    }
+    const onboardingStoreLogin = useOnboardingStore()
+    if (!onboardingStoreLogin.onboardingCompleto) {
+      return next('/onboarding')
+    }
     return next('/dashboard')
+  }
+
+  // Redirigir al onboarding si el usuario no lo ha completado
+  if (isAuthenticated && to.meta.requiresAuth !== false && to.path !== '/onboarding') {
+    const rutasExcluidasOnboarding = ['/onboarding', '/planes', '/pricing', '/subscription', '/payment', '/checkout', '/logout']
+    const estaEnRutaExcluida = rutasExcluidasOnboarding.some(r => to.path.startsWith(r))
+
+    if (!estaEnRutaExcluida) {
+      if (!suscripcionStore.info) {
+        try { await suscripcionStore.cargarInfoSuscripcion() } catch {}
+      }
+      const onboardingStore = useOnboardingStore()
+      if (!onboardingStore.onboardingCompleto) {
+        return next('/onboarding')
+      }
+    }
+  }
+
+  // Verificar si la suscripción está bloqueada (trial vencido o cuenta suspendida)
+  if (isAuthenticated && to.meta.requiresAuth !== false) {
+    // Rutas permitidas aunque la cuenta esté bloqueada (para poder pagar/renovar)
+    const rutasPermitidas = ['/onboarding', '/planes', '/pricing', '/subscription', '/payment', '/settings']
+    const estaEnRutaPermitida = rutasPermitidas.some(ruta => to.path.startsWith(ruta))
+
+    if (!estaEnRutaPermitida) {
+      if (!suscripcionStore.info) {
+        try {
+          await suscripcionStore.cargarInfoSuscripcion()
+        } catch (error) {
+          console.error('[Router] Error al cargar suscripción para verificar bloqueo:', error)
+        }
+      }
+
+      if (suscripcionStore.estaBloqueado) {
+        return next({ path: '/planes', query: { blocked: 'true', from: to.path } })
+      }
+    }
   }
 
   // Verificar restricciones de plan (requiresPlan)

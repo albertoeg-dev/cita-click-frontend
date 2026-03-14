@@ -144,6 +144,8 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
+import { useSuscripcionStore } from '../stores/suscripcionStore'
+import { useOnboardingStore } from '../stores/onboardingStore'
 import AuthLayout from '../components/layout/AuthLayout.vue'
 import Alert from '../components/common/Alert.vue'
 import GoogleLoginButton from '../components/common/GoogleLoginButton.vue'
@@ -151,6 +153,8 @@ import GoogleLoginButton from '../components/common/GoogleLoginButton.vue'
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const suscripcionStore = useSuscripcionStore()
+const onboardingStore = useOnboardingStore()
 
 const nombre = ref('')
 const apellidoPaterno = ref('')
@@ -204,7 +208,14 @@ const handleRegister = async () => {
     }
 
     await authStore.register(datos)
-    router.push('/dashboard')
+
+    // Verificar onboarding antes de redirigir
+    try { await suscripcionStore.cargarInfoSuscripcion() } catch {}
+    if (!onboardingStore.onboardingCompleto) {
+      router.push('/onboarding')
+    } else {
+      router.push('/dashboard')
+    }
   } catch (err) {
     console.error('[RegisterPage] Error al registrar:', err)
     error.value = err.message || err.mensaje || 'Error al crear la cuenta'

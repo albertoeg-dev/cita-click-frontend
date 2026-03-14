@@ -35,9 +35,10 @@
     <div class="space-y-1.5">
       <!-- Tarea 1: Configurar Negocio -->
       <div
-        class="flex items-center gap-2 p-2 rounded-lg transition-all cursor-pointer"
-        :class="tareas.negocioConfigurado ? 'bg-green-50 border border-green-200' : 'bg-white border border-slate-200 hover:border-blue-300'"
-        @click="irA('/settings')"
+        class="flex items-center gap-2 p-2 rounded-lg transition-all"
+        :class="tareas.negocioConfigurado
+          ? 'bg-green-50 border border-green-200'
+          : 'bg-white border border-slate-200'"
       >
         <div class="flex-shrink-0">
           <div
@@ -52,16 +53,28 @@
         <div class="flex-1">
           <p class="text-sm font-medium text-slate-900">Configura tu perfil de negocio</p>
         </div>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Botón "Ir →" solo si no está completada -->
+        <button
+          v-if="!tareas.negocioConfigurado"
+          @click="irConTour('/settings', 'configurar-horarios')"
+          class="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-full transition-all"
+        >
+          Ir
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <svg v-else class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </div>
 
       <!-- Tarea 2: Agregar Servicios -->
       <div
-        class="flex items-center gap-2 p-2 rounded-lg transition-all cursor-pointer"
-        :class="tareas.serviciosAgregados ? 'bg-green-50 border border-green-200' : 'bg-white border border-slate-200 hover:border-blue-300'"
-        @click="irA('/services')"
+        class="flex items-center gap-2 p-2 rounded-lg transition-all"
+        :class="tareas.serviciosAgregados
+          ? 'bg-green-50 border border-green-200'
+          : 'bg-white border border-slate-200'"
       >
         <div class="flex-shrink-0">
           <div
@@ -76,16 +89,27 @@
         <div class="flex-1">
           <p class="text-sm font-medium text-slate-900">Agrega tus servicios</p>
         </div>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button
+          v-if="!tareas.serviciosAgregados"
+          @click="irConTour('/services', 'agregar-servicio')"
+          class="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-full transition-all"
+        >
+          Ir
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <svg v-else class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </div>
 
       <!-- Tarea 3: Registrar Clientes -->
       <div
-        class="flex items-center gap-2 p-2 rounded-lg transition-all cursor-pointer"
-        :class="tareas.clientesRegistrados ? 'bg-green-50 border border-green-200' : 'bg-white border border-slate-200 hover:border-blue-300'"
-        @click="irA('/clients')"
+        class="flex items-center gap-2 p-2 rounded-lg transition-all"
+        :class="tareas.clientesRegistrados
+          ? 'bg-green-50 border border-green-200'
+          : 'bg-white border border-slate-200'"
       >
         <div class="flex-shrink-0">
           <div
@@ -100,16 +124,27 @@
         <div class="flex-1">
           <p class="text-sm font-medium text-slate-900">Registra a tus clientes</p>
         </div>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button
+          v-if="!tareas.clientesRegistrados"
+          @click="irConTour('/clients', 'agregar-cliente')"
+          class="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-full transition-all"
+        >
+          Ir
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <svg v-else class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </div>
 
       <!-- Tarea 4: Crear Primera Cita -->
       <div
-        class="flex items-center gap-2 p-2 rounded-lg transition-all cursor-pointer"
-        :class="tareas.primeracitaCreada ? 'bg-green-50 border border-green-200' : 'bg-white border border-slate-200 hover:border-blue-300'"
-        @click="irA('/appointments')"
+        class="flex items-center gap-2 p-2 rounded-lg transition-all"
+        :class="tareas.primeracitaCreada
+          ? 'bg-green-50 border border-green-200'
+          : 'bg-white border border-slate-200'"
       >
         <div class="flex-shrink-0">
           <div
@@ -124,7 +159,17 @@
         <div class="flex-1">
           <p class="text-sm font-medium text-slate-900">Crea tu primera cita</p>
         </div>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button
+          v-if="!tareas.primeracitaCreada"
+          @click="irConTour('/appointments', 'agregar-cita')"
+          class="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-full transition-all"
+        >
+          Ir
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <svg v-else class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </div>
@@ -150,12 +195,14 @@ import { useBusinessStore } from '../../stores/businessStore'
 import { useServiciosStore } from '../../stores/serviciosStore'
 import { useClientesStore } from '../../stores/clientesStore'
 import { useCitasStore } from '../../stores/citasStore'
+import { useOnboardingStore } from '../../stores/onboardingStore'
 
 const router = useRouter()
 const businessStore = useBusinessStore()
 const serviciosStore = useServiciosStore()
 const clientesStore = useClientesStore()
 const citasStore = useCitasStore()
+const onboardingStore = useOnboardingStore()
 
 const emit = defineEmits(['close'])
 
@@ -182,7 +229,10 @@ const todasCompletadas = computed(() => {
 })
 
 // Métodos
-const irA = (ruta) => {
+const irConTour = (ruta, tourTarget) => {
+  // Activar el tour ANTES de navegar para que el SpotlightOverlay lo detecte
+  // al montarse la página destino
+  onboardingStore.activarTour(tourTarget)
   router.push(ruta)
 }
 

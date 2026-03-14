@@ -14,7 +14,7 @@
     </template>
 
     <template #headerActions>
-      <button @click="abrirModalCrear" class="btn btn-primary btn-sm">
+      <button @click="abrirModalCrear" data-tour="agregar-cita" class="btn btn-primary btn-sm">
         + Nueva Cita
       </button>
     </template>
@@ -150,7 +150,10 @@
 
               <!-- Recordatorios -->
               <div v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'" class="px-4 py-2">
-                <p class="text-xs font-semibold text-gray-500 uppercase">Recordar por</p>
+                <div class="flex items-center gap-1.5">
+                  <p class="text-xs font-semibold text-gray-500 uppercase">Recordar por</p>
+                  <span v-if="!emailRecordatoriosHabilitado" class="text-xs text-amber-500 font-medium">· Plan Profesional+</span>
+                </div>
               </div>
 
               <button v-if="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
@@ -179,13 +182,16 @@
               <div class="border-t border-gray-200 my-1"></div>
 
               <!-- Solicitar Pago -->
-              <button v-if="cita.estado !== 'CANCELADA'" @click="abrirModalPago(cita); menuAbierto = null"
-                class="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 flex items-center gap-2">
+              <button v-if="cita.estado !== 'CANCELADA'" @click="solicitarPago(cita)"
+                class="w-full text-left px-4 py-2 text-sm flex items-center gap-2"
+                :class="pagoOnlineHabilitado ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:bg-gray-50'"
+                :title="!pagoOnlineHabilitado ? 'Disponible en Plan Premium' : 'Solicitar pago al cliente'">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 Solicitar Pago
+                <span v-if="!pagoOnlineHabilitado" class="ml-auto text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-medium">Premium</span>
               </button>
 
               <!-- Editar -->
@@ -233,12 +239,15 @@
       </div>
     </div>
 
-    <!-- Modal Crear/Editar -->
-    <Modal v-model="modalAbierto" :title="modoEdicion ? 'Editar Cita' : 'Crear Nueva Cita'" size="2xl"
-      :closable="!guardando">
+    <!-- Panel lateral Crear/Editar Cita -->
+    <SlidePanel
+      v-model="modalAbierto"
+      :title="modoEdicion ? 'Editar Cita' : 'Crear Nueva Cita'"
+      :closable="!guardando"
+    >
       <AppointmentForm ref="appointmentFormRef" :cita="citaSeleccionada" :loading="guardando" @submit="guardarCita"
         @cancel="cerrarModal" />
-    </Modal>
+    </SlidePanel>
 
     <!-- Confirm Dialog -->
     <ConfirmDialog ref="confirmDialogRef" title="Cancelar cita"
@@ -250,9 +259,12 @@
     <PaymentModal :is-open="modalPagoAbierto" :cita="citaParaPago" @close="cerrarModalPago"
       @success="manejarPagoExitoso" />
 
-    <!-- Modal Confirmación WhatsApp/SMS -->
-    <Modal v-model="modalConfirmacionAbierto" title="Enviar Confirmación al Cliente" size="md"
-      :closable="!enviandoConfirmacion">
+    <!-- Panel lateral Confirmación WhatsApp/SMS -->
+    <SlidePanel
+      v-model="modalConfirmacionAbierto"
+      title="Enviar Confirmación al Cliente"
+      :closable="!enviandoConfirmacion"
+    >
       <div v-if="citaParaConfirmar" class="space-y-4">
         <!-- Información de la cita -->
         <div class="bg-gray-50 p-4 rounded-lg">
@@ -345,10 +357,14 @@
           </button>
         </div>
       </div>
-    </Modal>
+    </SlidePanel>
 
-    <!-- Modal Confirmar Cita con Pago -->
-    <Modal v-model="modalConfirmarCitaAbierto" title="Confirmar Cita" size="md" :closable="!confirmandoCita">
+    <!-- Panel lateral Confirmar Cita con Pago -->
+    <SlidePanel
+      v-model="modalConfirmarCitaAbierto"
+      title="Confirmar Cita"
+      :closable="!confirmandoCita"
+    >
       <div v-if="citaAConfirmar" class="space-y-4">
         <!-- Información de la cita -->
         <div class="bg-gray-50 p-4 rounded-lg">
@@ -409,18 +425,19 @@
           </button>
         </div>
       </div>
-    </Modal>
+    </SlidePanel>
   </DashboardLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useCitasStore } from '../stores/citasStore'
 import { usePlanesStore } from '../stores/planesStore'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
 import AppointmentForm from '../components/features/AppointmentForm.vue'
-import Modal from '../components/common/Modal.vue'
+import SlidePanel from '../components/common/SlidePanel.vue'
 import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import DatePicker from '../components/common/DatePicker.vue'
 import Select from '../components/common/Select.vue'
@@ -434,6 +451,7 @@ import { ESTADOS_CITA_LABELS } from '../utils/constants'
 const citasStore = useCitasStore()
 const planesStore = usePlanesStore()
 const toast = useToast()
+const router = useRouter()
 
 // Referencias
 const appointmentFormRef = ref(null)
@@ -478,6 +496,11 @@ const filtros = ref({
 // Computed property para verificar si el email está habilitado en el plan
 const emailRecordatoriosHabilitado = computed(() => {
   return planesStore.limites?.emailRecordatoriosHabilitado ?? false
+})
+
+// Computed para verificar si el pago online está disponible (solo Plan Premium)
+const pagoOnlineHabilitado = computed(() => {
+  return planesStore.limites?.tipoPlan?.toUpperCase() === 'PREMIUM'
 })
 
 const opcionesEstado = [
@@ -568,6 +591,16 @@ const manejarPagoExitoso = (paymentData) => {
 
   // Recargar citas para actualizar cualquier cambio
   citasStore.cargarCitas(filtros.value.fecha, filtros.value.estado)
+}
+
+// Solicitar pago: redirige a /planes si no es Premium, abre modal si sí
+const solicitarPago = (cita) => {
+  menuAbierto.value = null
+  if (!pagoOnlineHabilitado.value) {
+    router.push({ path: '/planes', query: { upgrade: 'premium', from: '/appointments' } })
+    return
+  }
+  abrirModalPago(cita)
 }
 
 const guardarCita = async (datos) => {

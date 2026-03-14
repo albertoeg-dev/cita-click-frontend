@@ -64,21 +64,16 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">
             Precio (MXN) <span class="text-red-500">*</span>
           </label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span class="text-gray-500">$</span>
-            </div>
-            <input
-              v-model.number="formData.precio"
-              type="number"
-              placeholder="150.00"
-              min="0"
-              step="0.01"
-              @blur="validateField('precio')"
-              class="block w-full pl-10 pr-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              :class="errors.precio ? 'border-red-300' : 'border-gray-300'"
-            />
-          </div>
+          <input
+            v-model.number="formData.precio"
+            type="number"
+            placeholder="150.00"
+            min="0"
+            step="0.01"
+            @blur="validateField('precio')"
+            class="block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            :class="errors.precio ? 'border-red-300' : 'border-gray-300'"
+          />
           <p v-if="errors.precio" class="mt-1 text-sm text-red-600">{{ errors.precio }}</p>
           <p v-else class="mt-1 text-xs text-gray-500">Precio del servicio en pesos mexicanos</p>
         </div>
