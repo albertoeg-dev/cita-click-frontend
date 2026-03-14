@@ -21,7 +21,7 @@
         sidebarCollapsed ? 'lg:w-20' : 'lg:w-64',
         mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       ]"
-      class="fixed lg:static lg:flex-shrink-0 inset-y-0 left-0 z-40 w-72 sm:w-64 bg-slate-800 border-r border-slate-700 flex flex-col transition-all duration-300"
+      class="fixed lg:static lg:flex-shrink-0 inset-y-0 left-0 z-40 w-64 bg-slate-800 border-r border-slate-700 flex flex-col transition-all duration-300"
     >
       <div class="flex-1 overflow-y-auto">
         <div class="sticky top-0 bg-slate-800 border-b border-slate-700" :class="sidebarCollapsed ? 'p-4' : 'p-6'">
@@ -125,6 +125,13 @@
                 <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
               </svg>
               <span :class="sidebarCollapsed ? 'lg:hidden' : ''">Plan</span>
+            </router-link>
+
+            <router-link to="/marketplace" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+              <span :class="sidebarCollapsed ? 'lg:hidden' : ''">Módulos</span>
             </router-link>
 
             <router-link to="/payment/history" class="nav-link" :class="{ 'lg:justify-center': sidebarCollapsed }" @click="mobileMenuOpen = false">
