@@ -16,7 +16,7 @@
 
     <div class="mb-6">
       <h2 class="text-3xl font-bold text-slate-900 mb-2">Historial de Pagos</h2>
-      <p class="text-slate-600">Consulta todos los pagos de tu suscripción</p>
+      <p class="text-slate-600">Consulta todos los pagos de tu suscripción y módulos activos</p>
     </div>
 
     <!-- Estadísticas -->
@@ -98,7 +98,7 @@
                 Fecha
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Plan
+                Plan / Módulo
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Monto
@@ -216,17 +216,30 @@ const formatearFecha = (fecha) => {
 const formatearPlan = (plan) => {
   if (!plan) return '-'
   const planes = {
-    // Valores reales almacenados en DB (lowercase)
-    basico: 'Básico',
-    profesional: 'Profesional',
-    premium: 'Premium',
+    // Planes actuales
+    base: 'Plan Base',
+    completo: 'Plan Completo',
+    // Valores legacy almacenados en DB (lowercase)
+    basico: 'Plan Básico',
+    profesional: 'Plan Profesional',
+    premium: 'Plan Premium',
     // Alias legacy
-    starter: 'Básico',
-    professional: 'Profesional',
-    enterprise: 'Premium',
-    BASICO: 'Básico',
-    PROFESIONAL: 'Profesional',
-    PREMIUM: 'Premium'
+    starter: 'Plan Básico',
+    professional: 'Plan Profesional',
+    enterprise: 'Plan Premium',
+    BASICO: 'Plan Básico',
+    PROFESIONAL: 'Plan Profesional',
+    PREMIUM: 'Plan Premium',
+    // Módulos del marketplace
+    email_recordatorios: 'Módulo: Recordatorios Email',
+    sms_whatsapp: 'Módulo: SMS/WhatsApp',
+    cobros_online: 'Módulo: Cobros en línea',
+    reportes_avanzados: 'Módulo: Reportes avanzados',
+    usuarios_extra: 'Módulo: Usuarios adicionales',
+    multi_sucursal: 'Módulo: Multi-sucursal',
+    branding_email: 'Módulo: Branding emails',
+    citas_extra: 'Módulo: Citas adicionales',
+    servicios_extra: 'Módulo: Servicios adicionales'
   }
   return planes[plan] || plan
 }
@@ -258,7 +271,10 @@ const formatearPeriodo = (inicio, fin) => {
 
 const getBadgeVariantPlan = (plan) => {
   const variants = {
-    // Valores reales almacenados en DB (lowercase)
+    // Planes actuales
+    base: 'info',
+    completo: 'success',
+    // Valores legacy almacenados en DB (lowercase)
     basico: 'info',
     profesional: 'warning',
     premium: 'success',
@@ -270,6 +286,8 @@ const getBadgeVariantPlan = (plan) => {
     PROFESIONAL: 'warning',
     PREMIUM: 'success'
   }
+  // Módulos del marketplace → badge morado/indigo
+  if (plan && plan.includes('_')) return 'purple'
   return variants[plan] || 'default'
 }
 
