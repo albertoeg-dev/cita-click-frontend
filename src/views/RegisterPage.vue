@@ -33,12 +33,11 @@
           v-model="selectedPlan"
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
         >
-          <option value="basico">Básico - $299/mes (7 días gratis)</option>
-          <option value="profesional">Profesional - $699/mes (7 días gratis)</option>
-          <option value="premium">Premium - $1,299/mes</option>
+          <option value="base">Plan Base - $299/mes (7 días gratis)</option>
+          <option value="completo">Bundle Completo - $1,199/mes (7 días gratis)</option>
         </select>
         <p class="text-xs text-gray-600 mt-2">
-          Los planes Básico y Profesional incluyen 7 días de prueba gratis. Sin tarjeta de crédito.
+          Ambos planes incluyen 7 días de prueba gratis. Sin tarjeta de crédito.
         </p>
       </div>
 
@@ -159,15 +158,17 @@ const apellidoMaterno = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
-const selectedPlan = ref('basico')
+const selectedPlan = ref('base')
 const loading = ref(false)
 const error = ref('')
 
 // Cargar plan desde URL query params
 onMounted(() => {
   const planFromQuery = route.query.plan
-  if (planFromQuery && ['basico', 'profesional', 'premium'].includes(planFromQuery)) {
-    selectedPlan.value = planFromQuery
+  const planesValidos = ['base', 'completo', 'basico', 'bundle'] // aliases legacy aceptados
+  if (planFromQuery && planesValidos.includes(planFromQuery)) {
+    // Normalizar aliases legacy al nuevo nombre
+    selectedPlan.value = (planFromQuery === 'bundle' || planFromQuery === 'basico') ? 'base' : planFromQuery
   }
 })
 
