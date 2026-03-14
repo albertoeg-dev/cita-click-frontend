@@ -75,10 +75,10 @@
             Ir al Dashboard
           </button>
           <button
-            @click="verHistorial"
-            class="flex-1 bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+            @click="irAModulos"
+            class="flex-1 bg-indigo-50 text-indigo-700 border border-indigo-200 py-3 px-6 rounded-lg font-semibold hover:bg-indigo-100 transition-colors"
           >
-            Ver historial de pagos
+            Ver mis módulos
           </button>
         </div>
       </div>
@@ -157,12 +157,14 @@ import { useRoute, useRouter } from 'vue-router'
 import { useStripe } from '../composables/useStripe'
 import { useSuscripcionStore } from '../stores/suscripcionStore'
 import { usePlanesStore } from '../stores/planesStore'
+import { useModulosStore } from '../stores/modulosStore'
 
 const route = useRoute()
 const router = useRouter()
 const { loading, error: stripeError, obtenerEstadoSesion } = useStripe()
 const suscripcionStore = useSuscripcionStore()
 const planesStore = usePlanesStore()
+const modulosStore = useModulosStore()
 
 const estado = ref(null)
 const customerEmail = ref(null)
@@ -186,8 +188,11 @@ onMounted(async () => {
     // Si el pago fue exitoso, recargar la info de suscripción y límites del plan
     // para que el dashboard refleje el nuevo plan inmediatamente
     if (data.status === 'complete') {
-      await suscripcionStore.cargarInfoSuscripcion()
-      await planesStore.cargarTodo()
+      await Promise.all([
+        suscripcionStore.cargarInfoSuscripcion(),
+        planesStore.cargarTodo(),
+        modulosStore.cargarModulos(true),   // refresca módulos (plan o módulo individual)
+      ])
     }
   } catch (err) {
     error.value = stripeError.value || 'Error al verificar el estado del pago'
@@ -200,6 +205,10 @@ const irAlDashboard = () => {
 
 const verHistorial = () => {
   router.push({ name: 'PaymentHistory' })
+}
+
+const irAModulos = () => {
+  router.push({ name: 'Marketplace' })
 }
 
 const reintentar = () => {
