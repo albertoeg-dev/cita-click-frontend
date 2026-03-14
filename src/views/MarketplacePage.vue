@@ -91,6 +91,13 @@
               módulo{{ modulosStore.modulosActivos.length !== 1 ? 's' : '' }}
             </span>
           </p>
+          <p v-if="proximoCobro" class="text-xs text-slate-400 mt-1 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Próximo cobro estimado: {{ formatFecha(proximoCobro) }}
+          </p>
         </div>
         <div class="text-right">
           <p class="text-sm text-slate-500 mb-1">Costo adicional mensual</p>
@@ -174,14 +181,23 @@
             <!-- Descripción -->
             <p class="text-xs text-slate-600 leading-relaxed mb-4">{{ modulo.descripcion }}</p>
 
-            <!-- Fecha de activación (si está activo y no incluido en plan) -->
+            <!-- Fecha activación + próximo cobro (si está activo y no incluido en plan) -->
             <div v-if="modulo.activado && !modulo.incluidoEnPlan && modulo.fechaActivacion"
-              class="flex items-center gap-1.5 text-xs text-slate-400 mb-4">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Activo desde {{ formatFecha(modulo.fechaActivacion) }}
+              class="flex flex-col gap-1 mb-4">
+              <span class="flex items-center gap-1.5 text-xs text-slate-400">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Activo desde {{ formatFecha(modulo.fechaActivacion) }}
+              </span>
+              <span v-if="modulo.proximaFechaCobro" class="flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Próximo cobro: {{ formatFecha(modulo.proximaFechaCobro) }}
+              </span>
             </div>
 
             <!-- Acciones -->
@@ -202,22 +218,29 @@
                 Cancelar módulo
               </button>
 
-              <!-- No activo: contratar -->
-              <button
-                v-else
-                @click="activar(modulo.clave)"
-                :disabled="activando === modulo.clave"
-                class="w-full py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-lg transition-colors flex items-center justify-center gap-1.5"
-              >
-                <svg v-if="activando !== modulo.clave" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                <svg v-else class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                </svg>
-                <span>{{ activando === modulo.clave ? 'Redirigiendo...' : `Contratar — $${formatPrecio(modulo.precioMensual)}/mes` }}</span>
-              </button>
+              <!-- No activo: contratar (con badge 7 días gratis) -->
+              <div v-else class="space-y-1.5">
+                <div class="flex items-center justify-center gap-1.5 text-xs text-emerald-600 font-medium">
+                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  7 días gratis
+                </div>
+                <button
+                  @click="activar(modulo.clave)"
+                  :disabled="activando === modulo.clave"
+                  class="w-full py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-lg transition-colors flex items-center justify-center gap-1.5"
+                >
+                  <svg v-if="activando !== modulo.clave" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                  <svg v-else class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                  </svg>
+                  <span>{{ activando === modulo.clave ? 'Redirigiendo...' : `Contratar — $${formatPrecio(modulo.precioMensual)}/mes` }}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -274,6 +297,15 @@ const ahorroBundle = computed(() => {
   return Math.max(0, totalSeparado - 1199)
 })
 
+// Próximo cobro estimado: la fecha más próxima entre todos los módulos activos con fecha
+const proximoCobro = computed(() => {
+  const fechas = modulosStore.modulosActivos
+    .filter(m => !m.incluidoEnPlan && m.proximaFechaCobro)
+    .map(m => m.proximaFechaCobro)
+  if (fechas.length === 0) return null
+  return fechas.sort()[0]   // la más próxima
+})
+
 // ─── Categorías ─────────────────────────────────────────────────────────────
 const categorias = [
   { id: 'comunicacion',    nombre: 'Comunicación',      color: 'bg-blue-500' },
@@ -320,6 +352,11 @@ const formatPrecio = (precio) =>
 
 const formatFecha = (fecha) => {
   if (!fecha) return ''
+  // LocalDate (YYYY-MM-DD) → parsear como fecha local para evitar desfase de zona horaria
+  if (typeof fecha === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+    const [y, m, d] = fecha.split('-').map(Number)
+    return new Date(y, m - 1, d).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
+  }
   return new Date(fecha).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
