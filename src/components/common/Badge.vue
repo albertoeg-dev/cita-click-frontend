@@ -11,7 +11,7 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'default',
-    validator: (value) => ['default', 'primary', 'success', 'warning', 'danger', 'info'].includes(value),
+    validator: (value) => ['default', 'primary', 'success', 'warning', 'danger', 'info', 'purple'].includes(value),
   },
   size: {
     type: String,
@@ -32,6 +32,7 @@ const badgeClasses = computed(() => {
     warning: 'bg-yellow-100 text-yellow-800',
     danger: 'bg-red-100 text-red-800',
     info: 'bg-cyan-100 text-cyan-800',
+    purple: 'bg-purple-100 text-purple-800',
   }
 
   const sizes = {

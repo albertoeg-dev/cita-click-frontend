@@ -25,6 +25,7 @@ import ReportsPage from '../views/ReportsPage.vue'
 import SettingsPage from '../views/SettingsPage.vue'
 import UsersManagement from '../views/UsersManagement.vue'
 import PlanDetails from '../views/PlanDetails.vue'
+import MarketplacePage from '../views/MarketplacePage.vue'
 import IntegrationsPage from '../views/IntegrationsPage.vue'
 import PlantillaEmailPage from '../views/PlantillaEmailPage.vue'
 
@@ -143,6 +144,12 @@ const routes = [
     path: '/planes',
     name: 'Planes',
     component: PlanDetails,
+    meta: { layout: 'main', requiresAuth: true },
+  },
+  {
+    path: '/marketplace',
+    name: 'Marketplace',
+    component: MarketplacePage,
     meta: { layout: 'main', requiresAuth: true },
   },
   {
