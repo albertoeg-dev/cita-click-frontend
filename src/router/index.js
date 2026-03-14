@@ -3,6 +3,7 @@ import { useAuthStore } from '../stores/authStore'
 import { useSuscripcionStore } from '../stores/suscripcionStore'
 import { usePlanesStore } from '../stores/planesStore'
 import { useOnboardingStore } from '../stores/onboardingStore'
+import { useModulosStore } from '../stores/modulosStore'
 
 // Vistas de Autenticación
 import LoginPage from '../views/LoginPage.vue'
@@ -124,7 +125,7 @@ const routes = [
     path: '/reports',
     name: 'Reports',
     component: ReportsPage,
-    meta: { layout: 'main', requiresAuth: true, requiresFeature: 'reportes_avanzados' },
+    meta: { layout: 'main', requiresAuth: true, requiresModulo: 'reportes_avanzados' },
   },
   {
     path: '/settings',
@@ -330,25 +331,48 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  // Verificar restricciones de features específicas (requiresFeature)
+  // Verificar restricciones de módulos del marketplace (requiresModulo)
+  if (to.meta.requiresModulo && isAuthenticated) {
+    const modulosStore = useModulosStore()
+
+    // Cargar módulos si no están cargados
+    if (!modulosStore.cargado) {
+      try {
+        await modulosStore.cargarModulos()
+      } catch (error) {
+        console.error('[Router] Error al cargar módulos:', error)
+      }
+    }
+
+    const claveModulo = to.meta.requiresModulo
+    const tieneAcceso = modulosStore.tieneModulo(claveModulo)
+
+    if (!tieneAcceso) {
+      return next({
+        path: '/planes',
+        query: {
+          modulo: claveModulo,
+          from: to.path
+        }
+      })
+    }
+  }
+
+  // Verificar restricciones de features específicas (requiresFeature) — legacy
   if (to.meta.requiresFeature && isAuthenticated) {
     const planesStore = usePlanesStore()
 
-    // Cargar límites del plan si no están cargados
     if (!planesStore.limites) {
       try {
         await planesStore.cargarLimites()
       } catch (error) {
         console.error('[Router] Error al cargar límites del plan:', error)
-        // Si es error 401/403, el interceptor manejará el logout
-        // Permitir continuar pero mostrará restricción en la página
       }
     }
 
     const featureRequerida = to.meta.requiresFeature
     let tieneAcceso = false
 
-    // Verificar la feature según el tipo
     switch (featureRequerida) {
       case 'reportes_avanzados':
         tieneAcceso = planesStore.limites?.reportesAvanzadosHabilitado || false
@@ -360,10 +384,9 @@ router.beforeEach(async (to, from, next) => {
         tieneAcceso = planesStore.limites?.soportePrioritario || false
         break
       default:
-        tieneAcceso = true // Permitir por defecto si no reconocemos la feature
+        tieneAcceso = true
     }
 
-    // Si no tiene acceso a la feature, redirigir a planes
     if (!tieneAcceso) {
       return next({
         path: '/planes',
