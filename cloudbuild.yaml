@@ -1,18 +1,35 @@
 # ============================================
 # CLOUD BUILD - FRONTEND (Vue.js + nginx)
 # ============================================
-# Trigger: push a master → build + deploy en Cloud Run (prod)
-# Trigger: push a test   → build + deploy en Cloud Run (qa)
+# Un solo archivo para prod y QA.
+# Las diferencias se controlan con variables de sustitución en el trigger:
+#
+# Trigger PROD (master):
+#   _BUILD_SCRIPT = build
+#   _SERVICE_NAME = citaclick-frontend-prod
+#   _IMAGE_NAME   = citaclick-frontend
+#
+# Trigger QA (test):
+#   _BUILD_SCRIPT = build:qa
+#   _SERVICE_NAME = citaclick-frontend-qa
+#   _IMAGE_NAME   = citaclick-frontend-qa
+
+substitutions:
+  _BUILD_SCRIPT: build
+  _SERVICE_NAME: citaclick-frontend-prod
+  _IMAGE_NAME: citaclick-frontend
 
 steps:
-  # 1. Construir imagen Docker
+  # 1. Construir imagen Docker con el script de build correcto
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
+      - '--build-arg'
+      - 'BUILD_SCRIPT=${_BUILD_SCRIPT}'
       - '-t'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend:$COMMIT_SHA'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/${_IMAGE_NAME}:$COMMIT_SHA'
       - '-t'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend:latest'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/${_IMAGE_NAME}:latest'
       - '.'
 
   # 2. Subir imagen a Artifact Registry
@@ -20,7 +37,7 @@ steps:
     args:
       - 'push'
       - '--all-tags'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/${_IMAGE_NAME}'
 
   # 3. Desplegar en Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -28,16 +45,17 @@ steps:
       - 'gcloud'
       - 'run'
       - 'deploy'
-      - 'citaclick-frontend-prod'
+      - '${_SERVICE_NAME}'
       - '--image'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend:$COMMIT_SHA'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/${_IMAGE_NAME}:$COMMIT_SHA'
       - '--region'
       - 'us-central1'
       - '--platform'
       - 'managed'
+      - '--allow-unauthenticated'
 
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/${_IMAGE_NAME}'
 
 options:
   logging: CLOUD_LOGGING_ONLY
