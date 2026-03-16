@@ -1,0 +1,47 @@
+# ============================================
+# CLOUD BUILD - FRONTEND QA (Vue.js + nginx)
+# ============================================
+# Trigger: push a test → build + deploy en Cloud Run (qa)
+# Usar este archivo en el trigger de GCP apuntando a la rama 'test'
+
+steps:
+  # 1. Construir imagen Docker con modo QA
+  #    --build-arg BUILD_SCRIPT=build:qa → Vite usa .env.qa → VITE_API_URL apunta al backend QA
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'BUILD_SCRIPT=build:qa'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend-qa:$COMMIT_SHA'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend-qa:latest'
+      - '.'
+
+  # 2. Subir imagen a Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '--all-tags'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend-qa'
+
+  # 3. Desplegar en Cloud Run (servicio QA)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args:
+      - 'gcloud'
+      - 'run'
+      - 'deploy'
+      - 'citaclick-frontend-qa'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend-qa:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cita-click-images/citaclick-frontend-qa'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

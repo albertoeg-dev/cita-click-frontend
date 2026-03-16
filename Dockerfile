@@ -13,11 +13,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-# Copiar código fuente y variables de entorno de producción
+# Copiar código fuente y archivos de variables de entorno
 COPY . .
 
-# Vite usa .env.production automáticamente en build
-RUN npm run build
+# BUILD_SCRIPT permite elegir el modo de build:
+#   production (default): npm run build       → usa .env.production
+#   qa:                   npm run build:qa    → usa .env.qa
+ARG BUILD_SCRIPT=build
+RUN npm run ${BUILD_SCRIPT}
 
 # ============================================
 # STAGE 2: SERVE (nginx)
