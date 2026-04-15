@@ -92,19 +92,19 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Nombre
             </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" class="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Email
             </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" class="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Teléfono
             </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" class="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Fecha Nacimiento
             </th>
-            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" class="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
               Acciones
             </th>
           </tr>
@@ -115,30 +115,34 @@
             :key="cliente.id"
             class="hover:bg-gray-50 transition-colors"
           >
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
               <div class="flex items-center">
-                <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span class="text-blue-600 font-semibold text-sm">
+                <div class="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span class="text-blue-600 font-semibold text-xs sm:text-sm">
                     {{ obtenerIniciales(cliente.nombre, cliente.apellidoPaterno) }}
                   </span>
                 </div>
-                <div class="ml-4">
-                  <div class="text-sm font-medium text-gray-900">
+                <div class="ml-2 sm:ml-4 min-w-0">
+                  <div class="text-sm font-medium text-gray-900 truncate max-w-[120px] sm:max-w-none">
                     {{ formatearNombreCompleto(cliente.nombre, cliente.apellidoPaterno, cliente.apellidoMaterno) }}
                   </div>
-                  <div v-if="cliente.notas" class="text-sm text-gray-500 truncate max-w-xs">
+                  <!-- En móvil mostrar teléfono bajo el nombre -->
+                  <div class="text-xs text-gray-500 sm:hidden">
+                    {{ cliente.telefono ? formatearTelefono(cliente.telefono) : (cliente.email || '') }}
+                  </div>
+                  <div v-if="cliente.notas" class="hidden sm:block text-sm text-gray-500 truncate max-w-xs">
                     {{ cliente.notas }}
                   </div>
                 </div>
               </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="hidden md:table-cell px-6 py-4 whitespace-nowrap">
               <div class="text-sm text-gray-900">{{ cliente.email || '-' }}</div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
               <div class="text-sm text-gray-900">{{ cliente.telefono ? formatearTelefono(cliente.telefono) : '-' }}</div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="hidden lg:table-cell px-6 py-4 whitespace-nowrap">
               <div class="flex items-center gap-2">
                 <div class="text-sm text-gray-900">
                   {{ cliente.fechaNacimiento ? formatearFecha(cliente.fechaNacimiento) : '-' }}
@@ -152,25 +156,27 @@
                 </span>
               </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-              <button
-                @click="verPerfil(cliente)"
-                class="text-purple-600 hover:text-purple-900 transition-colors"
-              >
-                Ver Perfil
-              </button>
-              <button
-                @click="abrirModalEditar(cliente)"
-                class="text-blue-600 hover:text-blue-900 transition-colors"
-              >
-                Editar
-              </button>
-              <button
-                @click="confirmarEliminar(cliente)"
-                class="text-red-600 hover:text-red-900 transition-colors"
-              >
-                Eliminar
-              </button>
+            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
+              <div class="flex items-center justify-end gap-2 sm:gap-3">
+                <button
+                  @click="verPerfil(cliente)"
+                  class="text-purple-600 hover:text-purple-900 transition-colors text-xs sm:text-sm"
+                >
+                  Ver Perfil
+                </button>
+                <button
+                  @click="abrirModalEditar(cliente)"
+                  class="text-blue-600 hover:text-blue-900 transition-colors text-xs sm:text-sm"
+                >
+                  Editar
+                </button>
+                <button
+                  @click="confirmarEliminar(cliente)"
+                  class="text-red-600 hover:text-red-900 transition-colors text-xs sm:text-sm"
+                >
+                  Eliminar
+                </button>
+              </div>
             </td>          </tr>
         </tbody>
       </table>
@@ -178,7 +184,7 @@
 
     <!-- Resumen -->
     <div v-if="clientesStore.clientes.length > 0" class="mt-6 card bg-purple-50 border-purple-200">
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <p class="text-sm text-purple-900 font-medium">Total de clientes</p>
           <p class="text-2xl font-bold text-purple-900">{{ clientesStore.clientes.length }}</p>

@@ -1,18 +1,18 @@
 <template>
   <Transition name="modal">
     <div v-if="modelValue" class="fixed inset-0 z-50 overflow-y-auto" @click.self="cerrar">
-      <div class="flex min-h-screen items-center justify-center p-4">
+      <div class="flex min-h-screen items-end sm:items-center justify-center p-0 sm:p-4">
         <!-- Overlay -->
         <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" @click="cerrar"></div>
 
         <!-- Modal -->
         <div
-          class="relative bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all"
+          class="relative bg-white rounded-t-2xl sm:rounded-lg shadow-xl w-full sm:max-w-md transform transition-all"
           :class="sizeClass"
           @click.stop
         >
           <!-- Header -->
-          <div class="flex items-center justify-between p-6 border-b">
+          <div class="flex items-center justify-between px-4 py-4 sm:p-6 border-b">
             <h3 class="text-xl font-semibold text-gray-900">
               {{ title }}
             </h3>
@@ -28,12 +28,12 @@
           </div>
 
           <!-- Body -->
-          <div class="p-6">
+          <div class="px-4 py-4 sm:p-6">
             <slot></slot>
           </div>
 
           <!-- Footer -->
-          <div v-if="$slots.footer" class="flex items-center justify-end gap-3 p-6 border-t bg-gray-50">
+          <div v-if="$slots.footer" class="flex items-center justify-end gap-3 px-4 py-3 sm:p-6 border-t bg-gray-50">
             <slot name="footer"></slot>
           </div>
         </div>
@@ -69,12 +69,12 @@ const emit = defineEmits(['update:modelValue', 'close'])
 
 const sizeClass = computed(() => {
   const sizes = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-lg',
-    xl: 'max-w-xl',
-    '2xl': 'max-w-2xl',
-    full: 'max-w-4xl',
+    sm: 'sm:max-w-sm',
+    md: 'sm:max-w-md',
+    lg: 'sm:max-w-lg',
+    xl: 'sm:max-w-xl',
+    '2xl': 'sm:max-w-2xl',
+    full: 'sm:max-w-4xl',
   }
   return sizes[props.size]
 })

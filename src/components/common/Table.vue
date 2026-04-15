@@ -19,11 +19,11 @@
               v-for="column in columns"
               :key="column.key"
               scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
               {{ column.label }}
             </th>
-            <th v-if="$slots.actions" scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th v-if="$slots.actions" scope="col" class="px-3 sm:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
               Acciones
             </th>
           </tr>
@@ -53,13 +53,13 @@
             <td
               v-for="column in columns"
               :key="column.key"
-              class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+              class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm text-gray-900"
             >
               <slot :name="`cell-${column.key}`" :row="row" :value="row[column.key]">
                 {{ row[column.key] }}
               </slot>
             </td>
-            <td v-if="$slots.actions" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <td v-if="$slots.actions" class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
               <slot name="actions" :row="row"></slot>
             </td>
           </tr>

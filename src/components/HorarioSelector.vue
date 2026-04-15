@@ -48,7 +48,7 @@
           </h4>
           <span class="text-[10px] font-medium text-green-700 bg-green-50 px-1.5 py-0.5 rounded">{{ horariosRecomendados.length }}</span>
         </div>
-        <div class="grid grid-cols-5 gap-2">
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
           <button
             v-for="horario in horariosRecomendados"
             :key="horario.horaInicio"
@@ -77,7 +77,7 @@
           </h4>
           <span class="text-[10px] font-medium text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded">{{ otrosHorarios.length }}</span>
         </div>
-        <div class="grid grid-cols-5 gap-2">
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
           <button
             v-for="horario in otrosHorarios"
             :key="horario.horaInicio"

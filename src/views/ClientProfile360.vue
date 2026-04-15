@@ -29,7 +29,7 @@
     <div v-else-if="perfil" class="space-y-6">
       <!-- Header con información básica -->
       <div class="card">
-        <div class="flex items-start justify-between">
+        <div class="flex flex-col sm:flex-row items-start gap-4 sm:justify-between">
           <div class="flex items-center gap-4">
             <!-- Avatar -->
             <div class="flex-shrink-0 h-20 w-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
@@ -40,7 +40,7 @@
 
             <!-- Información básica -->
             <div>
-              <h1 class="text-2xl font-bold text-gray-900">
+              <h1 class="text-xl sm:text-2xl font-bold text-gray-900">
                 {{ perfil.nombreCompleto }}
               </h1>
               <div class="mt-2 space-y-1">
@@ -78,7 +78,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-blue-900 font-medium">Total Citas</p>
-              <p class="text-3xl font-bold text-blue-900 mt-1">
+              <p class="text-2xl sm:text-3xl font-bold text-blue-900 mt-1">
                 {{ perfil.estadisticas?.totalCitas || 0 }}
               </p>
             </div>
@@ -95,7 +95,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-green-900 font-medium">Completadas</p>
-              <p class="text-3xl font-bold text-green-900 mt-1">
+              <p class="text-2xl sm:text-3xl font-bold text-green-900 mt-1">
                 {{ perfil.estadisticas?.citasCompletadas || 0 }}
               </p>
             </div>
@@ -112,7 +112,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-purple-900 font-medium">Gasto Total</p>
-              <p class="text-3xl font-bold text-purple-900 mt-1">
+              <p class="text-2xl sm:text-3xl font-bold text-purple-900 mt-1">
                 {{ formatearPrecio(perfil.estadisticas?.gastoTotal) }}
               </p>
             </div>
@@ -129,7 +129,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-yellow-900 font-medium">Ticket Promedio</p>
-              <p class="text-3xl font-bold text-yellow-900 mt-1">
+              <p class="text-2xl sm:text-3xl font-bold text-yellow-900 mt-1">
                 {{ formatearPrecio(perfil.estadisticas?.gastoPromedio) }}
               </p>
             </div>
@@ -161,7 +161,7 @@
       <!-- Tabs -->
       <div class="card">
         <div class="border-b border-gray-200">
-          <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+          <nav class="-mb-px flex overflow-x-auto space-x-4 sm:space-x-8" aria-label="Tabs">
             <button
               v-for="tab in tabs"
               :key="tab.id"

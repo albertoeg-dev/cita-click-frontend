@@ -141,11 +141,11 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-blue-900 font-medium">Total de servicios</p>
-          <p class="text-2xl font-bold text-blue-900">{{ serviciosFiltrados.length }}</p>
+          <p class="text-xl sm:text-2xl font-bold text-blue-900">{{ serviciosFiltrados.length }}</p>
         </div>
         <div class="text-right">
           <p class="text-sm text-blue-900 font-medium">Activos / Inactivos</p>
-          <p class="text-2xl font-bold text-blue-900">
+          <p class="text-xl sm:text-2xl font-bold text-blue-900">
             {{ serviciosActivos.length }} / {{ serviciosInactivos.length }}
           </p>
         </div>

@@ -1,12 +1,12 @@
 <template>
   <DashboardLayout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
       <!-- Header -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Elige el plan perfecto para tu negocio
         </h1>
-        <p class="text-xl text-gray-600">
+        <p class="text-base sm:text-xl text-gray-600">
           Comienza con 7 días de prueba gratis, sin tarjeta de crédito
         </p>
       </div>
@@ -34,14 +34,14 @@
             Más Popular
           </div>
 
-          <div class="p-8">
+          <div class="p-4 sm:p-8">
             <!-- Nombre del plan -->
             <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ plan.nombre }}</h3>
             <p class="text-gray-600 mb-6">{{ plan.descripcion }}</p>
 
             <!-- Precio -->
             <div class="mb-6">
-              <span class="text-5xl font-bold text-gray-900">${{ plan.precio }}</span>
+              <span class="text-3xl sm:text-5xl font-bold text-gray-900">${{ plan.precio }}</span>
               <span class="text-gray-600 ml-2">{{ plan.moneda }}/mes</span>
             </div>
 
@@ -84,7 +84,7 @@
 
       <!-- Garantía -->
       <div class="mt-16 text-center">
-        <div class="inline-flex items-center gap-4 bg-green-50 px-8 py-4 rounded-full">
+        <div class="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-4 bg-green-50 px-6 sm:px-8 py-4 rounded-2xl sm:rounded-full">
           <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
           </svg>

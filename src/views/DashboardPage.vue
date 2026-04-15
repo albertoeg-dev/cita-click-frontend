@@ -63,7 +63,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-slate-600 text-sm font-medium">Citas Hoy</p>
-              <p class="text-3xl font-bold text-slate-900 mt-2">{{ citasHoy.length }}</p>
+              <p class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">{{ citasHoy.length }}</p>
               <p class="text-xs text-slate-500 mt-1">
                 {{ citasHoyPendientes.length }} pendientes
               </p>
@@ -81,7 +81,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-slate-600 text-sm font-medium">Total Clientes</p>
-              <p class="text-3xl font-bold text-slate-900 mt-2">{{ clientesStore.clientes.length }}</p>
+              <p class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">{{ clientesStore.clientes.length }}</p>
               <p class="text-xs text-slate-500 mt-1">
                 Clientes registrados
               </p>
@@ -99,7 +99,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-slate-600 text-sm font-medium">Ingresos del Mes</p>
-              <p class="text-3xl font-bold text-slate-900 mt-2">{{ formatearPrecio(ingresosMes) }}</p>
+              <p class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">{{ formatearPrecio(ingresosMes) }}</p>
               <p class="text-xs text-slate-500 mt-1">
                 {{ citasCompletadasMes.length }} citas completadas
               </p>
@@ -117,7 +117,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-slate-600 text-sm font-medium">Servicios Activos</p>
-              <p class="text-3xl font-bold text-slate-900 mt-2">{{ serviciosStore.serviciosActivos.length }}</p>
+              <p class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">{{ serviciosStore.serviciosActivos.length }}</p>
               <p class="text-xs text-slate-500 mt-1">
                 de {{ serviciosStore.servicios.length }} totales
               </p>

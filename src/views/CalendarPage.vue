@@ -55,7 +55,7 @@
           <button @click="navegarAnterior" class="btn btn-secondary btn-sm" :disabled="citasStore.loading">
             ← Anterior
           </button>
-          <h3 class="text-xl font-bold text-slate-900 min-w-[200px] text-center">
+          <h3 class="text-base sm:text-xl font-bold text-slate-900 min-w-[120px] sm:min-w-[200px] text-center">
             {{ tituloVista }}
           </h3>
           <button @click="navegarSiguiente" class="btn btn-secondary btn-sm" :disabled="citasStore.loading">
@@ -73,7 +73,7 @@
       </div>
 
       <!-- Leyenda de estados (movida aquí desde abajo) -->
-      <div class="flex items-center gap-4 pt-4 border-t border-slate-200">
+      <div class="flex flex-wrap items-center gap-3 sm:gap-4 pt-4 border-t border-slate-200">
         <span class="text-sm font-medium text-slate-700">Leyenda:</span>
         <div class="flex flex-wrap gap-4">
           <div class="flex items-center gap-2">
@@ -166,7 +166,7 @@
       <!-- Encabezados de días -->
       <div class="grid grid-cols-7 gap-px bg-slate-200 border border-slate-200 rounded-t-lg overflow-hidden">
         <div v-for="dia in DIAS_SEMANA" :key="dia.value"
-          class="bg-slate-100 p-3 text-center font-semibold text-slate-700 text-sm">
+          class="bg-slate-100 p-1 sm:p-3 text-center font-semibold text-slate-700 text-xs sm:text-sm">
           {{ dia.short }}
         </div>
       </div>
@@ -175,7 +175,7 @@
       <div
         class="grid grid-cols-7 gap-px bg-slate-200 border-l border-r border-b border-slate-200 rounded-b-lg overflow-hidden">
         <div v-for="(dia, index) in diasDelMes" :key="index" :class="[
-          'bg-white p-2 min-h-[120px] transition-colors',
+          'bg-white p-1 sm:p-2 min-h-[60px] sm:min-h-[120px] transition-colors',
           dia.esOtroMes ? 'bg-slate-50' : '',
           dia.esHoy ? 'bg-blue-50' : '',
           'hover:bg-slate-50 cursor-pointer'
@@ -184,8 +184,8 @@
           <div class="flex items-center justify-between mb-2">
             <span :class="[
               'text-sm font-medium',
-              dia.esOtroMes ? 'text-slate-400' : 'text-slate-900',
-              dia.esHoy ? 'bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs' : ''
+              dia.esOtroMes ? 'text-slate-400 text-xs sm:text-sm' : 'text-slate-900 text-xs sm:text-sm',
+              dia.esHoy ? 'bg-blue-600 text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs' : ''
             ]">
               {{ dia.numero }}
             </span>

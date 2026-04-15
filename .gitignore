@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+### GCP (ya no se usa, migrado a Digital Ocean) ###
+cloudbuild*.yaml
+
+### Claude Code ###
+.claude/
