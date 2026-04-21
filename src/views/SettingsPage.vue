@@ -62,6 +62,21 @@
           </svg>
           Horarios de Atención
         </button>
+        <!-- URL Pública -->
+        <button
+          @click="activeTab = 'publicUrl'; cargarTokenPublico()"
+          :class="[
+            'px-4 py-3 font-medium transition-all border-b-2 -mb-px flex items-center gap-2 whitespace-nowrap',
+            activeTab === 'publicUrl'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          ]"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+          URL Pública
+        </button>
       </div>
     </div>
 
@@ -297,6 +312,117 @@
         />
       </div>
     </div>
+
+    <!-- Tab: URL Pública de Reservas -->
+    <div v-show="activeTab === 'publicUrl'" class="animate-fadeIn">
+      <div class="card">
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-slate-900 mb-1">URL Pública de Reservas</h3>
+          <p class="text-sm text-slate-600">
+            Comparte este enlace con tus clientes para que puedan agendar citas en línea, sin necesidad de crear una cuenta.
+          </p>
+        </div>
+
+        <!-- Cargando token -->
+        <div v-if="cargandoToken" class="flex justify-center py-8">
+          <LoadingSpinner size="md" />
+        </div>
+
+        <div v-else>
+          <!-- URL generada -->
+          <div v-if="tokenPublico" class="space-y-4">
+            <!-- Campo de URL -->
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">
+                Enlace de reservas
+              </label>
+              <div class="flex gap-2">
+                <input
+                  :value="urlPublica"
+                  readonly
+                  class="input flex-1 bg-slate-50 text-slate-600 text-sm"
+                />
+                <button
+                  @click="copiarUrl"
+                  class="btn-secondary flex items-center gap-2 whitespace-nowrap"
+                >
+                  <svg v-if="!urlCopiada" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  <svg v-else class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {{ urlCopiada ? 'Copiado' : 'Copiar' }}
+                </button>
+                <a
+                  :href="urlPublica"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-secondary flex items-center gap-2 whitespace-nowrap"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  Abrir
+                </a>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">
+                Válido hasta: {{ formatFechaExpiracion(tokenPublico.expiresAt) }}
+              </p>
+            </div>
+
+            <!-- Información de uso -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 class="text-sm font-semibold text-blue-800 mb-2">¿Cómo funciona?</h4>
+              <ul class="text-sm text-blue-700 space-y-1">
+                <li>• Tu cliente abre el enlace y ve tus servicios disponibles</li>
+                <li>• Selecciona el servicio, la fecha y hora que prefiere</li>
+                <li>• Ingresa su nombre, email y teléfono</li>
+                <li>• La cita queda confirmada automáticamente en tu calendario</li>
+              </ul>
+            </div>
+
+            <!-- Regenerar token -->
+            <div class="pt-4 border-t border-slate-200">
+              <h4 class="text-sm font-semibold text-slate-700 mb-2">Zona peligrosa</h4>
+              <p class="text-sm text-slate-500 mb-3">
+                Si sospechas que el enlace fue compartido con personas no deseadas, puedes regenerarlo.
+                El enlace anterior quedará inválido de forma inmediata.
+              </p>
+              <button
+                @click="confirmarRegenerarToken"
+                :disabled="regenerandoToken"
+                class="btn border border-red-300 text-red-600 bg-white hover:bg-red-50 flex items-center gap-2 disabled:opacity-50"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                {{ regenerandoToken ? 'Regenerando...' : 'Regenerar enlace' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Botón para generar token por primera vez -->
+          <div v-else class="text-center py-8">
+            <div class="text-5xl mb-4">🔗</div>
+            <h4 class="text-lg font-semibold text-slate-800 mb-2">Aún no tienes un enlace de reservas</h4>
+            <p class="text-sm text-slate-500 mb-6">
+              Genera tu enlace único para que tus clientes puedan agendar citas en línea.
+            </p>
+            <button
+              @click="generarToken"
+              :disabled="cargandoToken"
+              class="btn-primary flex items-center gap-2 mx-auto"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+              Generar enlace de reservas
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </DashboardLayout>
 </template>
 
@@ -309,6 +435,7 @@ import DashboardLayout from '../components/layout/DashboardLayout.vue'
 import BusinessProfileForm from '../components/features/BusinessProfileForm.vue'
 import HorariosForm from '../components/features/HorariosForm.vue'
 import LoadingSpinner from '../components/common/LoadingSpinner.vue'
+import publicBookingService from '../services/publicBookingService'
 
 const businessStore = useBusinessStore()
 const authStore = useAuthStore()
@@ -469,6 +596,85 @@ const cargarDatos = async () => {
     console.error('[SettingsPage] Error al cargar datos:', error)
     toast.error('Error al cargar', error.message || 'No se pudieron cargar los datos')
   }
+}
+
+// ============================================================
+// URL PÚBLICA DE RESERVAS
+// ============================================================
+const tokenPublico = ref(null)
+const cargandoToken = ref(false)
+const regenerandoToken = ref(false)
+const urlCopiada = ref(false)
+const tokenCargado = ref(false)
+
+const urlPublica = computed(() => {
+  if (!tokenPublico.value) return ''
+  const base = window.location.origin
+  return `${base}/book/${tokenPublico.value.token}`
+})
+
+const cargarTokenPublico = async () => {
+  if (tokenCargado.value) return
+  cargandoToken.value = true
+  try {
+    tokenPublico.value = await publicBookingService.obtenerMiToken()
+    tokenCargado.value = true
+  } catch (e) {
+    // Si es 404 o error, simplemente no hay token todavía
+    tokenPublico.value = null
+    tokenCargado.value = true
+  } finally {
+    cargandoToken.value = false
+  }
+}
+
+const generarToken = async () => {
+  cargandoToken.value = true
+  try {
+    tokenPublico.value = await publicBookingService.obtenerMiToken()
+    toast.success('¡Listo!', 'Tu enlace de reservas ha sido generado')
+  } catch (e) {
+    toast.error('Error', e?.response?.data?.message || 'No se pudo generar el enlace')
+  } finally {
+    cargandoToken.value = false
+  }
+}
+
+const confirmarRegenerarToken = async () => {
+  if (!confirm('¿Estás seguro? El enlace actual quedará inválido de inmediato y tendrás que compartir el nuevo.')) return
+  regenerandoToken.value = true
+  try {
+    tokenPublico.value = await publicBookingService.regenerarToken()
+    toast.success('Enlace regenerado', 'El enlace anterior ya no funciona. Copia el nuevo.')
+  } catch (e) {
+    toast.error('Error', e?.response?.data?.message || 'No se pudo regenerar el enlace')
+  } finally {
+    regenerandoToken.value = false
+  }
+}
+
+const copiarUrl = async () => {
+  try {
+    await navigator.clipboard.writeText(urlPublica.value)
+    urlCopiada.value = true
+    setTimeout(() => { urlCopiada.value = false }, 2500)
+  } catch {
+    // Fallback para navegadores sin clipboard API
+    const input = document.createElement('input')
+    input.value = urlPublica.value
+    document.body.appendChild(input)
+    input.select()
+    document.execCommand('copy')
+    document.body.removeChild(input)
+    urlCopiada.value = true
+    setTimeout(() => { urlCopiada.value = false }, 2500)
+  }
+}
+
+const formatFechaExpiracion = (fechaStr) => {
+  if (!fechaStr) return 'Sin expiración'
+  const d = new Date(fechaStr)
+  return d.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 // Lifecycle

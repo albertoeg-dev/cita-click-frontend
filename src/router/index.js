@@ -41,6 +41,9 @@ import PublicPaymentPage from '../views/PublicPaymentPage.vue'
 // Vista de Documentación
 import DocsPage from '../views/DocsPage.vue'
 
+// Vista de Reservas Públicas
+import PublicBookingPage from '../views/PublicBookingPage.vue'
+
 // Vista 404
 import NotFoundPage from '../views/NotFoundPage.vue'
 
@@ -210,6 +213,13 @@ const routes = [
     meta: { layout: 'public', requiresAuth: false },
   },
 
+  // Página pública de reservas — accesible sin login
+  {
+    path: '/book/:token',
+    name: 'PublicBooking',
+    component: PublicBookingPage,
+    meta: { layout: 'public', requiresAuth: false },
+  },
 
   // Ruta 404
   {
