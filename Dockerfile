@@ -30,8 +30,9 @@ FROM nginx:1.27-alpine
 # Copiar archivos compilados
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copiar configuración de nginx (SPA routing + puerto 8080 para Cloud Run)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Eliminar config por defecto y copiar la nuestra
+RUN rm -f /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/app.conf
 
 EXPOSE 8080
 
