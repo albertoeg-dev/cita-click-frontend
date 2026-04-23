@@ -65,9 +65,8 @@ const open = () => {
 }
 
 const close = () => {
-  if (!loading.value) {
-    show.value = false
-  }
+  show.value = false
+  loading.value = false
 }
 
 const confirmar = () => {
@@ -75,10 +74,8 @@ const confirmar = () => {
 }
 
 const cancelar = () => {
-  if (!loading.value) {
-    emit('cancel')
-    close()
-  }
+  emit('cancel')
+  close()
 }
 
 const setLoading = (value) => {
