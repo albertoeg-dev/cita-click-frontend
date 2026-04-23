@@ -28,7 +28,7 @@
           </div>
         </div>
         <router-link
-          to="/configuracion?tab=facturacion"
+          to="/settings?tab=facturacion"
           class="flex-shrink-0 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
         >
           Mis datos fiscales
