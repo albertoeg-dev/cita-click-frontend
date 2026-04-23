@@ -51,8 +51,6 @@
 
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
       <div>
-        <h2 class="text-3xl font-bold text-slate-900 mb-2">Plan y Facturación</h2>
-        <p class="text-slate-600">Administra tu plan y visualiza tu uso actual</p>
       </div>
       <div class="flex items-center gap-3">
         <router-link

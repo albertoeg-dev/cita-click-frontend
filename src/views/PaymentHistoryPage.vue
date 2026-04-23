@@ -14,11 +14,6 @@
       </div>
     </template>
 
-    <div class="mb-6">
-      <h2 class="text-3xl font-bold text-slate-900 mb-2">Historial de Pagos</h2>
-      <p class="text-slate-600">Consulta todos los pagos de tu suscripción y módulos activos</p>
-    </div>
-
     <!-- Estadísticas -->
     <div v-if="estadisticas" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       <div class="card bg-gradient-to-br from-purple-500 to-indigo-600 text-white">

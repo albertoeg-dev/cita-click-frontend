@@ -7,6 +7,15 @@
         <p class="text-gray-600">Verificando tu pago...</p>
       </div>
 
+      <!-- Formulario datos fiscales -->
+      <div v-else-if="mostrarFormFactura">
+        <DatosFiscalesForm
+          :datos-iniciales="datosIniciales"
+          @guardado="onDatosFiscalesGuardados"
+          @omitir="onOmitirFactura"
+        />
+      </div>
+
       <!-- Success: Módulo -->
       <div v-else-if="estado === 'complete' && tipoCompra === 'modulo'" class="bg-white rounded-2xl shadow-xl p-8 md:p-12">
         <!-- Icono de éxito -->
@@ -71,6 +80,32 @@
               Puedes cancelar en cualquier momento desde la sección de Módulos
             </li>
           </ul>
+        </div>
+
+        <!-- Pregunta de factura -->
+        <div class="border border-gray-200 rounded-xl p-5 mb-6">
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-800 mb-3">¿Requieres factura por este pago?</p>
+              <div class="flex gap-3">
+                <button
+                  @click="solicitarFactura"
+                  class="flex-1 border-2 border-indigo-600 text-indigo-700 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-50 transition-colors"
+                >
+                  Sí, necesito factura
+                </button>
+                <button
+                  @click="irAModulos"
+                  class="flex-1 border-2 border-gray-200 text-gray-600 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors"
+                >
+                  No, gracias
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Botones módulo -->
@@ -147,6 +182,32 @@
               Puedes agregar módulos adicionales desde el Marketplace
             </li>
           </ul>
+        </div>
+
+        <!-- Pregunta de factura -->
+        <div class="border border-gray-200 rounded-xl p-5 mb-6">
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-800 mb-3">¿Requieres factura por este pago?</p>
+              <div class="flex gap-3">
+                <button
+                  @click="solicitarFactura"
+                  class="flex-1 border-2 border-indigo-600 text-indigo-700 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-50 transition-colors"
+                >
+                  Sí, necesito factura
+                </button>
+                <button
+                  @click="irAlDashboard"
+                  class="flex-1 border-2 border-gray-200 text-gray-600 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors"
+                >
+                  No, gracias
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Botones plan -->
@@ -241,6 +302,8 @@ import { useStripe } from '../composables/useStripe'
 import { useSuscripcionStore } from '../stores/suscripcionStore'
 import { usePlanesStore } from '../stores/planesStore'
 import { useModulosStore } from '../stores/modulosStore'
+import DatosFiscalesForm from '../components/features/DatosFiscalesForm.vue'
+import datosFiscalesService from '../services/datosFiscalesService'
 
 const route = useRoute()
 const router = useRouter()
@@ -256,6 +319,11 @@ const error = ref(null)
 const tipoCompra = ref(null)      // 'modulo' | null (plan)
 const moduloClave = ref(null)
 const moduloNombre = ref(null)
+
+// Factura
+const mostrarFormFactura = ref(false)
+const datosIniciales = ref(null)
+const destinoTrasFactura = ref('dashboard') // a dónde ir después del form
 
 onMounted(async () => {
   sessionId.value = route.query.session_id
@@ -306,5 +374,37 @@ const reintentar = () => {
 
 const contactarSoporte = () => {
   window.location.href = 'mailto:soporte@citaclick.com.mx'
+}
+
+// ─── Factura ────────────────────────────────────────────────────────────────
+
+const solicitarFactura = async () => {
+  destinoTrasFactura.value = tipoCompra.value === 'modulo' ? 'modulos' : 'dashboard'
+  // Intentar prellenar con datos previos si existen
+  try {
+    const resp = await datosFiscalesService.obtener()
+    datosIniciales.value = resp.data || null
+  } catch {
+    datosIniciales.value = null
+  }
+  mostrarFormFactura.value = true
+}
+
+const onDatosFiscalesGuardados = () => {
+  mostrarFormFactura.value = false
+  if (destinoTrasFactura.value === 'modulos') {
+    irAModulos()
+  } else {
+    irAlDashboard()
+  }
+}
+
+const onOmitirFactura = () => {
+  mostrarFormFactura.value = false
+  if (destinoTrasFactura.value === 'modulos') {
+    irAModulos()
+  } else {
+    irAlDashboard()
+  }
 }
 </script>

@@ -43,24 +43,7 @@
         </div>
       </div>
     </Teleport>
-
-    <!-- Header -->
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div>
-        <h2 class="text-3xl font-bold text-slate-900 mb-2">Módulos Adicionales</h2>
-        <p class="text-slate-600">Expande las capacidades de tu negocio con módulos a la carta</p>
-      </div>
-      <router-link
-        to="/planes"
-        class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-lg shadow-sm transition-all duration-200"
-      >
-        <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-        Ver mi plan
-      </router-link>
-    </div>
-
+    
     <!-- Banner plan COMPLETO -->
     <div v-if="esPlanCompleto" class="mb-6 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-5">
       <div class="flex items-start gap-4">
