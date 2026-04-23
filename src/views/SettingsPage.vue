@@ -404,7 +404,9 @@
 
           <!-- Botón para generar token por primera vez -->
           <div v-else class="text-center py-8">
-            <div class="text-5xl mb-4">🔗</div>
+            <div class="flex justify-center mb-4">
+              <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+            </div>
             <h4 class="text-lg font-semibold text-slate-800 mb-2">Aún no tienes un enlace de reservas</h4>
             <p class="text-sm text-slate-500 mb-6">
               Genera tu enlace único para que tus clientes puedan agendar citas en línea.

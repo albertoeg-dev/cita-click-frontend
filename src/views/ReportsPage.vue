@@ -317,7 +317,7 @@ const estadisticasPorEstado = computed(() => {
     },
     {
       nombre: 'Completadas',
-      label: '✓',
+      label: 'OK',
       variant: 'success',
       bg: 'bg-green-50',
       cantidad: reporteActual.value.citasCompletadas || 0,

@@ -166,7 +166,9 @@
             <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Badge variant="success" class="text-xs">✓</Badge>
+                  <Badge variant="success" class="text-xs">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                  </Badge>
                 </div>
                 <div>
                   <p class="font-semibold text-slate-900">Completadas</p>

@@ -22,14 +22,16 @@
 
           <!-- Contenido del tooltip -->
           <div class="spotlight-content">
-            <div class="spotlight-icon">👆</div>
+            <div class="spotlight-icon">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+            </div>
             <p class="spotlight-instruccion">{{ instruccionTour }}</p>
           </div>
 
           <!-- Botones -->
           <div class="spotlight-actions">
             <button class="btn-omitir" @click="omitirTour">Omitir tour</button>
-            <button class="btn-entendido" @click="entendido">Entendido ✓</button>
+            <button class="btn-entendido" @click="entendido">Entendido</button>
           </div>
         </div>
       </div>

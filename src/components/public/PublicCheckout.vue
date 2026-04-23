@@ -27,7 +27,7 @@
 
       <!-- Fecha y hora -->
       <div class="flex items-start gap-3 text-sm">
-        <span class="text-xl">📅</span>
+        <svg class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         <div>
           <p class="text-gray-500 text-xs">Fecha y hora</p>
           <p class="font-semibold text-gray-900">{{ formatFechaHora(fechaHora) }}</p>
@@ -114,7 +114,10 @@
             </svg>
             Agendando...
           </span>
-          <span v-else>✓ Confirmar reserva</span>
+          <span v-else class="flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            Confirmar reserva
+          </span>
         </button>
 
         <p class="text-xs text-center text-gray-400">

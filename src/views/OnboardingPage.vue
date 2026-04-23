@@ -196,7 +196,9 @@ async function finalizar() {
           <!-- === PASO 1: Bienvenida === -->
           <div v-if="pasoActual === 1" class="p-8">
             <div class="text-center mb-8">
-              <div class="text-5xl mb-4">🎉</div>
+              <div class="flex justify-center mb-4">
+                <svg class="w-16 h-16 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+              </div>
               <h1 class="text-2xl font-extrabold text-gray-900 mb-2">
                 ¡Bienvenido a Cita Click, {{ authStore.user?.nombre?.split(' ')[0] || 'amigo' }}!
               </h1>
@@ -401,7 +403,9 @@ async function finalizar() {
 
           <!-- === PASO 4: ¡Todo listo! === -->
           <div v-else-if="pasoActual === 4" class="p-8 text-center">
-            <div class="text-5xl mb-4">✅</div>
+            <div class="flex justify-center mb-4">
+              <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
             <h2 class="text-2xl font-extrabold text-gray-900 mb-2">¡Ya casi estás listo!</h2>
             <p class="text-gray-500 mb-8">
               Tu cuenta está configurada. Ahora completa los últimos pasos desde el dashboard para empezar a recibir citas.

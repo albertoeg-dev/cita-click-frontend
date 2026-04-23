@@ -14,10 +14,10 @@
           </span>
           <p class="ml-3 font-medium text-white truncate">
             <span class="md:hidden">
-              ⏰ ¡Te queda{{ diasRestantes === 1 ? '' : 'n' }} {{ diasRestantes }} día{{ diasRestantes === 1 ? '' : 's' }} de prueba!
+              ¡Te queda{{ diasRestantes === 1 ? '' : 'n' }} {{ diasRestantes }} día{{ diasRestantes === 1 ? '' : 's' }} de prueba!
             </span>
             <span class="hidden md:inline">
-              ⏰ Tu período de prueba termina
+              Tu período de prueba termina
               <template v-if="diasRestantes === 1">mañana.</template>
               <template v-else>en {{ diasRestantes }} días.</template>
               Activa tu suscripción para continuar sin interrupciones.

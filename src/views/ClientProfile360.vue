@@ -4,7 +4,7 @@
       <button @click="$router.back()" class="text-blue-600 hover:text-blue-800 mr-2">
         ←
       </button>
-      👤 Perfil del Cliente
+      Perfil del Cliente
     </template>
 
     <!-- Loading State -->

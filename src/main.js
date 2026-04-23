@@ -15,8 +15,8 @@ if (import.meta.env.MODE === 'development') {
   // Sobrescribir el método de logging interno de Pinia
   const originalLog = console.log
   console.log = (...args) => {
-    // Filtrar logs de Pinia (que comienzan con 🍍)
-    if (args[0] && typeof args[0] === 'string' && args[0].includes('🍍')) {
+    // Filtrar logs internos de Pinia
+    if (args[0] && typeof args[0] === 'string' && args[0].includes('[pinia]')) {
       return
     }
     originalLog(...args)

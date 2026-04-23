@@ -274,7 +274,7 @@ const generarPreviewClasico = () => {
     <body>
       <div class="container">
         <div class="header">
-          <div class="header-emoji">🔔</div>
+          <div class="header-emoji">&#128276;</div>
           <h1>Recordatorio de Cita</h1>
         </div>
         <div class="content">
@@ -282,10 +282,10 @@ const generarPreviewClasico = () => {
           <p>Hola <strong>Juan Pérez</strong>,</p>
           <p>Este es un recordatorio de tu cita programada:</p>
           <div class="info-box">
-            <div class="info-row"><span class="info-label">📋 Servicio:</span><span class="info-value">Corte de Cabello</span></div>
-            <div class="info-row"><span class="info-label">📅 Fecha:</span><span class="info-value">Lunes 27 de Enero, 2026</span></div>
-            <div class="info-row"><span class="info-label">🕐 Hora:</span><span class="info-value">10:00 AM</span></div>
-            <div class="info-row"><span class="info-label">📍 Lugar:</span><span class="info-value">Mi Negocio</span></div>
+            <div class="info-row"><span class="info-label">Servicio:</span><span class="info-value">Corte de Cabello</span></div>
+            <div class="info-row"><span class="info-label">Fecha:</span><span class="info-value">Lunes 27 de Enero, 2026</span></div>
+            <div class="info-row"><span class="info-label">Hora:</span><span class="info-value">10:00 AM</span></div>
+            <div class="info-row"><span class="info-label">Lugar:</span><span class="info-value">Mi Negocio</span></div>
           </div>
           <p style="color: #6B7280; margin-top: 30px;">¡Te esperamos!</p>
         </div>
@@ -334,7 +334,7 @@ const generarPreviewModerno = () => {
     <body>
       <div class="container">
         <div class="header">
-          <div class="header-emoji">🔔</div>
+          <div class="header-emoji">&#128276;</div>
           <h1>Recordatorio de Cita</h1>
         </div>
         <div class="content">
@@ -343,35 +343,35 @@ const generarPreviewModerno = () => {
           <p style="font-size: 16px; color: #6B7280;">Este es un recordatorio de tu cita programada:</p>
           <div class="card">
             <div class="info-row">
-              <div class="info-icon">📋</div>
+              <div class="info-icon" style="font-size:20px;width:40px;text-align:center;">&#9998;</div>
               <div class="info-content">
                 <span class="info-label">SERVICIO</span>
                 <div class="info-value">Corte de Cabello</div>
               </div>
             </div>
             <div class="info-row">
-              <div class="info-icon">📅</div>
+              <div class="info-icon" style="font-size:20px;width:40px;text-align:center;">&#128197;</div>
               <div class="info-content">
                 <span class="info-label">FECHA</span>
                 <div class="info-value">Lunes 27 de Enero, 2026</div>
               </div>
             </div>
             <div class="info-row">
-              <div class="info-icon">🕐</div>
+              <div class="info-icon" style="font-size:20px;width:40px;text-align:center;">&#128336;</div>
               <div class="info-content">
                 <span class="info-label">HORA</span>
                 <div class="info-value">10:00 AM</div>
               </div>
             </div>
             <div class="info-row">
-              <div class="info-icon">📍</div>
+              <div class="info-icon" style="font-size:20px;width:40px;text-align:center;">&#128205;</div>
               <div class="info-content">
                 <span class="info-label">LUGAR</span>
                 <div class="info-value">Mi Negocio</div>
               </div>
             </div>
           </div>
-          <p style="color: #6B7280; margin-top: 30px; font-size: 16px; font-weight: 500;">¡Te esperamos! ✨</p>
+          <p style="color: #6B7280; margin-top: 30px; font-size: 16px; font-weight: 500;">¡Te esperamos!</p>
         </div>
         <div class="footer">
           <p class="footer-firma">${firma}</p>

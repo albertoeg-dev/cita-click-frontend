@@ -22,7 +22,7 @@
         <div class="space-y-3">
           <!-- Fecha y hora -->
           <div class="flex items-start gap-3">
-            <span class="text-xl flex-shrink-0">📅</span>
+            <svg class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             <div>
               <p class="text-xs text-gray-400">Fecha y hora</p>
               <p class="text-sm font-semibold text-gray-900">{{ formatFechaHora(cita?.fechaHora) }}</p>
@@ -31,7 +31,7 @@
 
           <!-- Duración -->
           <div v-if="cita?.fechaFin && cita?.fechaHora" class="flex items-start gap-3">
-            <span class="text-xl flex-shrink-0">⏱</span>
+            <svg class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <div>
               <p class="text-xs text-gray-400">Duración estimada</p>
               <p class="text-sm font-semibold text-gray-900">{{ duracionMinutos }} minutos</p>
@@ -40,7 +40,7 @@
 
           <!-- Negocio -->
           <div class="flex items-start gap-3">
-            <span class="text-xl flex-shrink-0">🏢</span>
+            <svg class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
             <div>
               <p class="text-xs text-gray-400">Negocio</p>
               <p class="text-sm font-semibold text-gray-900">{{ negocio?.nombre }}</p>
@@ -50,7 +50,7 @@
 
           <!-- Estado -->
           <div class="flex items-center gap-3">
-            <span class="text-xl flex-shrink-0">✅</span>
+            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <div>
               <p class="text-xs text-gray-400">Estado</p>
               <span class="inline-block bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">

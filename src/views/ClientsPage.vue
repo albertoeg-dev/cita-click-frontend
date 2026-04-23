@@ -38,7 +38,8 @@
           ]"
           title="Filtrar clientes con cumpleaños este mes"
         >
-          🎂 {{ filtroCumpleañosMes ? 'Ver Todos' : 'Cumpleaños del Mes' }}
+          <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-1.5-.454M9 6l3-3 3 3M9 6v4m6-4v4M3 10h18v11H3z"/></svg>
+          {{ filtroCumpleañosMes ? 'Ver Todos' : 'Cumpleaños del Mes' }}
         </button>
         <button @click="limpiarBusqueda" class="btn btn-secondary">
           Limpiar
@@ -152,7 +153,7 @@
                   class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800"
                   :title="`Cumpleaños en ${diasParaCumpleaños(cliente.fechaNacimiento)} días`"
                 >
-                  🎂
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-1.5-.454M9 6l3-3 3 3M9 6v4m6-4v4M3 10h18v11H3z"/></svg>
                 </span>
               </div>
             </td>

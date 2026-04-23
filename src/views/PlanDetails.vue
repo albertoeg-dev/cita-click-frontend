@@ -1,7 +1,7 @@
 <template>
   <DashboardLayout>
     <template #title>
-      💳 Plan y Facturación
+      Plan y Facturación
     </template>
 
     <!-- Cuenta Bloqueada Notice (trial vencido o suscripción expirada) -->
