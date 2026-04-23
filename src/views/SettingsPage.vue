@@ -62,6 +62,21 @@
           </svg>
           Horarios de Atención
         </button>
+        <!-- Facturación -->
+        <button
+          @click="activeTab = 'facturacion'; cargarDatosFiscales()"
+          :class="[
+            'px-4 py-3 font-medium transition-all border-b-2 -mb-px flex items-center gap-2 whitespace-nowrap',
+            activeTab === 'facturacion'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          ]"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Facturación
+        </button>
         <!-- URL Pública -->
         <button
           @click="activeTab = 'publicUrl'; cargarTokenPublico()"
@@ -425,26 +440,46 @@
         </div>
       </div>
     </div>
+    <!-- Tab: Facturación -->
+    <div v-show="activeTab === 'facturacion'" class="animate-fadeIn">
+      <div v-if="cargandoFiscales" class="flex justify-center py-12">
+        <LoadingSpinner size="lg" />
+      </div>
+      <DatosFiscalesForm
+        v-else
+        :datos-iniciales="datosFiscales"
+        @guardado="onDatosFiscalesGuardados"
+        @omitir="activeTab = 'user'"
+      />
+    </div>
   </DashboardLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useBusinessStore } from '../stores/businessStore'
 import { useAuthStore } from '../stores/authStore'
 import { useToast } from '../composables/useToast'
 import DashboardLayout from '../components/layout/DashboardLayout.vue'
 import BusinessProfileForm from '../components/features/BusinessProfileForm.vue'
 import HorariosForm from '../components/features/HorariosForm.vue'
+import DatosFiscalesForm from '../components/features/DatosFiscalesForm.vue'
 import LoadingSpinner from '../components/common/LoadingSpinner.vue'
 import publicBookingService from '../services/publicBookingService'
+import datosFiscalesService from '../services/datosFiscalesService'
 
+const route = useRoute()
 const businessStore = useBusinessStore()
 const authStore = useAuthStore()
 const toast = useToast()
 
 // Estado
 const activeTab = ref('user')
+
+// Datos fiscales
+const datosFiscales = ref(null)
+const cargandoFiscales = ref(false)
 const guardandoPerfil = ref(false)
 const guardandoUsuario = ref(false)
 const cargandoPerfil = ref(false)
@@ -679,8 +714,33 @@ const formatFechaExpiracion = (fechaStr) => {
   return d.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+// Datos fiscales
+const cargarDatosFiscales = async () => {
+  if (datosFiscales.value !== null) return // ya cargados
+  cargandoFiscales.value = true
+  try {
+    const resp = await datosFiscalesService.obtener()
+    datosFiscales.value = resp.data || {}
+  } catch {
+    datosFiscales.value = {}
+  } finally {
+    cargandoFiscales.value = false
+  }
+}
+
+const onDatosFiscalesGuardados = () => {
+  toast.success('Datos fiscales guardados', 'Tu información fiscal ha sido actualizada correctamente.')
+  datosFiscales.value = null // forzar recarga la próxima vez
+}
+
 // Lifecycle
 onMounted(async () => {
+  // Abrir tab desde query param (ej: ?tab=facturacion)
+  if (route.query.tab) {
+    activeTab.value = route.query.tab
+    if (route.query.tab === 'facturacion') cargarDatosFiscales()
+  }
+
   // Cargar perfil completo del usuario para tener apellidos y teléfono
   cargandoPerfil.value = true
   try {

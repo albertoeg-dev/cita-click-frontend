@@ -14,44 +14,25 @@
       </div>
     </template>
 
-    <!-- Estadísticas -->
-    <div v-if="estadisticas" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <div class="card bg-gradient-to-br from-purple-500 to-indigo-600 text-white">
-        <div class="flex items-center justify-between">
+    <!-- Banner datos fiscales -->
+    <div class="card border border-indigo-200 bg-indigo-50 mb-6">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
           <div>
-            <p class="text-purple-100 text-sm font-medium">Total de Pagos</p>
-            <p class="text-3xl font-bold mt-2">{{ estadisticas.totalPagos }}</p>
-          </div>
-          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
+            <p class="text-sm font-semibold text-indigo-900">¿Necesitas factura de algún pago?</p>
+            <p class="text-xs text-indigo-700 mt-0.5">Registra tus datos fiscales y contáctanos — emitimos tu CFDI manualmente.</p>
           </div>
         </div>
-      </div>
-
-      <div class="card bg-gradient-to-br from-green-500 to-emerald-600 text-white">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-green-100 text-sm font-medium">Monto Total</p>
-            <p class="text-3xl font-bold mt-2">{{ formatearPrecio(estadisticas.montoTotal) }}</p>
-          </div>
-          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-        </div>
+        <router-link
+          to="/configuracion?tab=facturacion"
+          class="flex-shrink-0 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+        >
+          Mis datos fiscales
+        </router-link>
       </div>
     </div>
 
@@ -177,20 +158,13 @@ import { formatearPrecio } from '../utils/formatters'
 
 const toast = useToast()
 const pagos = ref([])
-const estadisticas = ref(null)
 const cargando = ref(false)
 
 const cargarDatos = async () => {
   cargando.value = true
   try {
-    // Cargar historial y estadísticas en paralelo
-    const [historialRes, statsRes] = await Promise.all([
-      pagoService.obtenerHistorial(),
-      pagoService.obtenerEstadisticas()
-    ])
-
+    const historialRes = await pagoService.obtenerHistorial()
     pagos.value = historialRes.data || []
-    estadisticas.value = statsRes.data || null
   } catch (error) {
     console.error('[PaymentHistory] Error al cargar datos:', error)
     toast.error('Error al cargar historial de pagos', error.message)
