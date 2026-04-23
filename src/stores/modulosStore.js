@@ -77,24 +77,30 @@ export const useModulosStore = defineStore('modulos', () => {
    *
    * @param {string} clave - Clave del módulo a activar
    */
-  const activarModulo = async (clave) => {
+  /**
+   * Obtiene la sesión de checkout del módulo sin redirigir aún.
+   * Devuelve los datos (url, diasRestantesCiclo, proximaRenovacionTimestamp)
+   * para que el componente pueda mostrar el aviso de prorrateo antes de redirigir.
+   */
+  const obtenerCheckoutModulo = async (clave) => {
     loading.value = true
     error.value = null
     try {
       const response = await modulosService.crearCheckout(clave)
-      const url = response.data?.url
-      if (url) {
-        window.location.href = url
-      } else {
-        throw new Error('URL de checkout no disponible')
-      }
+      if (!response.data?.url) throw new Error('URL de checkout no disponible')
+      return response.data
     } catch (err) {
       error.value = err.response?.data?.message || 'Error al iniciar el pago'
-      console.error('[modulosStore] Error al activar módulo:', err)
+      console.error('[modulosStore] Error al obtener checkout:', err)
       throw err
     } finally {
       loading.value = false
     }
+  }
+
+  const activarModulo = async (clave) => {
+    const data = await obtenerCheckoutModulo(clave)
+    window.location.href = data.url
   }
 
   /**
@@ -139,6 +145,7 @@ export const useModulosStore = defineStore('modulos', () => {
     cargarModulos,
     tieneModulo,
     activarModulo,
+    obtenerCheckoutModulo,
     cancelarModulo,
     limpiar
   }

@@ -4,6 +4,76 @@
       Módulos Adicionales
     </template>
 
+    <!-- Modal de confirmación de activación con aviso de prorrateo -->
+    <Teleport to="body">
+      <div v-if="checkoutPendiente" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50" @click="checkoutPendiente = null"></div>
+        <div class="relative bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+          <div class="flex items-start gap-4 mb-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">Confirmar activación</h3>
+              <p class="text-sm text-gray-500 mt-0.5">{{ checkoutPendiente.moduloNombre }}</p>
+            </div>
+          </div>
+
+          <!-- Aviso de prorrateo -->
+          <div v-if="checkoutPendiente.diasRestantesCiclo" class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5">
+            <div class="flex items-start gap-2">
+              <svg class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <div class="text-sm text-amber-800">
+                <p class="font-semibold mb-1">Sobre el primer cobro</p>
+                <p>
+                  Hoy se cobrará únicamente la <strong>parte proporcional de los {{ checkoutPendiente.diasRestantesCiclo }} días restantes</strong>
+                  hasta tu próxima renovación
+                  <strong v-if="checkoutPendiente.proximaRenovacionTimestamp">
+                    ({{ formatFechaRenovacion(checkoutPendiente.proximaRenovacionTimestamp) }})
+                  </strong>.
+                </p>
+                <p class="mt-1">
+                  A partir del siguiente mes el cobro será el precio completo junto con tu plan base — <strong>todo en una sola fecha</strong>.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sin plan activo: aviso de trial -->
+          <div v-else class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-5">
+            <p class="text-sm text-emerald-800">
+              <strong>7 días de prueba gratuita</strong> — el primer cobro se realizará al finalizar el período.
+            </p>
+          </div>
+
+          <div class="flex gap-3">
+            <button
+              @click="confirmarActivacion"
+              :disabled="redirigiendo"
+              class="flex-1 bg-indigo-600 text-white py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              <svg v-if="redirigiendo" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+              </svg>
+              {{ redirigiendo ? 'Redirigiendo...' : 'Ir a pagar' }}
+            </button>
+            <button
+              @click="checkoutPendiente = null"
+              :disabled="redirigiendo"
+              class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- Modal de confirmación de cancelación -->
     <Teleport to="body">
       <div v-if="moduloACancelar" class="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -344,15 +414,36 @@ const formatFecha = (fecha) => {
 }
 
 // ─── Acciones ────────────────────────────────────────────────────────────────
+const checkoutPendiente = ref(null) // { url, diasRestantesCiclo, proximaRenovacionTimestamp, moduloNombre }
+const redirigiendo = ref(false)
+
 const activar = async (clave) => {
   activando.value = clave
   try {
-    await modulosStore.activarModulo(clave)
+    const modulo = modulosStore.modulos.find(m => m.clave === clave)
+    const data = await modulosStore.obtenerCheckoutModulo(clave)
+    // Mostrar modal con aviso antes de redirigir
+    checkoutPendiente.value = {
+      url: data.url,
+      diasRestantesCiclo: data.diasRestantesCiclo,
+      proximaRenovacionTimestamp: data.proximaRenovacionTimestamp,
+      moduloNombre: modulo?.nombre || clave,
+    }
   } catch {
     // el store ya loguea el error
   } finally {
     activando.value = null
   }
+}
+
+const confirmarActivacion = () => {
+  if (!checkoutPendiente.value?.url) return
+  redirigiendo.value = true
+  window.location.href = checkoutPendiente.value.url
+}
+
+const formatFechaRenovacion = (timestamp) => {
+  return new Date(timestamp * 1000).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 const pedirCancelacion = (modulo) => {
